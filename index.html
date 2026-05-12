@@ -447,54 +447,49 @@
       position: absolute; display: flex; flex-direction: column;
       justify-content: flex-end; padding: var(--space-sm);
     }
-    .q-region .q-label { font-size: 0.7rem; font-weight: 700; opacity: 0.7; }
-    .q-region .q-sub   { font-size: 0.65rem; opacity: 0.55; margin-top: 2px; }
+    .q-region .q-label  { font-size: 0.7rem; font-weight: 700; opacity: 0.7; }
+    .q-region .q-sub    { font-size: 0.62rem; opacity: 0.55; margin-top: 2px; }
 
     /*
-      사분면 CSS 좌표계:
-        dot X = 5 + (priceBurden/100)*90
-        dot Y = 95 - (quality/100)*90
-      ∴ quality=65  → top  = 36.5%   (상하 경계)
-         pb=45       → left = 45.5%   (Q1/Q2 경계)
-         pb=50       → left = 50%     (Q3/Q4 경계)
-         pb=65       → left = 63.5%   (boundary 우측 끝)
+      사분면 CSS: 시각적 4등분 (50/50) 유지
+      dot 위치는 실제 수치 기준 좌표로 정확히 표시
     */
 
-    /* Q1: quality>=65 && priceBurden<45 */
+    /* Q1: 좌상단 */
     .q-region.q1 {
-      top: 0; left: 0; width: 45.5%; height: 36.5%;
+      top: 0; left: 0; width: 50%; height: 50%;
       background: var(--q1-bg);
-      border-right: 1px dashed rgba(21,128,61,0.3);
-      border-bottom: 1px dashed rgba(0,0,0,0.12);
+      border-right: 2px solid rgba(0,0,0,0.10);
+      border-bottom: 2px solid rgba(0,0,0,0.10);
     }
     .q-region.q1 .q-label { color: var(--green); }
 
-    /* Q2: quality>=65 && priceBurden>=65 (경계 45~65는 dot로만 표시) */
+    /* Q2: 우상단 */
     .q-region.q2 {
-      top: 0; left: 45.5%; width: 54.5%; height: 36.5%;
+      top: 0; left: 50%; width: 50%; height: 50%;
       background: var(--q2-bg);
-      border-bottom: 1px dashed rgba(0,0,0,0.12);
+      border-bottom: 2px solid rgba(0,0,0,0.10);
     }
     .q-region.q2 .q-label { color: var(--orange); }
 
-    /* Q3: quality<65 && priceBurden<50 */
+    /* Q3: 좌하단 */
     .q-region.q3 {
-      top: 36.5%; left: 0; width: 50%; height: 63.5%;
+      top: 50%; left: 0; width: 50%; height: 50%;
       background: var(--q3-bg);
-      border-right: 1px dashed rgba(37,99,235,0.3);
+      border-right: 2px solid rgba(0,0,0,0.10);
     }
     .q-region.q3 .q-label { color: var(--blue); }
 
-    /* Q4: quality<65 && priceBurden>=50 */
+    /* Q4: 우하단 */
     .q-region.q4 {
-      top: 36.5%; left: 50%; width: 50%; height: 63.5%;
+      top: 50%; left: 50%; width: 50%; height: 50%;
       background: var(--q4-bg);
     }
     .q-region.q4 .q-label { color: var(--purple); }
 
-    /* Q1/Q2 경계선 — priceBurden 45~65 boundary dot 표시 기준선 */
+    /* Q-boundary 경계선 */
     .q-boundary-line {
-      position: absolute; top: 0; left: 45.5%; width: 1px; height: 36.5%;
+      position: absolute; top: 0; left: 50%; width: 2px; height: 50%;
       background: rgba(101,163,13,0.6); z-index: 5; pointer-events: none;
     }
 
@@ -504,39 +499,45 @@
       margin-top: var(--space-xs); font-size: 0.72rem; color: var(--muted);
     }
     .quadrant-axis-y-wrap { display: flex; gap: var(--space-xs); align-items: stretch; }
-    /* v9: Y축 방향 수정 — rotate(180deg) → 아래에서 위로 읽힘 (위=우량, 아래=저품질) */
+    /* Y축: writing-mode vertical-rl, rotate(180deg) → 위=우량기업, 아래=취약기업 (정방향) */
     .quadrant-axis-y {
-      writing-mode: vertical-lr;
+      writing-mode: vertical-rl;
       text-orientation: mixed;
       transform: rotate(180deg);
-      font-size: 0.72rem; color: var(--muted);
+      font-size: 0.65rem; color: var(--muted);
       display: flex; justify-content: space-between;
-      padding: var(--space-sm) 0; width: 20px;
+      padding: var(--space-xs) 0; width: 16px;
+      user-select: none;
     }
 
-    /* 종목 점 마커 — v9: 크기/글자 크기 2배 수준 */
+    /* 종목 마커 — 사각형, 종목명·점수 분리 */
     .stock-dot {
-      position: absolute; width: 64px; height: 64px;
-      border-radius: 50%; background: var(--ink);
-      border: 3px solid #fff; box-shadow: var(--shadow-md);
+      position: absolute;
+      width: auto; min-width: 48px; max-width: 70px;
+      padding: 4px 7px;
+      border-radius: 6px;
+      background: var(--ink);
+      border: 2px solid #fff; box-shadow: var(--shadow-md);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px;
       transform: translate(-50%, -50%); cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s; z-index: 10;
     }
-    .stock-dot:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: var(--shadow-lg); }
+    .stock-dot:hover { transform: translate(-50%, -50%) scale(1.1); box-shadow: var(--shadow-lg); }
     .stock-dot .dot-ticker {
-      font-size: 0.9rem; font-weight: 800; color: #fff; line-height: 1;
-      text-align: center; max-width: 56px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-size: 0.72rem; font-weight: 800; color: #fff; line-height: 1.2;
+      text-align: center; max-width: 66px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    .stock-dot .dot-score { font-size: 0.75rem; color: rgba(255,255,255,0.9); font-weight: 600; }
-    /* dot에 "점" 표시 (한글, 요구사항 #8) */
-    .stock-dot .dot-score::after { content: '점'; font-size: 0.65rem; }
+    .stock-dot .dot-score {
+      font-size: 0.62rem; color: rgba(255,255,255,0.85); font-weight: 500; line-height: 1.1;
+    }
+    .stock-dot .dot-score::after { content: '점'; font-size: 0.58rem; }
 
     .quadrant-tooltip {
       position: absolute; background: var(--ink); color: #fff;
       padding: var(--space-sm) var(--space-md); border-radius: var(--radius-md);
-      font-size: 0.8rem; white-space: nowrap; pointer-events: none;
-      opacity: 0; transition: opacity 0.15s; z-index: 20; min-width: 200px;
+      font-size: 0.8rem; white-space: normal; pointer-events: none;
+      opacity: 0; transition: opacity 0.15s; z-index: 20; min-width: 220px; max-width: 280px;
     }
     .quadrant-tooltip.visible { opacity: 1; }
     .quadrant-tooltip .tt-row { display: flex; justify-content: space-between; gap: var(--space-md); margin-bottom: 3px; }
@@ -718,6 +719,12 @@
       .btn-sm { min-height: 36px; }
       .btn-preset { min-height: 36px; padding: 8px 14px; }
       #finviz-paste-box { min-height: 160px; font-size: 14px; }
+      /* 사분면: 모바일에서 전체 너비 활용 */
+      .quadrant-wrapper { max-width: 100%; }
+      .quadrant-canvas { aspect-ratio: 1 / 1; }
+      .q-region .q-label { font-size: 0.62rem; }
+      .q-region .q-sub   { font-size: 0.55rem; }
+      .quadrant-axis-y { font-size: 0.58rem; width: 14px; }
     }
     @media (max-width: 480px) {
       .summary-cards { grid-template-columns: 1fr; }
@@ -733,12 +740,15 @@
       #input-section, #ocr-section, #settings-section, #storage-section,
       .btn-group, .simulator-controls, #ocr-raw-area, #ocr-progress-area,
       #simulator-section { display: none !important; }
-      #results-section { display: block !important; }
+      /* results-section: visible 클래스 유무와 관계없이 항상 출력 */
+      #results-section, #results-section.visible { display: block !important; }
       .section { box-shadow: none !important; border: 1px solid #ccc !important; margin-bottom: 12px; }
       .report-header { background: #1C1917 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .summary-cards, .report-header, .next-action-card, .module-score-item,
       .warning-card, .sensitivity-item, .explanation-block { break-inside: avoid; page-break-inside: avoid; }
       .quadrant-canvas { break-inside: avoid; page-break-inside: avoid; max-width: 400px; }
+      /* 사분면 배경색 인쇄 강제 */
+      .q-region { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       @page { size: A4; margin: 12mm; }
     }
 
@@ -1165,7 +1175,7 @@
       <div class="quadrant-axis-y-wrap">
         <div class="quadrant-axis-y">
           <span>우량 기업 ▲</span>
-          <span>▼ 저품질</span>
+          <span>▼ 취약기업</span>
         </div>
         <div style="flex:1;">
           <div class="quadrant-wrapper">
@@ -1306,6 +1316,9 @@
         <button class="btn btn-outline" id="btn-export-json">📤 JSON 내보내기</button>
         <button class="btn btn-outline" id="btn-import-json">📥 JSON 불러오기</button>
         <input type="file" id="import-file" accept=".json" style="display:none;" />
+      </div>
+      <div id="print-mobile-hint" style="display:none;margin-top:var(--space-sm);font-size:0.78rem;color:var(--muted);padding:var(--space-sm);background:var(--paper-2);border-radius:var(--radius-sm);">
+        📱 모바일에서 PDF 저장: 브라우저 메뉴 → <strong>공유</strong> → <strong>PDF로 저장</strong> (iOS Safari) 또는 메뉴 → <strong>인쇄</strong> → PDF 선택 (Android Chrome)
       </div>
       <hr class="divider" />
       <h3 style="font-size:0.88rem;color:var(--ink-2);margin-bottom:var(--space-sm);">최근 저장 분석</h3>
@@ -2399,7 +2412,29 @@ function initEvents() {
    저장/불러오기 이벤트 (v9: localStorage 키 'finviz_v9_history', 최대 5개)
    ================================================================ */
 function initStorageEvents() {
-  document.getElementById('btn-print')?.addEventListener('click', () => window.print());
+  document.getElementById('btn-print')?.addEventListener('click', () => {
+    // 분석 결과 없으면 인쇄 차단
+    if (!appState.lastResult) {
+      showAlert('input-warn-msg', '⚠️ 분석 결과가 없습니다. 먼저 분석을 실행한 뒤 출력하세요.', 'alert-warning', 3000);
+      return;
+    }
+    // results-section 가시 상태 보장
+    const rs = document.getElementById('results-section');
+    if (rs && !rs.classList.contains('visible')) {
+      rs.classList.add('visible');
+    }
+    // 모바일 감지
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const hint = document.getElementById('print-mobile-hint');
+    if (isMobile && hint) hint.style.display = 'block';
+    // 인쇄 실행
+    try {
+      window.print();
+    } catch(e) {
+      // 모바일 일부 브라우저 fallback: 안내 알림
+      if (hint) hint.style.display = 'block';
+    }
+  });
 
   document.getElementById('btn-save')?.addEventListener('click', () => {
     if (!appState.lastResult) {
@@ -3210,32 +3245,53 @@ function renderQuadrant(r) {
     if (bline) bline.style.display = 'none';
   }
 
-  // 종목명 (2배 크기)
-  if (tkEl) { tkEl.textContent = r.ticker; tkEl.style.fontSize = '1rem'; }
+  // 종목명 · 점수
+  if (tkEl) tkEl.textContent = r.ticker;
   if (scEl) scEl.textContent = r.totalScore;   // CSS ::after 가 '점' 자동 추가
 
-  // 툴팁 콘텐츠 (구조화)
+  // 사분면 reason 매핑
+  const reasonMap = {
+    'q1':         '밸류에이션 점수 높음 — Forward P/E·PEG·P/S 등이 성장 대비 저평가 구간',
+    'q2':         '밸류에이션 점수 낮음 — 멀티플이 실적 성장을 과도하게 반영 (고평가)',
+    'q3':         '낮은 멀티플이나 성장성·수익성 검증 미흡 — 가치함정 주의',
+    'q4':         '실적 대비 고평가 + 기초체력 취약 — 양면 리스크',
+    'q-boundary': '기업 질 우량이나 밸류에이션 부담이 중간 수준 (Q1↔Q2 경계)',
+  };
+  const reason = reasonMap[q.region.id] || '';
+
+  // 툴팁 콘텐츠 (구조화 + reason 포함)
   if (ttip) {
     ttip.innerHTML =
       `<div class="tt-row"><span class="tt-label">종목</span><span class="tt-val">${r.ticker}</span></div>` +
       `<div class="tt-row"><span class="tt-label">종합 점수</span><span class="tt-val">${r.totalScore}점</span></div>` +
       `<div class="tt-row"><span class="tt-label">사분면</span><span class="tt-val">${q.region.name}</span></div>` +
-      `<div class="tt-row"><span class="tt-label">퀄리티</span><span class="tt-val">${q.quality}</span></div>` +
-      `<div class="tt-row"><span class="tt-label">가격부담</span><span class="tt-val">${q.priceBurden}</span></div>`;
+      `<div class="tt-row"><span class="tt-label">기업 질</span><span class="tt-val">${q.quality}점</span></div>` +
+      `<div class="tt-row"><span class="tt-label">가격부담</span><span class="tt-val">${q.priceBurden}점</span></div>` +
+      (reason ? `<div style="margin-top:5px;font-size:0.72rem;opacity:0.8;border-top:1px solid rgba(255,255,255,0.2);padding-top:5px;">${reason}</div>` : '');
   }
 
-  // 툴팁 마우스 이벤트
+  // 툴팁 이벤트 (마우스 + 터치)
   if (dot && ttip) {
-    dot.onmouseenter = () => ttip.classList.add('visible');
-    dot.onmouseleave = () => ttip.classList.remove('visible');
-    dot.onmousemove  = (e) => {
+    const showTip = () => ttip.classList.add('visible');
+    const hideTip = () => ttip.classList.remove('visible');
+    const moveTip = (cx, cy) => {
       const canvas = dot.closest('.quadrant-canvas');
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
-      const tx = e.clientX - rect.left + 12;
-      const ty = e.clientY - rect.top  + 12;
-      ttip.style.left = `${Math.min(tx, rect.width  - 210)}px`;
-      ttip.style.top  = `${Math.min(ty, rect.height - 120)}px`;
+      const tx = cx - rect.left + 12;
+      const ty = cy - rect.top  + 12;
+      ttip.style.left = `${Math.min(tx, rect.width  - 220)}px`;
+      ttip.style.top  = `${Math.min(ty, rect.height - 150)}px`;
+    };
+    dot.onmouseenter = showTip;
+    dot.onmouseleave = hideTip;
+    dot.onmousemove  = (e) => moveTip(e.clientX, e.clientY);
+    dot.ontouchstart = (e) => {
+      e.preventDefault();
+      const t = e.touches[0];
+      moveTip(t.clientX, t.clientY);
+      showTip();
+      setTimeout(hideTip, 2800);
     };
   }
 
@@ -3305,14 +3361,73 @@ function renderExplanation(r) {
     </p>
   </div>`);
 
-  /* 사분면 위치 이유 */
+  /* 사분면 위치 + 가격 이유 상세 설명 */
+  const priceReasonMap = {
+    'q1': {
+      label: '합리적 가격',
+      color: 'var(--green)',
+      why: `현재 주가가 기업의 실적·성장성 대비 <strong>저평가 또는 적정 수준</strong>으로 판단됩니다.`,
+      detail: [
+        'Forward P/E, P/S, EV/EBITDA, P/FCF 등 주요 멀티플이 성장률 대비 낮은 편',
+        'PEG 비율이 낮아 성장 대비 지불하는 가격이 합리적',
+        '밸류에이션 점수가 높을수록 매수 여력이 크고 하방 리스크가 제한적',
+      ],
+    },
+    'q2': {
+      label: '과열 가격',
+      color: 'var(--orange)',
+      why: `현재 주가가 기업의 실적·성장 기대치를 <strong>과도하게 선반영</strong>한 상태입니다.`,
+      detail: [
+        'Forward P/E, EV/EBITDA 등 멀티플이 업종 평균 대비 높은 수준',
+        '주가에 이미 긍정적 전망이 반영되어 추가 상승 여력이 제한적',
+        '기업 질은 우수하지만 가격 조정 없이 진입하면 기대 수익률이 낮아짐',
+      ],
+    },
+    'q3': {
+      label: '싼 가격 (주의)',
+      color: 'var(--blue)',
+      why: `멀티플 기준으로는 저렴하지만 <strong>기업 질이 검증되지 않아 가치함정(Value Trap) 위험</strong>이 있습니다.`,
+      detail: [
+        'PER·PBR 등이 낮으나 수익성·성장성이 뒷받침되지 않을 수 있음',
+        '싼 이유가 일시적 악재인지 구조적 문제인지 추가 분석 필요',
+        '실적 개선 신호 없이 단순 저PER만으로 매수 시 장기 부진 가능성',
+      ],
+    },
+    'q4': {
+      label: '비싼 가격',
+      color: 'var(--purple)',
+      why: `실적 대비 고평가인 동시에 기초체력(수익성·성장성)도 취약한 <strong>양면 리스크 구간</strong>입니다.`,
+      detail: [
+        '멀티플이 높은데 이를 정당화할 성장성·수익성이 부족',
+        '밸류에이션과 펀더멘털 모두 불리하여 진입 근거가 약함',
+        '이 구간 종목은 매크로 악화 시 하락폭이 크게 나타나는 경향',
+      ],
+    },
+    'q-boundary': {
+      label: 'Q1↔Q2 경계 구간',
+      color: 'var(--olive)',
+      why: `기업 질은 우량하지만 가격 부담이 <strong>합리적~과열 사이 경계 수준</strong>입니다.`,
+      detail: [
+        '밸류에이션 점수가 중간 구간(45~65)에 위치 — 저평가도 고평가도 아닌 상태',
+        '분할매수 전략으로 리스크를 분산하는 접근이 유리',
+        '추가 주가 조정 시 Q1(합리적 가격) 진입 기회로 전환될 수 있음',
+      ],
+    },
+  };
+  const pr = priceReasonMap[q.region.id] || priceReasonMap['q-boundary'];
+
   parts.push(`<div class="explain-block">
     <h4>📌 사분면: ${q.region.name}</h4>
-    <p>기업의 질 점수 <strong>${q.quality}점</strong>(성장×0.4 + 수익성×0.4 + 안정성×0.2),
-       가격 부담 점수 <strong>${q.priceBurden}점</strong>(100 − 밸류에이션 점수).</p>
-    ${q.region.id === 'q-boundary'
-      ? `<p style="color:var(--orange);">⚠️ Q1↔Q2 경계 구간입니다. 기업 질은 우량하지만 가격 부담이 중간 수준입니다.</p>`
-      : ''}
+    <p>기업의 질 점수 <strong>${q.quality}점</strong>(성장×0.4 + 수익성×0.4 + 안정성×0.2) ·
+       가격 부담 점수 <strong>${q.priceBurden}점</strong>(100 − 밸류에이션 점수)</p>
+    <div style="margin-top:var(--space-sm);padding:var(--space-sm) var(--space-md);
+         background:var(--card);border-left:3px solid ${pr.color};border-radius:0 var(--radius-sm) var(--radius-sm) 0;">
+      <div style="font-size:0.8rem;font-weight:700;color:${pr.color};margin-bottom:4px;">💰 왜 "${pr.label}"인가?</div>
+      <p style="margin-bottom:6px;">${pr.why}</p>
+      <ul style="margin:0;padding-left:1.2em;">
+        ${pr.detail.map(d => `<li>${d}</li>`).join('')}
+      </ul>
+    </div>
   </div>`);
 
   /* 합리적 가격 근거 설명 (요구사항 #24) */
