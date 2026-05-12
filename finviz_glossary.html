@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>투자 용어 사전 — Finviz 분석기</title>
+  <style>
+    :root {
+      --paper:    #F5F1E8;
+      --paper-2:  #EDE9DF;
+      --paper-3:  #E4DFD3;
+      --card:     #FFFFFF;
+      --card-2:   #FAFAF7;
+      --ink:      #1C1917;
+      --ink-2:    #3C3834;
+      --muted:    #78716C;
+      --muted-2:  #A8A29E;
+      --border:   #D4CEC0;
+      --border-2: #E8E3D8;
+      --green:       #15803D;
+      --green-light: #22C55E;
+      --green-bg:    rgba(21,128,61,0.10);
+      --olive:       #65A30D;
+      --olive-bg:    rgba(101,163,13,0.10);
+      --orange:      #D97706;
+      --orange-bg:   rgba(217,119,6,0.10);
+      --red:         #DC2626;
+      --red-bg:      rgba(220,38,38,0.10);
+      --blue:        #2563EB;
+      --blue-bg:     rgba(37,99,235,0.10);
+      --purple:      #7C3AED;
+      --purple-bg:   rgba(124,58,237,0.10);
+      --font-serif:  'Georgia', 'Times New Roman', serif;
+      --font-sans:   'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      --font-mono:   'Courier New', monospace;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── 레이아웃 ── */
+    .wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    /* ── 헤더 ── */
+    .page-header {
+      text-align: center;
+      padding: 36px 0 28px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .page-header .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--blue);
+      text-decoration: none;
+      margin-bottom: 16px;
+      padding: 5px 12px;
+      border: 1px solid var(--blue);
+      border-radius: 99px;
+      transition: all 0.15s;
+    }
+    .page-header .back-link:hover {
+      background: var(--blue-bg);
+    }
+    .page-header h1 {
+      font-family: var(--font-serif);
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .page-header .beginner-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 4px 14px;
+      background: var(--green-bg);
+      border: 1px solid var(--green);
+      border-radius: 99px;
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    /* ── 목차 ── */
+    .toc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .toc-title {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ink-2);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 6px;
+    }
+    .toc-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--ink-2);
+      font-size: 0.82rem;
+      transition: all 0.12s;
+      border: 1px solid transparent;
+    }
+    .toc-item:hover {
+      background: var(--paper-2);
+      border-color: var(--border);
+      color: var(--ink);
+    }
+    .toc-item .toc-cat {
+      font-size: 0.7rem;
+      padding: 1px 6px;
+      border-radius: 99px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ── 카테고리 섹션 ── */
+    .category-section {
+      margin-bottom: 32px;
+    }
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: var(--ink);
+      color: #fff;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+    .category-header .cat-icon { font-size: 1.2rem; }
+    .category-header h2 {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .category-header .cat-desc {
+      font-size: 0.78rem;
+      opacity: 0.7;
+      margin-left: auto;
+    }
+
+    /* ── 용어 카드 ── */
+    .term-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: none;
+      padding: 20px 22px;
+      transition: background 0.12s;
+    }
+    .term-card:last-child {
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+    }
+    .term-card + .term-card {
+      border-top: 1px solid var(--border-2);
+    }
+    .term-card:hover { background: var(--card-2); }
+
+    .term-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .term-name {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      background: var(--paper-2);
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .term-korean {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--ink-2);
+      padding-top: 4px;
+    }
+    .term-oneline {
+      font-size: 0.82rem;
+      color: var(--muted);
+      padding-top: 5px;
+      margin-left: auto;
+      font-style: italic;
+    }
+
+    /* 쉬운 설명 */
+    .term-easy {
+      background: var(--blue-bg);
+      border-left: 3px solid var(--blue);
+      padding: 10px 14px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+      color: var(--ink-2);
+      line-height: 1.6;
+    }
+    .term-easy .easy-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    /* 판단 기준 */
+    .term-criteria {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .criteria-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border: 1px solid;
+    }
+    .chip-good  { background: var(--green-bg);  color: var(--green);  border-color: var(--green); }
+    .chip-ok    { background: var(--olive-bg);   color: var(--olive);  border-color: var(--olive); }
+    .chip-warn  { background: var(--orange-bg);  color: var(--orange); border-color: var(--orange); }
+    .chip-bad   { background: var(--red-bg);     color: var(--red);    border-color: var(--red); }
+    .chip-info  { background: var(--blue-bg);    color: var(--blue);   border-color: var(--blue); }
+
+    /* 비유/예시 */
+    .term-analogy {
+      background: var(--paper-2);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .term-analogy .analogy-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 3px;
+    }
+
+    /* ── 색상별 카테고리 헤더 ── */
+    .cat-val   .category-header { background: #1e3a5f; }
+    .cat-grow  .category-header { background: #14532d; }
+    .cat-prof  .category-header { background: #1a1a2e; }
+    .cat-safe  .category-header { background: #374151; }
+    .cat-tech  .category-header { background: #4c1d95; }
+    .cat-risk  .category-header { background: #7c2d12; }
+    .cat-opt   .category-header { background: #1c3a4a; }
+
+    /* ── 분석기 연결 안내 ── */
+    .link-guide {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .link-guide h3 {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      color: var(--ink);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .link-guide p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .link-guide .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 8px 18px;
+      background: var(--ink);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .link-guide .link-btn:hover { background: var(--ink-2); }
+
+    /* ── 등급 설명표 ── */
+    .grade-table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .grade-table-header {
+      background: var(--ink);
+      color: #fff;
+      padding: 12px 20px;
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .grade-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .grade-table th {
+      background: var(--paper-2);
+      padding: 8px 16px;
+      text-align: left;
+      color: var(--ink-2);
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+    }
+    .grade-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-2);
+      vertical-align: middle;
+    }
+    .grade-table tr:last-child td { border-bottom: none; }
+    .grade-badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .g1 { background: #15803D; }
+    .g2 { background: #65A30D; }
+    .g3 { background: #D97706; }
+    .g4 { background: #DC2626; }
+    .g5 { background: #4B4B4B; }
+
+    /* ── 사분면 설명 ── */
+    .quadrant-explain {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-top: 12px;
+    }
+    .qe-cell {
+      padding: 14px 16px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .qe-cell .qe-name { font-weight: 700; font-size: 0.88rem; margin-bottom: 4px; }
+    .qe-cell .qe-sub  { color: var(--muted); font-size: 0.78rem; margin-bottom: 6px; }
+    .qe-q1  { background: rgba(21,128,61,0.07);  border-right:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .qe-q2  { background: rgba(217,119,6,0.07); border-bottom:1px solid var(--border); }
+    .qe-q3  { background: rgba(37,99,235,0.07);  border-right:1px solid var(--border); }
+    .qe-q4  { background: rgba(124,58,237,0.07); }
+
+    /* ── 반응형 ── */
+    @media (max-width: 640px) {
+      .page-header h1 { font-size: 1.4rem; }
+      .toc-grid { grid-template-columns: 1fr 1fr; }
+      .term-header { flex-direction: column; gap: 6px; }
+      .term-oneline { margin-left: 0; }
+      .quadrant-explain { grid-template-columns: 1fr; }
+      .qe-q1, .qe-q3 { border-right: none; }
+      .qe-q1, .qe-q3 { border-bottom: 1px solid var(--border); }
+      .grade-table th:last-child,
+      .grade-table td:last-child { display: none; }
+    }
+
+    /* ── 인쇄 ── */
+    @media print {
+      .page-header .back-link,
+      .link-guide { display: none; }
+      body { font-size: 12px; background: white; }
+      .term-card { break-inside: avoid; }
+    }
+
+    /* ── 상단으로 버튼 ── */
+    .top-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background 0.15s;
+      z-index: 100;
+    }
+    .top-btn:hover { background: var(--ink-2); }
+
+    /* anchor offset for fixed header */
+    [id] { scroll-margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- ===== 헤더 ===== -->
+  <header class="page-header">
+    <div>
+      <a href="finviz_analyzer_v9.html" class="back-link">← 분석기로 돌아가기</a>
+    </div>
+    <h1>📖 투자 용어 사전</h1>
+    <p>Finviz 분석기에서 사용하는 모든 용어를 쉽게 설명합니다</p>
+    <span class="beginner-badge">✅ 경제 초보자도 이해할 수 있게 작성됨</span>
+  </header>
+
+  <!-- ===== 분석기 연결 안내 ===== -->
+  <div class="link-guide">
+    <h3>💡 이 사전 활용법</h3>
+    <p>
+      분석기에서 모르는 용어가 나오면 이 페이지를 새 탭으로 열어두고 함께 사용하세요.<br>
+      각 용어마다 <strong>일상적인 비유</strong>와 <strong>숫자 기준</strong>이 함께 있어
+      어떤 값이 좋고 나쁜지 바로 판단할 수 있습니다.
+    </p>
+    <a href="finviz_analyzer_v9.html" class="link-btn">📊 분석기 열기</a>
+  </div>
+
+  <!-- ===== 목차 ===== -->
+  <nav class="toc">
+    <div class="toc-title">📋 목차 — 카테고리별 빠른 이동</div>
+    <div class="toc-grid">
+      <a href="#grade-section" class="toc-item"><span class="toc-cat chip-info">등급</span> 분석 결과 등급</a>
+      <a href="#quadrant-section" class="toc-item"><span class="toc-cat chip-info">사분면</span> 사분면 위치</a>
+      <a href="#val-section" class="toc-item"><span class="toc-cat chip-warn">밸류</span> 밸류에이션</a>
+      <a href="#grow-section" class="toc-item"><span class="toc-cat chip-good">성장</span> 성장성</a>
+      <a href="#prof-section" class="toc-item"><span class="toc-cat chip-ok">수익</span> 수익성</a>
+      <a href="#safe-section" class="toc-item"><span class="toc-cat chip-bad">안정</span> 재무안정성</a>
+      <a href="#tech-section" class="toc-item"><span class="toc-cat chip-info">기술</span> 기술적 위치</a>
+      <a href="#risk-section" class="toc-item"><span class="toc-cat chip-bad">리스크</span> 리스크</a>
+      <a href="#opt-section" class="toc-item"><span class="toc-cat" style="background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple);">보조</span> 보조 지표</a>
+    </div>
+  </nav>
+
+  <!-- ===== 분석 결과 등급 ===== -->
+  <div class="grade-table-wrap" id="grade-section">
+    <div class="grade-table-header">🏆 분석 결과 등급이란?</div>
+    <table class="grade-table">
+      <thead>
+        <tr>
+          <th>등급</th>
+          <th>판정</th>
+          <th>점수 범위</th>
+          <th>쉬운 설명</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="grade-badge g1">1등급</span></td>
+          <td><strong>강한 매수 후보</strong></td>
+          <td>80점 이상</td>
+          <td>여러 항목에서 모두 우수. 지금 살 만한 좋은 기회일 가능성이 높습니다.</td>
+        </tr>
+        <tr>
+          <td><span class="grade-badge g2">2등급</span></td>
+          <td><strong>분할매수 후보</strong></td>
+          <td>70~79점</td>
+          <td>좋은 기업이지만 한 번에 다 사지 말고, 조금씩 나눠서 사는 것을 권장합니다.</td>
+        </tr>
+        <tr>
+          <td><span class="grade-badge g3">3등급</span></td>
+          <td><strong>관망</strong></td>
+          <td>55~69점</td>
+          <td>지금 당장 사기엔 애매합니다. 좀 더 지켜보다가 조건이 개선되면 검토하세요.</td>
+        </tr>
+        <tr>
+          <td><span class="grade-badge g4">4등급</span></td>
+          <td><strong>비중 축소 후보</strong></td>
+          <td>40~54점</td>
+          <td>이미 보유 중이라면 조금 줄이는 걸 고려하세요. 지금 새로 사는 건 권장하지 않습니다.</td>
+        </tr>
+        <tr>
+          <td><span class="grade-badge g5">5등급</span></td>
+          <td><strong>매수 제외</strong></td>
+          <td>39점 이하</td>
+          <td>여러 지표가 나쁜 상태. 이 종목 대신 다른 종목을 찾아보는 게 좋습니다.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="padding:12px 16px;background:var(--orange-bg);font-size:0.8rem;color:var(--orange);border-top:1px solid var(--border);">
+      ⚠️ 심각한 경고(🚨)가 발생하면 기본 등급보다 1~2단계 낮아질 수 있습니다.
+    </div>
+  </div>
+
+  <!-- ===== 사분면 ===== -->
+  <div class="grade-table-wrap" id="quadrant-section">
+    <div class="grade-table-header">📌 사분면 위치란?</div>
+    <div style="padding:16px 20px;background:var(--card);font-size:0.85rem;color:var(--ink-2);line-height:1.7;">
+      <p>
+        기업을 <strong>"기업의 질"(성장성·수익성·안정성)</strong>과 <strong>"가격 부담"(밸류에이션)</strong>,
+        두 가지 기준으로 나눠서 어느 구역에 있는지 보여줍니다.<br>
+        마치 부동산에서 "좋은 동네에 싼 집"을 찾는 것처럼, 주식도 <em>좋은 기업을 합리적인 가격에</em> 사는 게 핵심입니다.
+      </p>
+      <div class="quadrant-explain">
+        <div class="qe-cell qe-q1">
+          <div class="qe-name" style="color:var(--green);">① 좋은 기업 · 합리적 가격</div>
+          <div class="qe-sub">기업의 질 높음 + 가격 부담 낮음</div>
+          가장 이상적인 구역. 좋은 기업을 적당한 가격에 살 수 있는 상태입니다.
+        </div>
+        <div class="qe-cell" style="background:rgba(101,163,13,0.06); border:1px solid rgba(101,163,13,0.25);">
+          <div class="qe-name" style="color:var(--olive);">① ↔ ② 경계 구간</div>
+          <div class="qe-sub">기업의 질 높음 + 가격 부담 중간</div>
+          기업은 우량하지만 밸류에이션이 중간 수준입니다. Q1이 될지 Q2가 될지 주목하세요.
+        </div>
+        <div class="qe-cell qe-q2" style="background:rgba(217,119,6,0.06); border:1px solid rgba(217,119,6,0.25);">
+          <div class="qe-name" style="color:var(--orange);">② 좋은 기업 · 비싼 가격</div>
+          <div class="qe-sub">기업의 질 높음 + 가격 부담 높음</div>
+          기업은 좋지만 주가가 이미 많이 올라 비쌉니다. 조정을 기다리거나 분할 매수 전략이 유효합니다.
+        </div>
+        <div class="qe-cell qe-q3">
+          <div class="qe-name" style="color:var(--blue);">③ 불확실 · 싼 가격</div>
+          <div class="qe-sub">기업의 질 낮음 + 가격 부담 낮음</div>
+          가격은 싸지만 기업이 좋지 않습니다. 반등을 노리는 고위험 전략에만 해당됩니다.
+        </div>
+        <div class="qe-cell qe-q4">
+          <div class="qe-name" style="color:var(--purple);">④ 저품질 · 비싼 가격</div>
+          <div class="qe-sub">기업의 질 낮음 + 가격 부담 높음</div>
+          가장 피해야 할 구역. 기업도 별로인데 주가까지 비쌉니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 밸류에이션 ===== -->
+  <section class="category-section cat-val" id="val-section">
+    <div class="category-header">
+      <span class="cat-icon">💰</span>
+      <h2>밸류에이션 (Valuation) — 주가가 비싼지 싼지 판단하는 지표</h2>
+      <span class="cat-desc">가중치 15~20%</span>
+    </div>
+
+    <div class="term-card" id="term-forwardPE">
+      <div class="term-header">
+        <span class="term-name">Forward P/E</span>
+        <span class="term-korean">선행 주가수익비율</span>
+        <span class="term-oneline">내년 예상 이익 기준으로 주가가 얼마나 비싼가</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        "이 기업이 내년에 1원을 벌 때, 나는 지금 주식을 몇 원 주고 사는가?"라는 뜻입니다.
+        예를 들어 Forward P/E가 20이면, 내년 예상 이익의 20배 가격에 주식을 사는 것입니다.
+        숫자가 낮을수록 상대적으로 저렴한 주식입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 10 이하 — 매우 저렴</span>
+        <span class="criteria-chip chip-ok">🟡 10~20 — 적정 수준</span>
+        <span class="criteria-chip chip-warn">⚠️ 20~30 — 다소 비쌈</span>
+        <span class="criteria-chip chip-bad">🚨 30 이상 — 고평가 주의</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">🏠 비유</div>
+        월세 10만 원짜리 방을 2,000만 원에 사면 P/E=200(너무 비쌈), 100만 원에 사면 P/E=10(저렴).
+        같은 수익을 내는 집이라도 가격에 따라 투자 가치가 다릅니다.
+      </div>
+    </div>
+
+    <div class="term-card" id="term-peg">
+      <div class="term-header">
+        <span class="term-name">PEG</span>
+        <span class="term-korean">성장 조정 주가수익비율</span>
+        <span class="term-oneline">성장 속도를 감안했을 때 주가가 비싼지 판단</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        P/E만 보면 성장 기업이 무조건 비싸 보일 수 있습니다. PEG는 "빠르게 성장하는 기업이니까
+        좀 비싸도 괜찮아"를 수치로 보정한 것입니다. PEG = P/E ÷ 이익 성장률.
+        <strong>1 이하면 성장 속도 대비 저평가</strong>된 신호입니다.
+        단, PEG 하나만 보고 판단하면 위험하니 반드시 다른 지표와 함께 보세요.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 1 이하 — 성장 대비 저평가</span>
+        <span class="criteria-chip chip-ok">🟡 1~1.5 — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 1.5~2 — 보통</span>
+        <span class="criteria-chip chip-bad">🚨 2 이상 — 고평가</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">🏪 비유</div>
+        매출이 매년 50%씩 느는 가게와 5%만 느는 가게. 둘 다 P/E=30이라면,
+        빠르게 크는 가게가 훨씬 싸게 느껴지겠죠? 그걸 수치로 표현한 게 PEG입니다.
+      </div>
+    </div>
+
+    <div class="term-card" id="term-ps">
+      <div class="term-header">
+        <span class="term-name">P/S</span>
+        <span class="term-korean">주가매출비율</span>
+        <span class="term-oneline">매출 대비 주가 수준</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        이익이 없는 적자 기업도 매출은 있기 때문에, 이익이 없을 때 대신 사용하는 지표입니다.
+        "이 기업 매출 1원을 주가로 몇 원 주고 사는가?"를 의미합니다. 낮을수록 저렴합니다.
+        특히 스타트업·성장주·IT 기업 분석에 자주 씁니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 2 이하 — 저렴</span>
+        <span class="criteria-chip chip-ok">🟡 2~5 — 적정</span>
+        <span class="criteria-chip chip-warn">⚠️ 5~15 — 비쌈</span>
+        <span class="criteria-chip chip-bad">🚨 15 이상 — 매우 고평가</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">🍕 비유</div>
+        연 매출 1억인 피자 가게를 5억에 사면 P/S=5, 2억에 사면 P/S=2.
+        같은 가게라도 살 때 가격이 다르면 투자 가치가 달라집니다.
+      </div>
+    </div>
+
+    <div class="term-card" id="term-pfcf">
+      <div class="term-header">
+        <span class="term-name">P/FCF</span>
+        <span class="term-korean">주가잉여현금흐름비율</span>
+        <span class="term-oneline">실제로 손에 쥐는 현금 기준 주가 수준</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        이익은 회계 처리로 부풀릴 수 있지만, 현금은 속일 수 없습니다.
+        잉여현금흐름(FCF)은 사업에 필요한 투자를 다 하고 남은 실제 현금입니다.
+        P/FCF가 <strong>음수(−)라면 현금이 빠져나가는 중</strong>이라는 심각한 경고 신호입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 15 이하 — 현금 창출력 우수</span>
+        <span class="criteria-chip chip-ok">🟡 15~40 — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 40~80 — 다소 고평가</span>
+        <span class="criteria-chip chip-bad">🚨 음수(−) — 현금 적자, 위험 신호</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">👛 비유</div>
+        월급 300만 원(이익)이지만 생활비·대출을 다 내고 나면 실제 남는 돈(FCF)은 50만 원.
+        진짜 내 돈을 기준으로 집값이 얼마냐를 보는 지표입니다.
+      </div>
+    </div>
+
+    <div class="term-card" id="term-evebitda">
+      <div class="term-header">
+        <span class="term-name">EV/EBITDA</span>
+        <span class="term-korean">기업가치/영업현금흐름</span>
+        <span class="term-oneline">기업 전체를 사려면 영업이익의 몇 배를 내야 하나</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        EV(기업가치)는 시가총액 + 부채 − 현금입니다. 즉 기업을 통째로 인수할 때 드는 비용입니다.
+        EBITDA는 세금·이자·감가상각 전 영업이익으로, 기업의 순수한 돈 버는 능력을 뜻합니다.
+        국가·회계 방식 차이를 제거해서 기업 간 비교에 특히 유용합니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 10 이하 — 저평가</span>
+        <span class="criteria-chip chip-ok">🟡 10~15 — 적정</span>
+        <span class="criteria-chip chip-warn">⚠️ 15~25 — 다소 비쌈</span>
+        <span class="criteria-chip chip-bad">🚨 25 이상 — 고평가</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">🏭 비유</div>
+        연 이익 10억짜리 공장을 100억에 사면 EV/EBITDA=10 (10년이면 본전).
+        기업 인수 전문가들이 가장 많이 쓰는 지표입니다.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 성장성 ===== -->
+  <section class="category-section cat-grow" id="grow-section">
+    <div class="category-header">
+      <span class="cat-icon">📈</span>
+      <h2>성장성 — 기업이 빠르게 크고 있는지 보는 지표</h2>
+      <span class="cat-desc">가중치 10~30%</span>
+    </div>
+
+    <div class="term-card" id="term-epsnexty">
+      <div class="term-header">
+        <span class="term-name">EPS next Y</span>
+        <span class="term-korean">내년 주당순이익 성장률 예상</span>
+        <span class="term-oneline">애널리스트들이 예상하는 내년 이익 성장 속도</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        EPS(주당순이익)는 기업이 주식 1주당 얼마를 버는지를 뜻합니다.
+        "EPS next Y"는 내년에 그 이익이 올해 대비 몇 % 늘어날 것으로 예상되는지입니다.
+        주식 시장은 미래를 먼저 반영하기 때문에, 이 수치가 높을수록 긍정적입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 20% 이상 — 고성장</span>
+        <span class="criteria-chip chip-ok">🟡 10~20% — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 0~10% — 느린 성장</span>
+        <span class="criteria-chip chip-bad">🚨 음수(−) — 이익 감소 예상</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-epsnext5y">
+      <div class="term-header">
+        <span class="term-name">EPS next 5Y</span>
+        <span class="term-korean">향후 5년 연평균 이익 성장률 예상</span>
+        <span class="term-oneline">앞으로 5년간 매년 이익이 얼마나 늘지</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        장기 성장성을 보는 지표입니다. 단기 실적이 좋아도 5년 뒤가 불투명하면 투자 매력이 낮아집니다.
+        반대로 지금 당장은 적자여도 5년 성장률이 높으면 미래 가치가 있다고 판단합니다.
+        다만 5년 예측은 불확실하니 참고 지표로 활용하세요.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 20% 이상 — 고성장 기대</span>
+        <span class="criteria-chip chip-ok">🟡 10~20% — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 5~10% — 완만한 성장</span>
+        <span class="criteria-chip chip-bad">🚨 5% 미만 — 정체 또는 감소</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-epsqq">
+      <div class="term-header">
+        <span class="term-name">EPS Q/Q</span>
+        <span class="term-korean">주당순이익 분기 성장률</span>
+        <span class="term-oneline">직전 분기 대비 이번 분기 이익이 얼마나 늘었나</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        Q/Q는 "Quarter over Quarter"의 약자로, 분기 대비 분기를 의미합니다.
+        기업이 3개월마다 성적표를 내는데, 이번 성적이 지난 성적보다 몇 % 나아졌는지 보는 것입니다.
+        주가는 보통 실적 발표 때 크게 움직이기 때문에 중요한 지표입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 20% 이상 — 강한 개선</span>
+        <span class="criteria-chip chip-ok">🟡 10~20% — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 0~10% — 미미한 개선</span>
+        <span class="criteria-chip chip-bad">🚨 음수(−) — 실적 악화</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-salesqq">
+      <div class="term-header">
+        <span class="term-name">Sales Q/Q</span>
+        <span class="term-korean">매출 분기 성장률</span>
+        <span class="term-oneline">직전 분기 대비 매출이 얼마나 늘었나</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        이익은 비용 절감으로 늘릴 수 있지만, 매출은 실제 제품·서비스가 팔려야 늘어납니다.
+        매출 성장은 사업이 실제로 커지고 있다는 가장 직접적인 증거입니다.
+        EPS Q/Q와 함께 보면 더 정확합니다. 매출은 늘었는데 이익이 줄었다면 비용 문제가 있다는 신호입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 15% 이상 — 강한 매출 성장</span>
+        <span class="criteria-chip chip-ok">🟡 8~15% — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 0~8% — 완만한 성장</span>
+        <span class="criteria-chip chip-bad">🚨 음수(−) — 매출 역성장, 주의</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 수익성 ===== -->
+  <section class="category-section cat-prof" id="prof-section">
+    <div class="category-header">
+      <span class="cat-icon">💹</span>
+      <h2>수익성 — 얼마나 효율적으로 돈을 버는지 보는 지표</h2>
+      <span class="cat-desc">가중치 20~25%</span>
+    </div>
+
+    <div class="term-card" id="term-roic">
+      <div class="term-header">
+        <span class="term-name">ROIC</span>
+        <span class="term-korean">투하자본수익률</span>
+        <span class="term-oneline">투자한 돈으로 얼마나 벌고 있는가 — 수익성의 왕</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        기업이 사업에 쏟아부은 돈(자본) 대비 얼마나 이익을 내는지를 %로 나타냅니다.
+        분석기에서 수익성의 가장 중요한 지표(가중치 35%)로 취급합니다.
+        ROIC가 높다는 건 "같은 돈을 넣어도 더 많이 뽑아내는 효율 좋은 기업"이라는 뜻입니다.
+        <strong>ROIC가 자본비용(보통 8~10%)보다 높아야 실질적으로 가치를 창출하는 기업</strong>입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 20% 이상 — 탁월한 수익성</span>
+        <span class="criteria-chip chip-ok">🟡 15~20% — 우수</span>
+        <span class="criteria-chip chip-warn">⚠️ 8~15% — 보통</span>
+        <span class="criteria-chip chip-bad">🚨 음수(−) — 자본 손실 중, 위험</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">💼 비유</div>
+        1억 원을 투자해서 매년 3,000만 원을 버는 사람(ROIC 30%)과
+        500만 원만 버는 사람(ROIC 5%). 누가 더 효율적인지 명확하죠?
+      </div>
+    </div>
+
+    <div class="term-card" id="term-opermargin">
+      <div class="term-header">
+        <span class="term-name">Operating Margin</span>
+        <span class="term-korean">영업이익률</span>
+        <span class="term-oneline">매출 100원 중 사업 자체에서 실제로 남는 돈</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        매출에서 원재료비·인건비·임대료 같은 영업 비용을 빼고 남은 이익의 비율입니다.
+        세금·이자 납부 전의 순수한 사업 수익성을 보여줍니다.
+        <strong>영업이익률이 순이익률보다 훨씬 높다면</strong>, 이자나 세금 부담이 크다는 의미입니다. 분석기가 이를 자동으로 경고해줍니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 25% 이상 — 매우 우수</span>
+        <span class="criteria-chip chip-ok">🟡 15~25% — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 5~15% — 보통</span>
+        <span class="criteria-chip chip-bad">🚨 음수(−) — 영업 적자</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-profitmargin">
+      <div class="term-header">
+        <span class="term-name">Profit Margin</span>
+        <span class="term-korean">순이익률</span>
+        <span class="term-oneline">매출 100원 중 세금·이자까지 다 내고 최종으로 남는 돈</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        모든 비용(영업비용 + 이자 + 세금)을 다 빼고 최종적으로 남는 이익의 비율입니다.
+        기업의 최종 성적표라고 할 수 있습니다.
+        일반적으로 영업이익률보다 낮습니다. 
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 20% 이상 — 매우 우수</span>
+        <span class="criteria-chip chip-ok">🟡 10~20% — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 3~10% — 보통</span>
+        <span class="criteria-chip chip-bad">🚨 음수(−) — 최종 적자</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-roe">
+      <div class="term-header">
+        <span class="term-name">ROE</span>
+        <span class="term-korean">자기자본수익률</span>
+        <span class="term-oneline">주주 돈으로 얼마나 벌었는가</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        기업이 주주들의 돈(자기자본)을 활용해서 얼마나 이익을 냈는지를 %로 나타냅니다.
+        워런 버핏이 가장 중시하는 지표 중 하나입니다.
+        단, 부채를 많이 써도 ROE가 높아질 수 있어서 반드시 Debt/Eq와 함께 봐야 합니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 20% 이상 — 탁월</span>
+        <span class="criteria-chip chip-ok">🟡 15~20% — 우수</span>
+        <span class="criteria-chip chip-warn">⚠️ 8~15% — 보통</span>
+        <span class="criteria-chip chip-bad">🚨 음수(−) — 자본 잠식 위험</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">🏦 비유</div>
+        은행에 1,000만 원 맡겼을 때 1년 후 이자를 200만 원 받으면 ROE=20%.
+        내 돈을 얼마나 잘 굴려줬냐를 보는 지표입니다.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 재무 안정성 ===== -->
+  <section class="category-section cat-safe" id="safe-section">
+    <div class="category-header">
+      <span class="cat-icon">🛡️</span>
+      <h2>재무안정성 — 빚이 적고 망할 위험이 없는지 보는 지표</h2>
+      <span class="cat-desc">가중치 15~25%</span>
+    </div>
+
+    <div class="term-card" id="term-debteq">
+      <div class="term-header">
+        <span class="term-name">Debt/Eq</span>
+        <span class="term-korean">부채비율 (부채/자기자본)</span>
+        <span class="term-oneline">내 돈 1원에 빚이 얼마나 있는가</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        기업이 갖고 있는 총 부채를 자기자본으로 나눈 값입니다.
+        Debt/Eq=1이면 내 돈만큼 빚이 있다는 뜻이고, 2면 빚이 내 돈의 2배입니다.
+        빚이 많으면 이자 부담이 커지고, 경기가 나빠질 때 더 위험합니다.
+        단 은행·금융업은 특성상 부채비율이 높은 게 정상입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 0~0.3 — 매우 안정적</span>
+        <span class="criteria-chip chip-ok">🟡 0.3~0.8 — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 0.8~2 — 주의 필요</span>
+        <span class="criteria-chip chip-bad">🚨 3 이상 — 위험 수준</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">🏠 비유</div>
+        내 돈 3억으로 산 집에 담보대출이 6억이면 Debt/Eq=2.
+        집값이 떨어지면 내 돈이 순식간에 사라질 수 있는 상황입니다.
+      </div>
+    </div>
+
+    <div class="term-card" id="term-currentratio">
+      <div class="term-header">
+        <span class="term-name">Current Ratio</span>
+        <span class="term-korean">유동비율</span>
+        <span class="term-oneline">1년 내 갚아야 할 빚을 갚을 능력이 있는가</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        유동자산(1년 안에 현금화 가능한 자산) ÷ 유동부채(1년 안에 갚아야 할 빚).
+        이 비율이 1보다 낮으면 "지금 당장 갚아야 할 빚을 갚을 돈이 없다"는 뜻입니다.
+        반대로 너무 높으면(5 이상) 현금을 쓸데없이 쌓아두는 것일 수 있습니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 2~4 — 안전</span>
+        <span class="criteria-chip chip-ok">🟡 1.5~2 — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 1~1.5 — 약간 빠듯</span>
+        <span class="criteria-chip chip-bad">🚨 1 미만 — 단기 유동성 위험</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">💳 비유</div>
+        이번 달 카드값 100만 원이 나왔는데, 통장에 200만 원이 있으면 Current Ratio=2 (안전).
+        통장에 50만 원밖에 없으면 Current Ratio=0.5 (위험).
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 기술적 위치 ===== -->
+  <section class="category-section cat-tech" id="tech-section">
+    <div class="category-header">
+      <span class="cat-icon">📉</span>
+      <h2>기술적 위치 — 주가 흐름이 좋은 방향인지 보는 지표</h2>
+      <span class="cat-desc">가중치 10~15%</span>
+    </div>
+
+    <div class="term-card" id="term-sma200">
+      <div class="term-header">
+        <span class="term-name">SMA200</span>
+        <span class="term-korean">200일 이동평균선 대비 위치</span>
+        <span class="term-oneline">최근 200일 평균 주가보다 지금 몇 % 위/아래에 있는가</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        200일(약 10개월) 동안의 평균 주가를 구해서, 지금 주가가 그보다 높은지 낮은지 봅니다.
+        장기 추세를 판단하는 기준선입니다. 200일선 위에 있으면 "장기 상승 추세",
+        아래에 있으면 "장기 하락 추세"로 봅니다.
+        값이 +15%라면 200일 평균보다 15% 위에 있다는 뜻입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ +10% 이상 — 강한 상승 추세</span>
+        <span class="criteria-chip chip-ok">🟡 0~+10% — 안정적</span>
+        <span class="criteria-chip chip-warn">⚠️ −10~0% — 약세</span>
+        <span class="criteria-chip chip-bad">🚨 −20% 이하 — 심각한 하락 추세</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-sma50">
+      <div class="term-header">
+        <span class="term-name">SMA50</span>
+        <span class="term-korean">50일 이동평균선 대비 위치</span>
+        <span class="term-oneline">최근 50일 평균 주가보다 지금 몇 % 위/아래에 있는가</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        SMA200의 단기 버전입니다. 50일(약 2.5개월) 평균과 비교해서 중단기 추세를 봅니다.
+        SMA200은 장기 방향, SMA50은 중단기 모멘텀을 나타냅니다.
+        둘 다 플러스면 매우 긍정적인 추세입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ +10% 이상 — 강한 중기 상승</span>
+        <span class="criteria-chip chip-ok">🟡 0~+10% — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ −10~0% — 약세</span>
+        <span class="criteria-chip chip-bad">🚨 −15% 이하 — 중기 하락 추세</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-rsi">
+      <div class="term-header">
+        <span class="term-name">RSI (14)</span>
+        <span class="term-korean">상대강도지수 (14일 기준)</span>
+        <span class="term-oneline">주가가 너무 많이 오르거나 내린 건 아닌지 판단</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        0~100 사이 숫자로, 최근 14일간 주가가 올라간 힘과 내려간 힘의 비율을 나타냅니다.
+        <strong>80 이상이면 "너무 많이 올라 조정 가능성"(과매수)</strong>,
+        <strong>30 이하면 "너무 많이 내려 반등 가능성"(과매도)</strong>를 의미합니다.
+        45~65 구간이 가장 건강한 상태입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 45~65 — 건강한 구간</span>
+        <span class="criteria-chip chip-ok">🟡 35~45 또는 65~70 — 보통</span>
+        <span class="criteria-chip chip-warn">⚠️ 70~80 또는 30~35 — 주의</span>
+        <span class="criteria-chip chip-bad">🚨 80 이상(과매수) 또는 30 이하(과매도)</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">🌡️ 비유</div>
+        주식 시장의 체온계입니다. 체온이 너무 높으면(RSI 80+) 과열이고, 너무 낮으면(RSI 30-) 저체온.
+        정상 체온(45~65)이 가장 건강합니다.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 리스크 ===== -->
+  <section class="category-section cat-risk" id="risk-section">
+    <div class="category-header">
+      <span class="cat-icon">⚡</span>
+      <h2>리스크 — 얼마나 흔들리는 주식인지 보는 지표</h2>
+      <span class="cat-desc">가중치 10~15%</span>
+    </div>
+
+    <div class="term-card" id="term-beta">
+      <div class="term-header">
+        <span class="term-name">Beta</span>
+        <span class="term-korean">베타 (시장 대비 변동성)</span>
+        <span class="term-oneline">코스피/S&P500이 1% 움직일 때 이 주식은 몇 % 움직이나</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        시장 전체가 1% 오르내릴 때 이 주식은 몇 % 움직이는지를 나타냅니다.
+        Beta=1이면 시장과 똑같이, Beta=2면 시장의 2배, Beta=0.5면 절반만 움직입니다.
+        <strong>공격형 투자자는 Beta가 높아도 괜찮고, 보수형 투자자는 낮은 Beta를 선호합니다.</strong>
+        분석기가 투자 성향에 맞춰 점수를 다르게 계산합니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-info">ℹ️ 공격형: 1.5 이하 선호</span>
+        <span class="criteria-chip chip-info">ℹ️ 균형형: 1 이하 선호</span>
+        <span class="criteria-chip chip-info">ℹ️ 보수형: 0.7 이하 선호</span>
+        <span class="criteria-chip chip-bad">🚨 2.5 이상 — 모든 성향에서 위험</span>
+      </div>
+      <div class="term-analogy">
+        <div class="analogy-label">🎢 비유</div>
+        Beta=1은 완만한 롤러코스터, Beta=2는 급격한 롤러코스터.
+        짜릿함(수익 기회)도 크지만 놀라서 뛰어내리고 싶은 순간(손실)도 더 많습니다.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 보조 지표 ===== -->
+  <section class="category-section cat-opt" id="opt-section">
+    <div class="category-header">
+      <span class="cat-icon">🔭</span>
+      <h2>보조 지표 — 추가로 참고하는 지표</h2>
+      <span class="cat-desc">점수 계산에 직접 영향 없음 (경고에만 반영)</span>
+    </div>
+
+    <div class="term-card" id="term-evsales">
+      <div class="term-header">
+        <span class="term-name">EV/Sales</span>
+        <span class="term-korean">기업가치 대비 매출 배수</span>
+        <span class="term-oneline">회사 전체 가치가 연간 매출의 몇 배인가</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        EV(기업가치) = 시가총액 + 부채 − 현금. 이걸 연간 매출로 나눈 값입니다.
+        EV/Sales가 낮을수록 매출 대비 기업 가격이 저렴하다는 뜻입니다.
+        이익이 없는 성장 기업을 평가할 때 유용하며, 3 이하면 양호, 10 이상이면 고평가 구간으로 봅니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 3 이하 — 저평가</span>
+        <span class="criteria-chip chip-ok">🟡 3~6 — 보통</span>
+        <span class="criteria-chip chip-warn">⚠️ 6~10 — 다소 비쌈</span>
+        <span class="criteria-chip chip-bad">🚨 10 이상 — 고평가</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-pe">
+      <div class="term-header">
+        <span class="term-name">P/E (ttm)</span>
+        <span class="term-korean">주가수익비율 (과거 12개월)</span>
+        <span class="term-oneline">최근 실제 이익 기준으로 주가가 얼마나 비싼가</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        Forward P/E가 미래 예상 이익 기준이라면, P/E(ttm)는 최근 12개월 실제 이익 기준입니다.
+        분석기는 Forward P/E를 핵심 지표로 사용하며, P/E(ttm)는 보조 참고용입니다.
+        음수(적자)이거나 100 이상이면 수익 구조를 다시 확인해야 합니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 15 이하 — 저평가</span>
+        <span class="criteria-chip chip-ok">🟡 15~25 — 적정</span>
+        <span class="criteria-chip chip-warn">⚠️ 25~40 — 부담</span>
+        <span class="criteria-chip chip-bad">🚨 40 이상 — 고평가</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-salesyyttm">
+      <div class="term-header">
+        <span class="term-name">Sales Y/Y TTM</span>
+        <span class="term-korean">연간 매출 성장률 (최근 12개월)</span>
+        <span class="term-oneline">1년 전 대비 매출이 얼마나 늘었나 (연간 기준)</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        Sales Q/Q가 분기 대비 성장률이라면, Sales Y/Y TTM은 1년 전 같은 기간 대비 매출 증가율입니다.
+        계절성 효과를 제거해 더 안정적인 성장 추세를 보여줍니다.
+        음수면 매출이 역성장 중이며 분석기가 보조 경고를 표시합니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 20% 이상 — 고성장</span>
+        <span class="criteria-chip chip-ok">🟡 5~20% — 안정 성장</span>
+        <span class="criteria-chip chip-warn">⚠️ 0~5% — 성장 둔화</span>
+        <span class="criteria-chip chip-bad">🚨 음수 — 역성장</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-grossmargin">
+      <div class="term-header">
+        <span class="term-name">Gross Margin</span>
+        <span class="term-korean">매출총이익률</span>
+        <span class="term-oneline">원가를 빼고 남는 기본 마진</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        매출에서 원재료비·생산 비용만 빼고 남은 이익의 비율입니다.
+        영업이익률보다 앞 단계입니다. 높을수록 원가 경쟁력이 있다는 뜻입니다.
+        소프트웨어 기업(70%+)은 매우 높고, 제조업·유통업은 낮은 편입니다.
+        20% 미만이면 분석기가 보조 경고를 표시합니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 50% 이상 — 우수</span>
+        <span class="criteria-chip chip-ok">🟡 30~50% — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 20~30% — 보통</span>
+        <span class="criteria-chip chip-bad">🚨 20% 미만 — 원가 부담</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-quickratio">
+      <div class="term-header">
+        <span class="term-name">Quick Ratio</span>
+        <span class="term-korean">당좌비율</span>
+        <span class="term-oneline">재고 없이 단기 부채를 갚을 수 있는 능력</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        유동비율(Current Ratio)에서 재고자산을 뺀 더 엄격한 유동성 지표입니다.
+        재고는 빠르게 현금화하기 어렵기 때문에, 퀵 레이시오가 낮으면 단기 자금 위기 가능성이 있습니다.
+        1 이상이면 단기 부채를 빠르게 갚을 수 있는 상태로 봅니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 1.5 이상 — 여유</span>
+        <span class="criteria-chip chip-ok">🟡 1~1.5 — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ 0.7~1 — 주의</span>
+        <span class="criteria-chip chip-bad">🚨 0.7 미만 — 유동성 위험</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-insidertrans">
+      <div class="term-header">
+        <span class="term-name">Insider Trans</span>
+        <span class="term-korean">내부자 최근 거래</span>
+        <span class="term-oneline">경영진·임원이 최근 주식을 샀나 팔았나</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        CEO, CFO, 이사회 등 내부 정보를 아는 사람들의 최근 주식 매매 내역입니다.
+        양수(+)면 내부자가 주식을 순매수(좋은 신호), 음수(-)면 순매도(주의 신호)입니다.
+        경영진이 대거 매도하는 것은 회사 내부 사정에 문제가 있을 수 있다는 신호입니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 양수 — 내부자 순매수</span>
+        <span class="criteria-chip chip-ok">🟡 0 — 변동 없음</span>
+        <span class="criteria-chip chip-bad">🚨 음수 — 내부자 순매도 주의</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-insttrans">
+      <div class="term-header">
+        <span class="term-name">Inst Trans</span>
+        <span class="term-korean">기관 최근 거래</span>
+        <span class="term-oneline">대형 기관 투자자들이 최근 주식을 샀나 팔았나</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        워런 버핏의 버크셔해서웨이, 국민연금, 블랙록 같은 대형 기관 투자자들의 최근 매매 변화입니다.
+        양수(+)면 기관이 주식을 늘리고 있다는 뜻이며, 음수(-)면 기관이 이탈 중이라는 신호입니다.
+        대형 기관의 대규모 매도는 주가에 큰 영향을 줄 수 있습니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 양수 — 기관 순매수</span>
+        <span class="criteria-chip chip-ok">🟡 0 — 변동 없음</span>
+        <span class="criteria-chip chip-bad">🚨 음수 — 기관 이탈 주의</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-shortfloat">
+      <div class="term-header">
+        <span class="term-name">Short Float</span>
+        <span class="term-korean">공매도 비율</span>
+        <span class="term-oneline">주가 하락에 베팅하는 사람이 얼마나 많은가</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        공매도는 "이 주식이 내릴 것"에 돈을 거는 행위입니다.
+        Short Float이 높다는 건 시장에서 이 주식을 부정적으로 보는 사람이 많다는 뜻입니다.
+        20% 이상이면 분석기가 경고합니다. 단 공매도가 많으면 주가 급반등(숏스퀴즈)이 나올 수도 있습니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ 5% 이하 — 안전</span>
+        <span class="criteria-chip chip-ok">🟡 5~10% — 보통</span>
+        <span class="criteria-chip chip-warn">⚠️ 10~20% — 주의</span>
+        <span class="criteria-chip chip-bad">🚨 20% 이상 — 고위험</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-perfquarter">
+      <div class="term-header">
+        <span class="term-name">Perf Quarter</span>
+        <span class="term-korean">분기 주가 수익률</span>
+        <span class="term-oneline">최근 3개월 동안 주가가 얼마나 올랐나</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        최근 약 3개월(한 분기) 동안의 주가 상승률입니다.
+        양수면 주가가 올랐고, 음수면 내렸다는 뜻입니다.
+        분석기에서는 단기 모멘텀 참고 지표로 활용되며, 다른 기술적 지표(SMA200, RSI)와 함께 봐야 합니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ +15% 이상 — 강한 상승 모멘텀</span>
+        <span class="criteria-chip chip-ok">🟡 0~15% — 양호</span>
+        <span class="criteria-chip chip-warn">⚠️ -10~0% — 하락</span>
+        <span class="criteria-chip chip-bad">🚨 -10% 미만 — 급락 주의</span>
+      </div>
+    </div>
+
+    <div class="term-card" id="term-targetpricegap">
+      <div class="term-header">
+        <span class="term-name">Target Price Gap</span>
+        <span class="term-korean">목표주가 갭</span>
+        <span class="term-oneline">애널리스트 목표주가 대비 현재가의 상승/하락 여력</span>
+      </div>
+      <div class="term-easy">
+        <div class="easy-label">📘 쉬운 설명</div>
+        (목표주가 − 현재주가) ÷ 현재주가 × 100으로 계산됩니다.
+        양수(+)면 현재가가 목표주가보다 낮아 상승 여력이 있다는 뜻입니다.
+        <strong>음수(−)면 현재가가 목표주가보다 높아 컨센서스 대비 주가 부담이 있습니다.</strong>
+        분석기에서 Price와 Target Price를 입력하면 자동 계산됩니다.
+      </div>
+      <div class="term-criteria">
+        <span class="criteria-chip chip-good">✅ +20% 이상 — 상승 여력 충분</span>
+        <span class="criteria-chip chip-ok">🟡 0~20% — 상승 여력 있음</span>
+        <span class="criteria-chip chip-warn">⚠️ -10~0% — 다소 부담</span>
+        <span class="criteria-chip chip-bad">🚨 -10% 미만 — 컨센서스 초과 주가 부담</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== 다시 분석기로 ===== -->
+  <div class="link-guide" style="margin-top:12px; text-align:center;">
+    <h3 style="justify-content:center;">📊 이제 분석기를 써볼 준비가 됐나요?</h3>
+    <p>용어가 낯설어도 분석기 안의 "🧪 예시값 채우기" 버튼으로 샘플 데이터를 넣고<br>어떤 결과가 나오는지 먼저 살펴보세요.</p>
+    <a href="finviz_analyzer_v9.html" class="link-btn" style="margin-top:14px;">📊 분석기로 돌아가기</a>
+  </div>
+
+</div>
+
+<!-- 상단으로 -->
+<a href="#" class="top-btn" title="맨 위로">↑</a>
+
+</body>
+</html>

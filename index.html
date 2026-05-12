@@ -1,0 +1,3954 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>미국 주식 종목 분석기 v9</title>
+
+  <!-- Tesseract.js CDN (OCR) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <style>
+    /* ============================================================
+       CSS 변수 (Design Tokens) — v8 유지, q15 제거
+    ============================================================ */
+    :root {
+      --paper:    #F5F1E8;
+      --paper-2:  #EDE9DF;
+      --paper-3:  #E4DFD3;
+      --card:     #FFFFFF;
+      --card-2:   #FAFAF7;
+
+      --ink:      #1C1917;
+      --ink-2:    #3C3834;
+      --muted:    #78716C;
+      --muted-2:  #A8A29E;
+
+      --border:   #D4CEC0;
+      --border-2: #E8E3D8;
+
+      --green:       #15803D;
+      --green-light: #22C55E;
+      --green-bg:    rgba(21,128,61,0.10);
+      --green-bg-2:  rgba(21,128,61,0.05);
+
+      --olive:       #65A30D;
+      --olive-bg:    rgba(101,163,13,0.10);
+
+      --orange:      #D97706;
+      --orange-light:#F59E0B;
+      --orange-bg:   rgba(217,119,6,0.10);
+
+      --red:         #DC2626;
+      --red-light:   #EF4444;
+      --red-bg:      rgba(220,38,38,0.10);
+
+      --blue:        #2563EB;
+      --blue-light:  #3B82F6;
+      --blue-bg:     rgba(37,99,235,0.10);
+
+      --purple:      #7C3AED;
+      --purple-bg:   rgba(124,58,237,0.10);
+
+      /* 사분면 배경 — v9: q15 제거 */
+      --q1-bg:   rgba(21,128,61,0.08);
+      --q2-bg:   rgba(217,119,6,0.08);
+      --q3-bg:   rgba(37,99,235,0.08);
+      --q4-bg:   rgba(124,58,237,0.08);
+
+      --font-serif:  'Georgia', 'Times New Roman', serif;
+      --font-sans:   'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      --font-mono:   'Courier New', monospace;
+
+      --space-xs:  4px;
+      --space-sm:  8px;
+      --space-md:  16px;
+      --space-lg:  24px;
+      --space-xl:  32px;
+      --space-2xl: 48px;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    /* ============================================================
+       리셋 & 기본
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ============================================================
+       레이아웃
+    ============================================================ */
+    .app-wrapper {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: var(--space-lg) var(--space-md);
+    }
+
+    .app-header {
+      text-align: center;
+      padding: var(--space-xl) 0 var(--space-lg);
+      border-bottom: 2px solid var(--border);
+      margin-bottom: var(--space-xl);
+    }
+    .app-header h1 {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .app-header .version-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      background: var(--blue-bg);
+      border: 1px solid var(--blue);
+      border-radius: 99px;
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-left: var(--space-sm);
+      vertical-align: middle;
+    }
+    .app-header p { color: var(--muted); margin-top: var(--space-xs); font-size: 0.9rem; }
+    .app-header .disclaimer {
+      display: inline-block;
+      margin-top: var(--space-sm);
+      padding: var(--space-xs) var(--space-md);
+      background: var(--orange-bg);
+      border: 1px solid var(--orange);
+      border-radius: var(--radius-sm);
+      color: var(--orange);
+      font-size: 0.8rem;
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .section-title .icon { font-size: 1.1rem; }
+    .section-subtitle { font-size: 0.85rem; color: var(--muted); margin-bottom: var(--space-md); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-md); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--space-md); }
+
+    /* ============================================================
+       입력 공통
+    ============================================================ */
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--ink-2);
+      margin-bottom: var(--space-xs);
+      font-weight: 600;
+    }
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card);
+      color: var(--ink);
+      font-size: 0.88rem;
+      font-family: var(--font-sans);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      appearance: none;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+    input.ocr-modified { border-color: var(--orange); background: var(--orange-bg); }
+    input.error        { border-color: var(--red);    background: var(--red-bg); }
+    .input-group { margin-bottom: var(--space-md); }
+
+    /* ============================================================
+       버튼
+    ============================================================ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: var(--space-xs); padding: 9px 18px;
+      border: none; border-radius: var(--radius-sm);
+      font-size: 0.88rem; font-weight: 600; font-family: var(--font-sans);
+      cursor: pointer; transition: all 0.15s; text-decoration: none; white-space: nowrap;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-primary  { background: var(--ink); color: #fff; }
+    .btn-primary:hover:not(:disabled)  { background: var(--ink-2); }
+    .btn-green    { background: var(--green); color: #fff; }
+    .btn-green:hover:not(:disabled)    { background: #166534; }
+    .btn-orange   { background: var(--orange); color: #fff; }
+    .btn-orange:hover:not(:disabled)   { background: #b45309; }
+    .btn-red      { background: var(--red); color: #fff; }
+    .btn-red:hover:not(:disabled)      { background: #b91c1c; }
+    .btn-outline  { background: transparent; border: 1.5px solid var(--border); color: var(--ink-2); }
+    .btn-outline:hover:not(:disabled)  { border-color: var(--ink); color: var(--ink); background: var(--paper-2); }
+    .btn-blue     { background: var(--blue); color: #fff; }
+    .btn-blue:hover:not(:disabled)     { background: #1d4ed8; }
+    .btn-sm  { padding: 5px 12px; font-size: 0.8rem; }
+    .btn-lg  { padding: 12px 28px; font-size: 1rem; border-radius: var(--radius-md); }
+    .btn-group { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-md); }
+    .btn-group.center { justify-content: center; }
+
+    /* ============================================================
+       투자 성향 탭
+    ============================================================ */
+    .ticker-row {
+      display: flex; align-items: flex-end; gap: var(--space-md); margin-bottom: var(--space-md);
+    }
+    .ticker-row .input-group { flex: 0 0 200px; margin-bottom: 0; }
+
+    .style-tabs { display: flex; gap: var(--space-xs); flex-wrap: wrap; }
+    .style-tab {
+      padding: 8px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      cursor: pointer; font-size: 0.85rem; font-weight: 600;
+      color: var(--muted); background: var(--card); transition: all 0.15s; font-family: var(--font-sans);
+    }
+    .style-tab:hover { border-color: var(--ink); color: var(--ink); }
+    .style-tab.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .style-tab.aggressive.active   { background: var(--red);    border-color: var(--red); }
+    .style-tab.balanced.active     { background: var(--blue);   border-color: var(--blue); }
+    .style-tab.conservative.active { background: var(--green);  border-color: var(--green); }
+    .style-tab.custom.active       { background: var(--purple); border-color: var(--purple); }
+
+    #weight-editor {
+      display: none; margin-top: var(--space-md); padding: var(--space-md);
+      background: var(--paper-2); border-radius: var(--radius-md); border: 1px solid var(--border);
+    }
+    #weight-editor.visible { display: block; }
+    .weight-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-sm); margin-bottom: var(--space-sm); }
+    .weight-item label { font-size: 0.78rem; }
+    .weight-item input { padding: 5px 8px; font-size: 0.85rem; }
+    #weight-sum-display { font-size: 0.85rem; font-weight: 700; }
+    #weight-sum-display.ok  { color: var(--green); }
+    #weight-sum-display.err { color: var(--red); }
+    .weight-preview { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-sm); }
+    .weight-chip {
+      padding: 3px 10px; background: var(--paper-2); border: 1px solid var(--border);
+      border-radius: 99px; font-size: 0.78rem; color: var(--ink-2);
+    }
+
+    /* ============================================================
+       이미지 업로드 섹션
+    ============================================================ */
+    #drop-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius-lg);
+      padding: var(--space-2xl) var(--space-lg); text-align: center;
+      cursor: pointer; transition: all 0.2s; background: var(--paper-2); position: relative;
+    }
+    #drop-zone:hover, #drop-zone.dragover { border-color: var(--blue); background: var(--blue-bg); }
+    #drop-zone .drop-icon { font-size: 2.5rem; margin-bottom: var(--space-sm); display: block; }
+    #drop-zone p          { color: var(--muted); font-size: 0.9rem; margin-bottom: var(--space-xs); }
+    #drop-zone .drop-hint { font-size: 0.8rem; color: var(--muted-2); }
+    #file-input           { display: none; }
+
+    .paste-hint {
+      display: flex; align-items: center; gap: var(--space-xs);
+      margin-top: var(--space-sm); padding: var(--space-xs) var(--space-md);
+      background: var(--paper-3); border-radius: var(--radius-sm);
+      font-size: 0.8rem; color: var(--muted);
+    }
+    .paste-hint kbd {
+      display: inline-block; padding: 2px 6px; background: var(--card);
+      border: 1px solid var(--border); border-radius: 3px;
+      font-family: var(--font-mono); font-size: 0.75rem;
+    }
+
+    #preview-area { display: none; margin-top: var(--space-md); }
+    #preview-area.visible { display: block; }
+    #preview-img { max-width: 100%; max-height: 320px; border-radius: var(--radius-md); border: 1px solid var(--border); display: block; margin: 0 auto; }
+    .preview-actions { display: flex; justify-content: center; gap: var(--space-sm); margin-top: var(--space-sm); }
+
+    #ocr-progress-area { display: none; margin-top: var(--space-md); }
+    #ocr-progress-area.visible { display: block; }
+    .progress-bar-bg { width: 100%; height: 8px; background: var(--border-2); border-radius: 99px; overflow: hidden; margin: var(--space-xs) 0; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue-light)); border-radius: 99px; transition: width 0.3s ease; width: 0%; }
+    #ocr-progress-text { font-size: 0.82rem; color: var(--muted); }
+
+    #ocr-raw-area { display: none; margin-top: var(--space-md); }
+    #ocr-raw-area.visible { display: block; }
+    #ocr-raw-toggle { cursor: pointer; font-size: 0.82rem; color: var(--blue); display: flex; align-items: center; gap: var(--space-xs); background: none; border: none; font-family: var(--font-sans); padding: 0; }
+    #ocr-raw-toggle:hover { text-decoration: underline; }
+    #ocr-raw-content { display: none; margin-top: var(--space-sm); padding: var(--space-md); background: var(--paper-3); border-radius: var(--radius-sm); border: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-2); white-space: pre-wrap; max-height: 200px; overflow-y: auto; line-height: 1.5; }
+    #ocr-raw-content.open { display: block; }
+
+    .text-paste-wrap {
+      margin-top: var(--space-lg); padding: var(--space-md);
+      background: var(--paper-2); border: 1px solid var(--border); border-radius: var(--radius-md);
+    }
+    .tp-title { font-weight: 700; font-size: 0.9rem; margin-bottom: var(--space-xs); }
+    .tp-hint  { font-size: 0.78rem; color: var(--muted); margin-bottom: var(--space-sm); }
+    #finviz-paste-box {
+      width: 100%; min-height: 120px; padding: var(--space-sm);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--card); color: var(--ink); font-family: var(--font-mono);
+      font-size: 0.82rem; resize: vertical;
+    }
+    #finviz-paste-box:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+    #text-parse-result { margin-top: var(--space-sm); font-size: 0.82rem; }
+
+    /* ============================================================
+       OCR 검수 테이블
+    ============================================================ */
+    .review-table-wrap { overflow-x: auto; margin-top: var(--space-md); }
+    .review-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .review-table th {
+      background: var(--paper-2); color: var(--ink-2); font-weight: 700;
+      text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--border); white-space: nowrap;
+    }
+    .review-table td { padding: 6px 12px; border-bottom: 1px solid var(--border-2); vertical-align: middle; }
+    .review-table tr:last-child td { border-bottom: none; }
+    .review-table tr:hover td { background: var(--paper-2); }
+    .review-table td.indicator-name { font-weight: 600; color: var(--ink); white-space: nowrap; }
+    .review-table td.ocr-val { color: var(--muted); font-family: var(--font-mono); font-size: 0.82rem; }
+    .review-table td.ocr-val.matched   { color: var(--green); }
+    .review-table td.ocr-val.unmatched { color: var(--muted-2); }
+    .review-table input[type="number"],
+    .review-table input[type="text"]   { padding: 4px 8px; font-size: 0.85rem; width: 110px; }
+    .indicator-required::after { content: ' *'; color: var(--red); }
+    .indicator-optional { color: var(--muted); font-size: 0.78rem; }
+    .review-table .group-header td {
+      background: var(--paper-3); font-size: 0.8rem; color: var(--muted);
+      font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 5px 12px;
+    }
+
+    /* ============================================================
+       알림
+    ============================================================ */
+    .alert { display: none; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.85rem; margin-bottom: var(--space-sm); }
+    .alert.visible  { display: block; }
+    .alert-error    { background: var(--red-bg);    border: 1px solid var(--red);    color: var(--red); }
+    .alert-warning  { background: var(--orange-bg); border: 1px solid var(--orange); color: var(--orange); }
+    .alert-success  { background: var(--green-bg);  border: 1px solid var(--green);  color: var(--green); }
+    .alert-info     { background: var(--blue-bg);   border: 1px solid var(--blue);   color: var(--blue); }
+
+    /* ============================================================
+       용어 링크 (요구사항 #14)
+    ============================================================ */
+    .term-link {
+      display: inline-flex; align-items: center; gap: 3px;
+      color: inherit; text-decoration: none;
+      border-bottom: 1px dotted var(--muted);
+      cursor: pointer; transition: color 0.15s, border-color 0.15s;
+    }
+    .term-link:hover { color: var(--blue); border-bottom-color: var(--blue); }
+    .help-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 15px; height: 15px; border-radius: 50%;
+      background: var(--blue-bg); color: var(--blue);
+      font-size: 10px; font-weight: 700; flex-shrink: 0; line-height: 1;
+    }
+    .term-link:hover .help-icon { background: var(--blue); color: #fff; }
+
+    /* ============================================================
+       결과 화면
+    ============================================================ */
+    #results-section         { display: none; }
+    #results-section.visible { display: block; }
+
+    .report-header {
+      background: var(--ink); color: #fff; border-radius: var(--radius-lg);
+      padding: var(--space-xl) var(--space-lg); margin-bottom: var(--space-lg);
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex-wrap: wrap; gap: var(--space-md);
+    }
+    .report-header-left .ticker-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.1em; }
+    .report-header-left h2 { font-family: var(--font-serif); font-size: 2rem; font-weight: 700; margin: var(--space-xs) 0; }
+    .report-header-left .meta { font-size: 0.82rem; color: rgba(255,255,255,0.7); }
+    .report-header-right { text-align: right; }
+    .report-header-right .score-big { font-size: 3rem; font-weight: 800; line-height: 1; font-family: var(--font-serif); }
+    .report-header-right .score-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+
+    /* 분석 신뢰도 배지 (요구사항 #12) */
+    .reliability-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 99px; font-size: 0.78rem; font-weight: 700; margin-top: 6px;
+    }
+    .reliability-high   { background: rgba(21,128,61,0.2);  color: #4ade80; }
+    .reliability-medium { background: rgba(217,119,6,0.2);  color: var(--orange-light); }
+    .reliability-low    { background: rgba(220,38,38,0.2);  color: var(--red-light); }
+
+    /* 등급 배지 — v9 기준 (요구사항 #7) */
+    .grade-badge {
+      display: inline-block; padding: 4px 14px; border-radius: 99px;
+      font-size: 0.85rem; font-weight: 700; margin-top: var(--space-xs);
+    }
+    .grade-1 { background: var(--green);  color: #fff; }   /* 강한 매수 후보 */
+    .grade-2 { background: var(--olive);  color: #fff; }   /* 분할매수 후보 */
+    .grade-3 { background: var(--orange); color: #fff; }   /* 관망 */
+    .grade-4 { background: var(--red);    color: #fff; }   /* 비중 축소 후보 */
+    .grade-5 { background: #4B4B4B;       color: #fff; }   /* 매수 제외 */
+
+    /* 요약 카드 — v9: 5개 (신뢰도 추가) */
+    .summary-cards {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-md); margin-bottom: var(--space-lg);
+    }
+    .summary-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: var(--space-md); box-shadow: var(--shadow-sm);
+    }
+    .summary-card .sc-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: var(--space-xs); }
+    .summary-card .sc-value { font-size: 1.5rem; font-weight: 800; color: var(--ink); line-height: 1.1; }
+    .summary-card .sc-sub   { font-size: 0.78rem; color: var(--muted); margin-top: var(--space-xs); }
+    .summary-card.green-accent  { border-left: 4px solid var(--green); }
+    .summary-card.orange-accent { border-left: 4px solid var(--orange); }
+    .summary-card.blue-accent   { border-left: 4px solid var(--blue); }
+    .summary-card.red-accent    { border-left: 4px solid var(--red); }
+    .summary-card.purple-accent { border-left: 4px solid var(--purple); }
+
+    /* ============================================================
+       사분면 시각화 — v9 수정 (Q1.5 제거, Y축 수정, dot 크기)
+       요구사항 #8
+    ============================================================ */
+    .quadrant-wrapper { position: relative; width: 100%; max-width: 560px; margin: 0 auto; }
+    .quadrant-canvas {
+      width: 100%; aspect-ratio: 1 / 1; position: relative;
+      border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden;
+    }
+
+    .q-region {
+      position: absolute; display: flex; flex-direction: column;
+      justify-content: flex-end; padding: var(--space-sm);
+    }
+    .q-region .q-label { font-size: 0.7rem; font-weight: 700; opacity: 0.7; }
+    .q-region .q-sub   { font-size: 0.65rem; opacity: 0.55; margin-top: 2px; }
+
+    /*
+      사분면 CSS 좌표계:
+        dot X = 5 + (priceBurden/100)*90
+        dot Y = 95 - (quality/100)*90
+      ∴ quality=65  → top  = 36.5%   (상하 경계)
+         pb=45       → left = 45.5%   (Q1/Q2 경계)
+         pb=50       → left = 50%     (Q3/Q4 경계)
+         pb=65       → left = 63.5%   (boundary 우측 끝)
+    */
+
+    /* Q1: quality>=65 && priceBurden<45 */
+    .q-region.q1 {
+      top: 0; left: 0; width: 45.5%; height: 36.5%;
+      background: var(--q1-bg);
+      border-right: 1px dashed rgba(21,128,61,0.3);
+      border-bottom: 1px dashed rgba(0,0,0,0.12);
+    }
+    .q-region.q1 .q-label { color: var(--green); }
+
+    /* Q2: quality>=65 && priceBurden>=65 (경계 45~65는 dot로만 표시) */
+    .q-region.q2 {
+      top: 0; left: 45.5%; width: 54.5%; height: 36.5%;
+      background: var(--q2-bg);
+      border-bottom: 1px dashed rgba(0,0,0,0.12);
+    }
+    .q-region.q2 .q-label { color: var(--orange); }
+
+    /* Q3: quality<65 && priceBurden<50 */
+    .q-region.q3 {
+      top: 36.5%; left: 0; width: 50%; height: 63.5%;
+      background: var(--q3-bg);
+      border-right: 1px dashed rgba(37,99,235,0.3);
+    }
+    .q-region.q3 .q-label { color: var(--blue); }
+
+    /* Q4: quality<65 && priceBurden>=50 */
+    .q-region.q4 {
+      top: 36.5%; left: 50%; width: 50%; height: 63.5%;
+      background: var(--q4-bg);
+    }
+    .q-region.q4 .q-label { color: var(--purple); }
+
+    /* Q1/Q2 경계선 — priceBurden 45~65 boundary dot 표시 기준선 */
+    .q-boundary-line {
+      position: absolute; top: 0; left: 45.5%; width: 1px; height: 36.5%;
+      background: rgba(101,163,13,0.6); z-index: 5; pointer-events: none;
+    }
+
+    /* 축 레이블 */
+    .quadrant-axis-x {
+      display: flex; justify-content: space-between;
+      margin-top: var(--space-xs); font-size: 0.72rem; color: var(--muted);
+    }
+    .quadrant-axis-y-wrap { display: flex; gap: var(--space-xs); align-items: stretch; }
+    /* v9: Y축 방향 수정 — rotate(180deg) → 아래에서 위로 읽힘 (위=우량, 아래=저품질) */
+    .quadrant-axis-y {
+      writing-mode: vertical-lr;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-size: 0.72rem; color: var(--muted);
+      display: flex; justify-content: space-between;
+      padding: var(--space-sm) 0; width: 20px;
+    }
+
+    /* 종목 점 마커 — v9: 크기/글자 크기 2배 수준 */
+    .stock-dot {
+      position: absolute; width: 64px; height: 64px;
+      border-radius: 50%; background: var(--ink);
+      border: 3px solid #fff; box-shadow: var(--shadow-md);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transform: translate(-50%, -50%); cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s; z-index: 10;
+    }
+    .stock-dot:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: var(--shadow-lg); }
+    .stock-dot .dot-ticker {
+      font-size: 0.9rem; font-weight: 800; color: #fff; line-height: 1;
+      text-align: center; max-width: 56px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .stock-dot .dot-score { font-size: 0.75rem; color: rgba(255,255,255,0.9); font-weight: 600; }
+    /* dot에 "점" 표시 (한글, 요구사항 #8) */
+    .stock-dot .dot-score::after { content: '점'; font-size: 0.65rem; }
+
+    .quadrant-tooltip {
+      position: absolute; background: var(--ink); color: #fff;
+      padding: var(--space-sm) var(--space-md); border-radius: var(--radius-md);
+      font-size: 0.8rem; white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity 0.15s; z-index: 20; min-width: 200px;
+    }
+    .quadrant-tooltip.visible { opacity: 1; }
+    .quadrant-tooltip .tt-row { display: flex; justify-content: space-between; gap: var(--space-md); margin-bottom: 3px; }
+    .quadrant-tooltip .tt-label { color: rgba(255,255,255,0.65); }
+    .quadrant-tooltip .tt-val   { font-weight: 700; }
+
+    /* ============================================================
+       모듈별 점수 바
+    ============================================================ */
+    .module-scores { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+    .module-score-item { background: var(--card-2); border: 1px solid var(--border-2); border-radius: var(--radius-md); padding: var(--space-md); }
+    .ms-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-sm); }
+    .ms-name   { font-size: 0.85rem; font-weight: 700; color: var(--ink-2); }
+    .ms-score  { font-size: 1.1rem; font-weight: 800; color: var(--ink); }
+    .ms-weight { font-size: 0.72rem; color: var(--muted-2); margin-left: 4px; }
+    .ms-bar-bg { width: 100%; height: 10px; background: var(--border-2); border-radius: 99px; overflow: hidden; }
+    .ms-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); width: 0%; }
+    .ms-bar-fill.score-low  { background: var(--red); }
+    .ms-bar-fill.score-mid  { background: var(--orange); }
+    .ms-bar-fill.score-high { background: var(--olive); }
+    .ms-bar-fill.score-top  { background: var(--green); }
+    .ms-comment { font-size: 0.75rem; color: var(--muted); margin-top: var(--space-xs); }
+
+    /* ============================================================
+       경고 카드
+    ============================================================ */
+    .warnings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-md); }
+    .warning-card { border-radius: var(--radius-md); padding: var(--space-md); border-left: 4px solid; display: flex; gap: var(--space-sm); align-items: flex-start; }
+    .warning-card.critical { background: var(--red-bg);    border-color: var(--red); }
+    .warning-card.warning  { background: var(--orange-bg); border-color: var(--orange); }
+    .warning-card.info     { background: var(--blue-bg);   border-color: var(--blue); }
+    .warning-card.positive { background: var(--green-bg);  border-color: var(--green); }
+    .warning-card .wc-icon  { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+    .warning-card .wc-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 3px; }
+    .warning-card.critical .wc-title { color: var(--red); }
+    .warning-card.warning  .wc-title { color: var(--orange); }
+    .warning-card.info     .wc-title { color: var(--blue); }
+    .warning-card.positive .wc-title { color: var(--green); }
+    .warning-card .wc-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+    /* ============================================================
+       왜 이런 점수인가
+    ============================================================ */
+    .explanation-block { margin-bottom: var(--space-md); padding: var(--space-md); background: var(--paper-2); border-radius: var(--radius-md); border: 1px solid var(--border-2); }
+    .explanation-block h4 { font-size: 0.88rem; font-weight: 700; color: var(--ink-2); margin-bottom: var(--space-sm); display: flex; align-items: center; gap: var(--space-xs); }
+    .explanation-block p  { font-size: 0.85rem; color: var(--ink-2); line-height: 1.7; }
+    .explanation-block ul { font-size: 0.85rem; color: var(--ink-2); line-height: 1.7; padding-left: 1.2em; margin-top: 6px; }
+    .explanation-block li { margin-bottom: 3px; }
+    .top-indicators { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-sm); }
+    .top-indicator-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 99px; font-size: 0.78rem; font-weight: 600; }
+    .top-indicator-chip.positive { background: var(--green-bg); color: var(--green); border: 1px solid rgba(21,128,61,0.3); }
+    .top-indicator-chip.negative { background: var(--red-bg);   color: var(--red);   border: 1px solid rgba(220,38,38,0.3); }
+
+    /* 합리적 가격 근거 설명 박스 (요구사항 #24) */
+    .price-rationale-box {
+      margin-top: var(--space-sm); padding: var(--space-sm) var(--space-md);
+      background: var(--blue-bg); border: 1px solid rgba(37,99,235,0.2);
+      border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--ink-2); line-height: 1.6;
+    }
+    .price-rationale-box strong { color: var(--blue); }
+
+    /* ============================================================
+       다음 행동 제안
+    ============================================================ */
+    .next-action-card { background: var(--ink); color: #fff; border-radius: var(--radius-lg); padding: var(--space-lg); }
+    .next-action-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: var(--space-md); color: rgba(255,255,255,0.9); }
+    .action-items { display: flex; flex-direction: column; gap: var(--space-sm); }
+    .action-item  { display: flex; align-items: flex-start; gap: var(--space-sm); font-size: 0.85rem; line-height: 1.5; color: rgba(255,255,255,0.85); }
+    .action-item::before { content: '→'; color: var(--orange-light); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+    .transition-box { margin-top: var(--space-md); padding: var(--space-md); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-md); }
+    .transition-box h4 { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: var(--space-sm); }
+    .transition-item  { font-size: 0.82rem; color: rgba(255,255,255,0.7); line-height: 1.6; display: block; }
+    .transition-item::before { content: '◆ '; color: var(--orange-light); }
+
+    /* ============================================================
+       점수 민감도 TOP 5
+    ============================================================ */
+    .sensitivity-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+    .sensitivity-item { background: var(--card-2); border: 1px solid var(--border-2); border-radius: var(--radius-md); padding: var(--space-md); }
+    .si-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); }
+    .si-rank { font-size: 0.78rem; font-weight: 800; color: var(--muted-2); width: 24px; height: 24px; background: var(--paper-3); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .si-name { font-size: 0.88rem; font-weight: 700; color: var(--ink); flex: 1; margin: 0 var(--space-sm); }
+    .si-bars { display: flex; flex-direction: column; gap: 4px; }
+    .si-bar-row { display: flex; align-items: center; gap: var(--space-sm); font-size: 0.75rem; }
+    .si-bar-label { width: 80px; color: var(--muted); flex-shrink: 0; }
+    .si-bar-wrap  { flex: 1; height: 8px; background: var(--border-2); border-radius: 99px; overflow: hidden; }
+    .si-bar-pos   { background: var(--green); height: 100%; border-radius: 99px; }
+    .si-bar-neg   { background: var(--red);   height: 100%; border-radius: 99px; }
+    .si-bar-value { width: 50px; text-align: right; font-weight: 700; color: var(--ink-2); }
+    .si-bar-value.positive { color: var(--green); }
+    .si-bar-value.negative { color: var(--red); }
+
+    /* ============================================================
+       미래 시나리오 시뮬레이터
+    ============================================================ */
+    .simulator-layout { display: grid; grid-template-columns: 1fr 360px; gap: var(--space-lg); align-items: flex-start; }
+    .simulator-controls { background: var(--paper-2); border-radius: var(--radius-md); border: 1px solid var(--border); padding: var(--space-md); }
+    .sim-group { margin-bottom: var(--space-md); }
+    .sim-group-title { font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-sm); padding-bottom: 4px; border-bottom: 1px solid var(--border-2); }
+    .sim-slider-row { display: flex; align-items: center; gap: var(--space-sm); margin-bottom: 6px; }
+    .sim-slider-row label { width: 130px; font-size: 0.78rem; color: var(--ink-2); margin-bottom: 0; flex-shrink: 0; }
+    .sim-slider-row input[type="range"] { flex: 1; accent-color: var(--blue); cursor: pointer; }
+    .sim-slider-row input[type="number"] { width: 70px; padding: 4px 6px; font-size: 0.82rem; }
+
+    .scenario-result {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: var(--space-lg);
+      box-shadow: var(--shadow-sm); position: sticky; top: 20px;
+    }
+    .scenario-result h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: var(--space-md); color: var(--ink-2); }
+    .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); margin-bottom: var(--space-md); }
+    .compare-box { background: var(--paper-2); border-radius: var(--radius-md); padding: var(--space-sm) var(--space-md); text-align: center; }
+    .cb-label { font-size: 0.72rem; color: var(--muted); margin-bottom: 4px; }
+    .cb-score { font-size: 1.8rem; font-weight: 800; color: var(--ink); line-height: 1; }
+    .cb-grade { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
+    .change-indicator { text-align: center; font-size: 0.95rem; font-weight: 700; padding: var(--space-sm); border-radius: var(--radius-sm); margin-bottom: var(--space-md); }
+    .change-indicator.positive { background: var(--green-bg); color: var(--green); }
+    .change-indicator.negative { background: var(--red-bg);   color: var(--red); }
+    .change-indicator.neutral  { background: var(--paper-2);  color: var(--muted); }
+    .change-reasons { background: var(--paper-2); border-radius: var(--radius-sm); padding: var(--space-sm) var(--space-md); font-size: 0.78rem; color: var(--ink-2); }
+    .change-reasons p { margin-bottom: 3px; }
+
+    .preset-buttons { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-bottom: var(--space-md); }
+    .btn-preset {
+      padding: 6px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--card); color: var(--ink-2); font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; font-family: var(--font-sans);
+    }
+    .btn-preset:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-bg); }
+
+    /* ============================================================
+       저장/불러오기
+    ============================================================ */
+    .divider { border: none; border-top: 1px solid var(--border-2); margin: var(--space-md) 0; }
+    .saved-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+    .saved-item {
+      display: flex; align-items: center; gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md); background: var(--paper-2);
+      border: 1px solid var(--border-2); border-radius: var(--radius-sm);
+      cursor: pointer; transition: all 0.12s;
+    }
+    .saved-item:hover { background: var(--paper-3); border-color: var(--border); }
+    .si-ticker { font-weight: 700; font-size: 0.9rem; flex: 1; }
+    .si-date   { font-size: 0.78rem; color: var(--muted); }
+    .empty-saved { font-size: 0.85rem; color: var(--muted-2); padding: var(--space-sm) 0; }
+
+    /* ============================================================
+       유틸리티
+    ============================================================ */
+    .fs-xs   { font-size: 0.75rem; }
+    .fs-sm   { font-size: 0.82rem; }
+    .fw-bold { font-weight: 700; }
+    .text-muted { color: var(--muted); }
+    .text-red   { color: var(--red); }
+    .text-green { color: var(--green); }
+    .text-blue  { color: var(--blue); }
+    .mt-sm { margin-top: var(--space-sm); }
+    .mt-md { margin-top: var(--space-md); }
+
+    /* ============================================================
+       반응형
+    ============================================================ */
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .summary-cards { grid-template-columns: 1fr 1fr; }
+      .module-scores { grid-template-columns: 1fr; }
+      .simulator-layout { grid-template-columns: 1fr; }
+      .ticker-row { flex-direction: column; align-items: stretch; }
+      .ticker-row .input-group { flex: none; }
+      .review-table input[type="number"],
+      .review-table input[type="text"] { width: 120px; min-height: 44px; font-size: 16px !important; padding: 8px 10px; }
+      input[type="text"], input[type="number"], select { font-size: 16px !important; min-height: 44px; }
+      .sim-slider-row { flex-wrap: wrap; gap: var(--space-xs); margin-bottom: var(--space-sm); }
+      .sim-slider-row label { width: 100%; margin-bottom: 2px; }
+      .sim-slider-row input[type="range"] { flex: 1; height: 36px; min-width: 0; }
+      .sim-slider-row input[type="number"] { width: 72px; min-height: 40px; font-size: 15px; }
+      .btn { min-height: 44px; }
+      .btn-sm { min-height: 36px; }
+      .btn-preset { min-height: 36px; padding: 8px 14px; }
+      #finviz-paste-box { min-height: 160px; font-size: 14px; }
+    }
+    @media (max-width: 480px) {
+      .summary-cards { grid-template-columns: 1fr; }
+      .style-tabs { flex-direction: column; }
+    }
+
+    /* ============================================================
+       인쇄
+    ============================================================ */
+    @media print {
+      body { background: white; font-size: 12px; }
+      .no-print,
+      #input-section, #ocr-section, #settings-section, #storage-section,
+      .btn-group, .simulator-controls, #ocr-raw-area, #ocr-progress-area,
+      #simulator-section { display: none !important; }
+      #results-section { display: block !important; }
+      .section { box-shadow: none !important; border: 1px solid #ccc !important; margin-bottom: 12px; }
+      .report-header { background: #1C1917 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .summary-cards, .report-header, .next-action-card, .module-score-item,
+      .warning-card, .sensitivity-item, .explanation-block { break-inside: avoid; page-break-inside: avoid; }
+      .quadrant-canvas { break-inside: avoid; page-break-inside: avoid; max-width: 400px; }
+      @page { size: A4; margin: 12mm; }
+    }
+
+    /* ============================================================
+       STEP 4 — 결과 화면 전용 CSS
+    ============================================================ */
+
+    /* 모듈 점수 카드 */
+    .module-score-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-sm);
+    }
+    .ms-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .ms-icon { font-size: 1rem; }
+    .ms-label { font-weight: 600; font-size: 0.9rem; }
+    .ms-weight { font-size: 0.75rem; color: var(--muted); }
+    .ms-score { font-size: 1rem; }
+    .score-bar-bg {
+      height: 8px;
+      background: var(--paper-3);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+
+    /* 경고 카드 */
+    .warn-card {
+      background: var(--card);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-sm);
+      border-left: 4px solid var(--border);
+    }
+    .warn-critical { border-left-color: var(--red); background: var(--red-bg); }
+    .warn-warning  { border-left-color: var(--orange); background: var(--orange-bg); }
+    .warn-info     { border-left-color: var(--blue); background: var(--blue-bg); }
+    .warn-header   { font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .warn-desc     { font-size: 0.85rem; color: var(--ink-2); line-height: 1.5; }
+    .warn-opt-badge {
+      font-size: 0.68rem; padding: 1px 6px;
+      background: var(--paper-2); border-radius: 99px;
+      color: var(--muted); border: 1px solid var(--border);
+      margin-left: 6px;
+    }
+    .no-warnings {
+      padding: var(--space-md);
+      color: var(--green);
+      font-weight: 600;
+      background: var(--green-bg-2);
+      border-radius: var(--radius-md);
+    }
+
+    /* 민감도 리스트 */
+    .sensitivity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      padding: var(--space-sm) 0;
+      border-bottom: 1px solid var(--border-2);
+    }
+    .sensitivity-item:last-child { border-bottom: none; }
+    .si-rank {
+      font-size: 1.1rem; font-weight: 800; color: var(--muted-2);
+      min-width: 28px; padding-top: 2px;
+    }
+    .si-body { flex: 1; }
+    .si-name { font-weight: 600; margin-bottom: 4px; font-size: 0.88rem; }
+    .si-bar-bg {
+      height: 6px; background: var(--paper-3);
+      border-radius: 3px; overflow: hidden; margin-bottom: 4px;
+    }
+    .si-bar-fill {
+      height: 100%; background: var(--blue);
+      border-radius: 3px; transition: width 0.4s ease;
+    }
+    .si-deltas { font-size: 0.78rem; }
+    .si-impact {
+      font-weight: 700; font-size: 0.9rem;
+      color: var(--purple); min-width: 52px; text-align: right;
+      padding-top: 2px;
+    }
+
+    /* 시뮬레이터 슬라이더 */
+    .sim-group {
+      margin-bottom: var(--space-lg);
+    }
+    .sim-group-label {
+      font-weight: 700; font-size: 0.88rem;
+      color: var(--ink-2); margin-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border-2); padding-bottom: 4px;
+    }
+    .sim-slider-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 8px;
+    }
+    .ssl-label {
+      min-width: 130px; font-size: 0.8rem; color: var(--ink-2);
+    }
+    .sim-slider {
+      flex: 1; accent-color: var(--blue);
+    }
+    .sim-slider-inactive { opacity: 0.45; }
+    .sim-row-inactive { opacity: 0.55; }
+    .ssl-slider-wrap { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .ssl-minmax {
+      display: flex; justify-content: space-between;
+      font-size: 0.68rem; color: var(--muted-2); padding: 0 2px;
+    }
+    .ssl-val-wrap {
+      min-width: 76px; text-align: right;
+    }
+    .ssl-val {
+      font-size: 0.82rem; font-weight: 700; color: var(--ink);
+    }
+    .ssl-orig {
+      font-size: 0.68rem; color: var(--muted-2); margin-top: 1px;
+    }
+    .ssl-na-badge {
+      display: inline-block; font-size: 0.65rem;
+      background: var(--paper-3); color: var(--muted);
+      border-radius: 3px; padding: 1px 5px; margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    /* 시뮬레이터 breakdown 테이블 */
+    .sim-breakdown {
+      background: var(--paper-2);
+      border-radius: var(--radius-sm);
+      padding: var(--space-sm) var(--space-md);
+      margin-bottom: var(--space-sm);
+    }
+    .sim-bd-row {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; padding: 3px 0;
+      border-bottom: 1px solid var(--border-2);
+    }
+    .sim-bd-row:last-child { border-bottom: none; }
+    .sim-bd-label { min-width: 72px; color: var(--ink-2); font-weight: 600; }
+    .sim-bd-orig  { min-width: 36px; text-align: right; color: var(--muted); }
+    .sim-bd-arrow { color: var(--muted-2); }
+    .sim-bd-sim   { min-width: 36px; text-align: right; }
+    .sim-bd-delta { min-width: 36px; text-align: right; font-size: 0.75rem; }
+
+    /* 시나리오 비교 */
+    .compare-row {
+      display: flex; gap: var(--space-md); margin-bottom: var(--space-md);
+    }
+    .compare-box {
+      flex: 1; background: var(--paper-2);
+      border-radius: var(--radius-md); padding: var(--space-md);
+      text-align: center;
+    }
+    .cb-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
+    .cb-score { font-size: 1.8rem; font-weight: 800; color: var(--ink); }
+    .cb-grade { font-size: 0.78rem; color: var(--muted-2); }
+
+    .change-indicator {
+      text-align: center; font-weight: 700; font-size: 1.05rem;
+      padding: 6px; border-radius: var(--radius-sm); margin-bottom: var(--space-md);
+    }
+    .change-indicator.positive { color: var(--green); background: var(--green-bg); }
+    .change-indicator.negative { color: var(--red);   background: var(--red-bg); }
+    .change-indicator.neutral  { color: var(--muted); background: var(--paper-2); }
+
+    .change-reasons {
+      font-size: 0.8rem; border-top: 1px solid var(--border-2);
+      padding-top: var(--space-sm);
+    }
+
+    /* 설명 블록 */
+    .explain-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-sm);
+    }
+    .explain-block h4 {
+      font-size: 0.92rem; font-weight: 700;
+      margin: 0 0 6px 0; color: var(--ink);
+    }
+    .explain-block p, .explain-block ul {
+      font-size: 0.84rem; color: var(--ink-2); margin: 0; line-height: 1.6;
+    }
+    .explain-block ul { padding-left: 16px; }
+
+    /* 전환 조건 */
+    .transition-block {
+      background: var(--card);
+      border-left: 4px solid var(--green);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-sm);
+    }
+    .transition-block h4 {
+      font-size: 0.9rem; font-weight: 700; margin: 0 0 6px 0;
+    }
+    .transition-block ul {
+      margin: 0; padding-left: 16px; font-size: 0.84rem;
+      color: var(--ink-2); line-height: 1.7;
+    }
+
+    /* 다음 행동 */
+    .next-action-card {
+      background: var(--card);
+      border-left: 5px solid var(--green);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+    }
+    .na-header {
+      font-size: 1.05rem; font-weight: 800;
+      margin-bottom: var(--space-sm);
+    }
+    .na-body { font-size: 0.85rem; color: var(--ink-2); line-height: 1.7; }
+    .na-body ul { padding-left: 16px; margin: 8px 0 0 0; }
+    .na-body li { margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <!-- ===== 앱 헤더 ===== -->
+  <header class="app-header no-print">
+    <h1>📊 미국 주식 종목 분석기 <span class="version-badge">v9</span></h1>
+    <p>재무지표 이미지를 업로드하거나 텍스트를 붙여넣으면 OCR로 자동 인식 후 투자 판단을 도와줍니다</p>
+    <span class="disclaimer">⚠ 이 프로그램은 투자 의사결정 보조 도구입니다. 최종 투자 결정은 본인의 책임입니다.</span>
+  </header>
+
+  <!-- ===== SECTION 1: 기본 설정 ===== -->
+  <section class="section no-print" id="settings-section">
+    <h2 class="section-title" style="justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:var(--space-sm);">
+        <span class="icon">⚙️</span> 기본 설정
+      </span>
+      <a href="https://finviz.com/" target="_blank" rel="noopener"
+         class="btn btn-outline btn-sm"
+         style="font-size:0.82rem;border-color:var(--blue);color:var(--blue);">
+        🔗 Finviz 바로가기
+      </a>
+    </h2>
+    <div class="ticker-row">
+      <div class="input-group">
+        <label for="ticker-input">종목명 / 티커</label>
+        <input type="text" id="ticker-input" placeholder="예: AAPL, TSLA" />
+      </div>
+      <div class="input-group" style="flex:1; margin-bottom:0;">
+        <label>투자 성향 선택</label>
+        <div class="style-tabs">
+          <button class="style-tab aggressive" data-style="aggressive">⚡ 공격형</button>
+          <button class="style-tab balanced active" data-style="balanced">⚖️ 균형형</button>
+          <button class="style-tab conservative" data-style="conservative">🛡️ 보수형</button>
+          <button class="style-tab custom" data-style="custom">✏️ 사용자 지정</button>
+        </div>
+      </div>
+    </div>
+    <div class="weight-preview" id="weight-preview"></div>
+    <div id="weight-editor">
+      <p class="section-subtitle">가중치 합계가 정확히 100이 되어야 합니다.</p>
+      <div class="weight-grid" id="weight-inputs"></div>
+      <div style="display:flex; align-items:center; gap:var(--space-md);">
+        <span id="weight-sum-display" class="ok">합계: 100</span>
+        <button class="btn btn-outline btn-sm" id="btn-reset-weights">기본값 복원</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2: 이미지 업로드 & OCR ===== -->
+  <section class="section no-print" id="ocr-section">
+    <h2 class="section-title"><span class="icon">🔍</span> 이미지 업로드 &amp; OCR</h2>
+    <p class="section-subtitle">Finviz 스타일 재무지표 표 이미지를 업로드하거나 붙여넣으세요.</p>
+
+    <div id="drop-zone">
+      <span class="drop-icon">📁</span>
+      <p><strong>클릭하거나 이미지를 여기에 드롭하세요</strong></p>
+      <p class="drop-hint">PNG, JPG, WEBP 지원 · 업로드 즉시 OCR 자동 실행</p>
+    </div>
+    <input type="file" id="file-input" accept="image/*" />
+
+    <div class="paste-hint">
+      <span>💡</span>
+      <span>이미지를 클립보드에 복사한 뒤
+        <kbd>Ctrl</kbd>+<kbd>V</kbd> 또는 <kbd>Cmd</kbd>+<kbd>V</kbd>로 붙여넣을 수도 있습니다</span>
+    </div>
+
+    <!-- Finviz 텍스트 파서 -->
+    <div class="text-paste-wrap">
+      <div class="tp-title">📋 Finviz 텍스트 직접 붙여넣기
+        <span style="font-weight:400;color:var(--muted);font-size:0.78rem;">(OCR보다 정확)</span>
+      </div>
+      <div class="tp-hint">Finviz 종목 페이지에서 지표 표를
+        <kbd>Ctrl+A</kbd> → <kbd>Ctrl+C</kbd> 후 아래에 붙여넣으세요.
+        붙여넣기 즉시 자동 인식됩니다.</div>
+      <textarea id="finviz-paste-box"
+        placeholder="여기에 Finviz 텍스트를 붙여넣으세요&#10;(예: Forward P/E&#10;30.89&#10;PEG&#10;0.80 …)"></textarea>
+      <div class="btn-group" style="margin-top:var(--space-sm);">
+        <button class="btn btn-green btn-sm" id="btn-parse-finviz">📋 지표 자동 인식</button>
+        <button class="btn btn-outline btn-sm" id="btn-clear-paste">지우기</button>
+      </div>
+      <div id="text-parse-result"></div>
+    </div>
+
+    <!-- 이미지 미리보기 -->
+    <div id="preview-area">
+      <img id="preview-img" src="" alt="미리보기" />
+      <div class="preview-actions">
+        <button class="btn btn-primary" id="btn-run-ocr">🔄 OCR 재실행</button>
+        <button class="btn btn-outline btn-sm" id="btn-clear-image">이미지 제거</button>
+      </div>
+    </div>
+
+    <!-- OCR 진행률 -->
+    <div id="ocr-progress-area">
+      <div id="ocr-progress-text" class="text-muted fs-sm">OCR 준비 중...</div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="ocr-progress-bar"></div>
+      </div>
+    </div>
+
+    <!-- OCR 원문 -->
+    <div id="ocr-raw-area">
+      <button id="ocr-raw-toggle">▶ OCR 원문 보기 / 숨기기</button>
+      <pre id="ocr-raw-content"></pre>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 3: 지표 검수 & 입력 ===== -->
+  <section class="section no-print" id="input-section">
+    <h2 class="section-title">
+      <span class="icon">📋</span> 지표 검수 &amp; 입력
+      <button class="btn btn-outline btn-sm no-print" id="btn-show-ocr-raw"
+        style="margin-left:auto;font-size:0.78rem;">📄 OCR 원문 보기</button>
+    </h2>
+    <p class="section-subtitle">OCR 인식값을 확인하고 필요 시 수정하세요.
+      <span class="text-red">*</span> 표시는 핵심 지표입니다.</p>
+
+    <div class="alert alert-error"   id="input-error-msg"></div>
+    <div class="alert alert-warning" id="input-warn-msg"></div>
+
+    <div class="review-table-wrap">
+      <table class="review-table" id="review-table">
+        <thead>
+          <tr>
+            <th>지표</th>
+            <th>OCR 인식값</th>
+            <th>최종 입력값</th>
+          </tr>
+        </thead>
+        <tbody id="review-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-green btn-lg" id="btn-analyze">📊 분석 실행</button>
+      <button class="btn btn-outline" id="btn-fill-example">🧪 예시값 채우기</button>
+      <button class="btn btn-outline" id="btn-reset-all">🗑️ 모든 값 초기화</button>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4: 결과 화면 ===== -->
+  <section id="results-section">
+
+    <!-- 4-1. 리포트 헤더 -->
+    <div class="report-header" id="report-header">
+      <div class="report-header-left">
+        <div class="ticker-label">분석 대상</div>
+        <h2 id="result-ticker">—</h2>
+        <div class="meta" id="result-meta">—</div>
+        <div id="result-reliability-badge" class="reliability-badge reliability-medium"
+             style="margin-top:6px;">신뢰도 보통</div>
+        <div id="result-grade-badge" class="grade-badge grade-3" style="margin-top:8px;">관망</div>
+      </div>
+      <div class="report-header-right">
+        <div class="score-label">종합점수</div>
+        <div class="score-big" id="result-total-score">—</div>
+        <div class="score-label">/ 100점</div>
+      </div>
+    </div>
+
+    <!-- 4-2. 요약 카드 5개 -->
+    <div class="summary-cards" id="summary-cards">
+      <div class="summary-card green-accent">
+        <div class="sc-label">종합점수</div>
+        <div class="sc-value" id="sc-score">—</div>
+        <div class="sc-sub"  id="sc-grade-sub">—</div>
+      </div>
+      <div class="summary-card blue-accent">
+        <div class="sc-label">사분면 위치</div>
+        <div class="sc-value" id="sc-quadrant" style="font-size:1rem;">—</div>
+        <div class="sc-sub"  id="sc-quadrant-sub">—</div>
+      </div>
+      <div class="summary-card purple-accent">
+        <div class="sc-label">분석 신뢰도</div>
+        <div class="sc-value" id="sc-reliability" style="font-size:1rem;">—</div>
+        <div class="sc-sub"  id="sc-reliability-sub">—</div>
+      </div>
+      <div class="summary-card green-accent">
+        <div class="sc-label">핵심 강점</div>
+        <div class="sc-sub"  id="sc-strengths">—</div>
+      </div>
+      <div class="summary-card red-accent">
+        <div class="sc-label">핵심 경고</div>
+        <div class="sc-sub"  id="sc-warnings-summary">—</div>
+      </div>
+    </div>
+
+    <!-- 4-3. 사분면 시각화 -->
+    <div class="section" id="quadrant-section">
+      <h2 class="section-title"><span class="icon">📌</span> 기업의 질 × 가격 부담 사분면</h2>
+      <p class="section-subtitle">X축: 가격 부담 (오른쪽일수록 고평가) · Y축: 기업의 질 (위쪽일수록 우량)</p>
+      <div class="quadrant-axis-y-wrap">
+        <div class="quadrant-axis-y">
+          <span>우량 기업 ▲</span>
+          <span>▼ 저품질</span>
+        </div>
+        <div style="flex:1;">
+          <div class="quadrant-wrapper">
+            <div class="quadrant-canvas" id="quadrant-canvas">
+              <div class="q-region q1">
+                <span class="q-label">① 좋은 기업 · 합리적 가격</span>
+                <span class="q-sub">강한 매수 후보 / 분할매수 후보</span>
+              </div>
+              <div class="q-boundary-line" id="q-boundary-line"></div>
+              <div class="q-region q2">
+                <span class="q-label">② 좋은 기업 · 과열 가격</span>
+                <span class="q-sub">조정 대기 / 소량 분할 접근</span>
+              </div>
+              <div class="q-region q3">
+                <span class="q-label">③ 기업 질 불확실 · 싼 가격</span>
+                <span class="q-sub">고난도 / 관망</span>
+              </div>
+              <div class="q-region q4">
+                <span class="q-label">④ 기업 질 낮음 · 비싼 가격</span>
+                <span class="q-sub">매수 제외</span>
+              </div>
+              <div class="stock-dot" id="stock-dot" style="display:none;">
+                <span class="dot-ticker" id="dot-ticker">—</span>
+                <span class="dot-score"  id="dot-score">—</span>
+              </div>
+              <div class="quadrant-tooltip" id="quadrant-tooltip"></div>
+            </div>
+          </div>
+          <div class="quadrant-axis-x">
+            <span>◀ 가격 부담 낮음</span>
+            <span>가격 부담 높음 ▶</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:var(--space-lg);margin-top:var(--space-md);flex-wrap:wrap;">
+        <div style="font-size:0.85rem;">기업의 질 점수: <strong id="quality-score-display">—</strong>점</div>
+        <div style="font-size:0.85rem;">가격 부담 점수: <strong id="price-burden-display">—</strong>점</div>
+      </div>
+    </div>
+
+    <!-- 4-4. 6개 모듈 점수 -->
+    <div class="section" id="module-scores-section">
+      <h2 class="section-title"><span class="icon">📊</span> 6개 모듈별 점수</h2>
+      <div class="module-scores" id="module-scores-grid"></div>
+    </div>
+
+    <!-- 4-5. 왜 이런 점수인가 -->
+    <div class="section" id="explanation-section">
+      <h2 class="section-title"><span class="icon">💡</span> 왜 이런 점수인가?</h2>
+      <div id="explanation-content"></div>
+    </div>
+
+    <!-- 4-6. 경고 카드 -->
+    <div class="section" id="warnings-section">
+      <h2 class="section-title"><span class="icon">⚠️</span> 경고 카드</h2>
+      <div class="warnings-grid" id="warnings-grid"></div>
+    </div>
+
+    <!-- 4-7. 점수 민감도 TOP 5 -->
+    <div class="section" id="sensitivity-section">
+      <h2 class="section-title"><span class="icon">🎯</span> 점수 민감도 TOP 5</h2>
+      <p class="section-subtitle">각 지표를 ±10% 변화시켰을 때 종합점수 변화량입니다.</p>
+      <div class="sensitivity-list" id="sensitivity-list"></div>
+    </div>
+
+    <!-- 4-8. 시나리오 시뮬레이터 -->
+    <div class="section no-print" id="simulator-section">
+      <h2 class="section-title"><span class="icon">🔮</span> 미래 시나리오 시뮬레이터</h2>
+      <p class="section-subtitle">지표값을 조정하면 점수·등급·사분면이 실시간으로 바뀝니다. 핵심 지표 19개 전체 지원 (P/FCF · Beta 포함).</p>
+      <div class="preset-buttons" id="preset-buttons">
+        <button class="btn-preset" data-preset="1">📉 조정 후 매수 가능</button>
+        <button class="btn-preset" data-preset="2">📊 성장 둔화</button>
+        <button class="btn-preset" data-preset="3">📉 기술적 악화</button>
+        <button class="btn-preset" data-preset="4">📈 실적 개선</button>
+        <button class="btn-preset" data-preset="5">🛡️ 안전성 개선</button>
+        <button class="btn-preset" data-preset="reset">↩️ 원래값 복원</button>
+      </div>
+      <div class="simulator-layout">
+        <div class="simulator-controls" id="simulator-controls"></div>
+        <div class="scenario-result" id="scenario-result">
+          <h4 style="margin-bottom:var(--space-md);">📊 시나리오 비교</h4>
+          <div class="compare-row">
+            <div class="compare-box">
+              <div class="cb-label">현재</div>
+              <div class="cb-score" id="sim-current-score">—</div>
+              <div class="cb-grade" id="sim-current-grade">—</div>
+            </div>
+            <div class="compare-box" style="background:var(--blue-bg);">
+              <div class="cb-label" style="color:var(--blue);">시나리오</div>
+              <div class="cb-score" id="sim-scenario-score" style="color:var(--blue);">—</div>
+              <div class="cb-grade" id="sim-scenario-grade">—</div>
+            </div>
+          </div>
+          <div class="change-indicator neutral" id="sim-change-indicator">변화 없음</div>
+
+          <!-- 사분면 비교 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-sm);margin-bottom:var(--space-md);">
+            <div>
+              <div class="fs-xs text-muted" style="margin-bottom:2px;">현재 사분면</div>
+              <div class="fw-bold fs-sm" id="sim-current-quadrant">—</div>
+            </div>
+            <div>
+              <div class="fs-xs text-muted" style="margin-bottom:2px;">시나리오 사분면</div>
+              <div class="fw-bold fs-sm" style="color:var(--blue);" id="sim-scenario-quadrant">—</div>
+            </div>
+          </div>
+
+          <!-- 모듈별 점수 breakdown -->
+          <div style="margin-bottom:var(--space-md);">
+            <div class="fs-xs text-muted" style="margin-bottom:6px;">모듈별 점수 변화</div>
+            <div id="sim-breakdown" class="sim-breakdown"></div>
+          </div>
+
+          <!-- 변화된 지표 목록 -->
+          <div class="change-reasons" id="sim-change-reasons"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4-9. 등급 전환 조건 -->
+    <div class="section" id="transition-section">
+      <h2 class="section-title"><span class="icon">🔄</span> 등급 전환 조건 자동 제시</h2>
+      <div id="transition-content"></div>
+    </div>
+
+    <!-- 4-10. 다음 행동 제안 -->
+    <div class="section" id="next-action-section">
+      <h2 class="section-title"><span class="icon">🚀</span> 다음 행동 제안</h2>
+      <div class="next-action-card" id="next-action-card"></div>
+    </div>
+
+    <!-- 4-11. 저장/출력 -->
+    <div class="section no-print" id="storage-section">
+      <h2 class="section-title"><span class="icon">💾</span> 저장 &amp; 출력</h2>
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btn-print">🖨️ 리포트 출력 (PDF)</button>
+        <button class="btn btn-outline" id="btn-save">💾 분석 저장</button>
+        <button class="btn btn-outline" id="btn-export-json">📤 JSON 내보내기</button>
+        <button class="btn btn-outline" id="btn-import-json">📥 JSON 불러오기</button>
+        <input type="file" id="import-file" accept=".json" style="display:none;" />
+      </div>
+      <hr class="divider" />
+      <h3 style="font-size:0.88rem;color:var(--ink-2);margin-bottom:var(--space-sm);">최근 저장 분석</h3>
+      <div class="saved-list" id="saved-list">
+        <div class="empty-saved">저장된 분석이 없습니다.</div>
+      </div>
+    </div>
+
+  </section><!-- /#results-section -->
+
+</div><!-- /.app-wrapper -->
+
+
+<script>
+'use strict';
+
+/* ================================================================
+   STEP 1 — 상수 정의 (요구사항 #4, #5, #6, #16)
+   ================================================================ */
+
+/* ---------------------------------------------------------------
+   투자 성향 가중치 — v9 기준 (요구사항 #6)
+   v8 대비 변경:
+     공격형:  growth 30→35, val 20→20(유지), risk 10→5
+     균형형:  growth 20→25, val 20→25, safety 15→10, risk 10→5
+     보수형:  growth 10→15, val 15→30, safety 25→20, tech 10→5, risk 15→10
+   --------------------------------------------------------------- */
+const WEIGHTS = {
+  aggressive:   { val: 20, growth: 35, profit: 20, safety:  5, tech: 15, risk:  5 },
+  balanced:     { val: 25, growth: 25, profit: 20, safety: 10, tech: 15, risk:  5 },
+  conservative: { val: 30, growth: 15, profit: 20, safety: 20, tech:  5, risk: 10 }
+};
+
+const WEIGHT_LABELS = {
+  val: '밸류에이션', growth: '성장성', profit: '수익성',
+  safety: '재무안정성', tech: '기술적위치', risk: '리스크'
+};
+
+/* ---------------------------------------------------------------
+   핵심 지표 19개 — v9 (요구사항 #4)
+   [key, 표시명, 단위힌트, OCR패턴배열]
+   --------------------------------------------------------------- */
+const CORE_INDICATORS = [
+  // A. 밸류에이션 5개
+  ['forwardPE',    'Forward P/E',      'x',
+    ['forward\\s*p\\s*/\\s*e', 'fwd\\s*p\\s*/\\s*e', 'forward\\s*pe', 'fwd\\s*pe',
+     'p/e\\s*\\(fwd\\)', 'forward\\s*price.*earnings']],
+  ['peg',          'PEG',              'x',
+    ['\\bpeg\\b', 'peg\\s*ratio', 'price.*earn.*growth']],
+  ['ps',           'P/S',              'x',
+    ['\\bp\\s*/\\s*s\\b', 'price.*sales', 'p/sales', 'price.to.sales']],
+  ['pFcf',         'P/FCF',            'x',
+    ['p\\s*/\\s*fcf', 'p\\s*fcf', 'pfcf', 'price.*free.*cash', 'p.*free\\s*cash\\s*flow']],
+  ['evEbitda',     'EV/EBITDA',        'x',
+    ['ev\\s*/\\s*ebitda', 'ev\\s*ebitda', 'enterprise.*ebitda']],
+
+  // B. 성장성 4개
+  ['epsNextY',     'EPS next Y',       '%',
+    ['eps\\s*next\\s*y(?!r|ear|5)', 'eps\\s*next\\s*year(?!s)', 'eps\\s*ny(?!5)',
+     'eps\\s*nexty(?!5)', 'earnings.*next.*year(?!s)']],
+  ['epsNext5Y',    'EPS next 5Y',      '%',
+    ['eps\\s*next\\s*5\\s*y', 'eps.*next.*5.*year', 'eps\\s*5y', 'eps\\s*5\\s*yr',
+     'eps\\s*next5y', 'long.*term.*eps.*growth']],
+  ['epsQQ',        'EPS Q/Q',          '%',
+    ['eps\\s*q\\s*/\\s*q', 'eps\\s*qoq', 'eps\\s*qoq', 'eps.*quarter.*over.*quarter',
+     'eps.*q/q']],
+  ['salesQQ',      'Sales Q/Q',        '%',
+    ['sales\\s*q\\s*/\\s*q', 'sales\\s*qoq', 'revenue.*quarter.*over.*quarter',
+     'rev\\s*q/q', 'sales.*q/q']],
+
+  // C. 수익성 4개
+  ['roic',         'ROIC',             '%',
+    ['\\broic\\b', 'return.*invest.*capital', 'return\\s*on\\s*invest.*capital']],
+  ['operMargin',   'Operating Margin', '%',
+    ['oper.*margin', 'operating\\s*margin', 'op\\s*margin', 'oper\\.\\s*margin',
+     'operating\\s*profit\\s*margin']],
+  ['profitMargin', 'Profit Margin',    '%',
+    ['profit\\s*margin', 'net\\s*margin', 'net\\s*profit\\s*margin', 'profit\\s*marg']],
+  ['roe',          'ROE',              '%',
+    ['\\broe\\b', 'return.*equity', 'return\\s*on\\s*equity']],
+
+  // D. 재무 안정성 2개
+  ['debtEq',       'Debt/Eq',          'x',
+    ['debt\\s*/\\s*eq', 'debt.*equity', 'd\\s*/\\s*e\\s*ratio', '\\bd/e\\b',
+     'debt.*to.*equity']],
+  ['currentRatio', 'Current Ratio',    'x',
+    ['current\\s*ratio', 'curr\\.?\\s*ratio']],
+
+  // E. 기술적 위치 3개
+  ['sma200',       'SMA200',           '%',
+    ['sma\\s*200', '200\\s*sma', 'price.*200', '200.?day.*ma', '200.*moving.*avg']],
+  ['sma50',        'SMA50',            '%',
+    ['sma\\s*50', '50\\s*sma', 'price.*50', '50.?day.*ma', '50.*moving.*avg']],
+  ['rsi',          'RSI (14)',          '',
+    ['\\brsi\\b', 'rsi\\s*\\(?14\\)?', 'rsi\\s*14', 'relative\\s*strength\\s*index']],
+
+  // F. 리스크 1개
+  ['beta',         'Beta',             '',
+    ['\\bbeta\\b']],
+];
+
+/* ---------------------------------------------------------------
+   보조 지표 10개 — v9 기준 (요구사항 #5)
+   v8에서 pb, insiderOwn, instOwn, dividendYield, eps, revenueGrowth 교체
+   → evSales, pe, salesYyTtm, grossMargin, quickRatio,
+      insiderTrans, instTrans, shortFloat, perfQuarter, targetPriceGap
+   --------------------------------------------------------------- */
+const OPT_INDICATORS = [
+  ['evSales',       'EV/Sales',         'x',
+    ['ev\\s*/\\s*sales', 'ev\\s*sales', 'enterprise.*sales']],
+  ['pe',            'P/E',              'x',
+    ['(?<!forward\\s)(?<!fwd\\s)\\bp\\s*/\\s*e\\b(?!\\s*\\(fwd)', 'trailing\\s*p/e', 'price.*earnings\\s*ttm']],
+  ['salesYyTtm',    'Sales Y/Y TTM',    '%',
+    ['sales\\s*y\\s*/\\s*y\\s*ttm', 'sales\\s*yoy\\s*ttm', 'revenue.*y/y.*ttm',
+     'rev.*growth.*ttm', 'sales.*growth.*ttm']],
+  ['grossMargin',   'Gross Margin',     '%',
+    ['gross\\s*margin', 'gross\\s*profit\\s*margin']],
+  ['quickRatio',    'Quick Ratio',      'x',
+    ['quick\\s*ratio', 'qck\\.?\\s*ratio', 'acid.*test\\s*ratio']],
+  ['insiderTrans',  'Insider Trans',    '%',
+    ['insider\\s*trans', 'insider\\s*transaction', 'insider\\s*trad']],
+  ['instTrans',     'Inst Trans',       '%',
+    ['inst\\.?\\s*trans', 'institutional\\s*trans', 'inst.*transaction']],
+  ['shortFloat',    'Short Float',      '%',
+    ['short\\s*float', 'short\\s*%', 'short\\s*interest', 'short.*float\\s*%']],
+  ['perfQuarter',   'Perf Quarter',     '%',
+    ['perf\\s*quarter', 'quarterly\\s*perf', 'perf\\s*q', 'performance.*quarter']],
+  // targetPriceGap은 Price + TargetPrice로 자동 계산 (OCR 직접 매칭 불필요)
+  ['targetPriceGap','Target Price Gap', '%', []],
+];
+
+/* Price / Target Price — gap 계산 보조 입력 */
+const PRICE_AUX_INDICATORS = [
+  ['price',       'Price',        '$',
+    ['(?<![a-z])\\bprice\\b(?!.*target)', 'current\\s*price', 'stock\\s*price', 'last\\s*price']],
+  ['targetPrice', 'Target Price', '$',
+    ['target\\s*price', '1.?year\\s*target', 'analyst.*target', 'price\\s*target', 'pt\\b']],
+];
+
+/* ---------------------------------------------------------------
+   용어 사전 앵커 매핑 (요구사항 #16)
+   termLink(key, label) 함수에서 자동으로 href 생성
+   --------------------------------------------------------------- */
+const GLOSSARY_ANCHORS = {
+  forwardPE:      'term-forwardPE',
+  peg:            'term-peg',
+  ps:             'term-ps',
+  pFcf:           'term-pfcf',
+  evEbitda:       'term-evebitda',
+  epsNextY:       'term-epsnexty',
+  epsNext5Y:      'term-epsnext5y',
+  epsQQ:          'term-epsqq',
+  salesQQ:        'term-salesqq',
+  roic:           'term-roic',
+  operMargin:     'term-opermargin',
+  profitMargin:   'term-profitmargin',
+  roe:            'term-roe',
+  debtEq:         'term-debteq',
+  currentRatio:   'term-currentratio',
+  sma200:         'term-sma200',
+  sma50:          'term-sma50',
+  rsi:            'term-rsi',
+  beta:           'term-beta',
+  evSales:        'term-evsales',
+  pe:             'term-pe',
+  salesYyTtm:     'term-salesyyttm',
+  grossMargin:    'term-grossmargin',
+  quickRatio:     'term-quickratio',
+  insiderTrans:   'term-insidertrans',
+  instTrans:      'term-insttrans',
+  shortFloat:     'term-shortfloat',
+  perfQuarter:    'term-perfquarter',
+  targetPriceGap: 'term-targetpricegap',
+};
+
+/**
+ * 용어 링크 생성 헬퍼 (요구사항 #16)
+ * @param {string} key   - GLOSSARY_ANCHORS의 키
+ * @param {string} label - 표시할 텍스트
+ * @returns {string} HTML 문자열
+ */
+function termLink(key, label) {
+  const anchor = GLOSSARY_ANCHORS[key];
+  if (!anchor) return label;
+  return `<a class="term-link" href="finviz_glossary.html#${anchor}" target="_blank" rel="noopener"
+    >${label}<span class="help-icon">?</span></a>`;
+}
+
+/* ---------------------------------------------------------------
+   예시값 (NVDA 가상 예시) — v9 보조지표 기준으로 업데이트
+   --------------------------------------------------------------- */
+const EXAMPLE_VALUES = {
+  // 핵심 지표 19개
+  forwardPE: 35, peg: 1.8, ps: 20, pFcf: 55, evEbitda: 50,
+  epsNextY: 28, epsNext5Y: 22, epsQQ: 30, salesQQ: 18,
+  roic: 35, operMargin: 55, profitMargin: 48, roe: 85,
+  debtEq: 0.4, currentRatio: 4.2,
+  sma200: 15, sma50: 5, rsi: 62, beta: 1.6,
+  // 보조 지표 10개 (v9 기준)
+  evSales: 18, pe: 45, salesYyTtm: 22, grossMargin: 74, quickRatio: 3.8,
+  insiderTrans: -1.2, instTrans: 2.5, shortFloat: 1.2, perfQuarter: 15,
+  // Price / Target Price (Gap 자동 계산)
+  price: 950, targetPrice: 1100,
+};
+
+/* ---------------------------------------------------------------
+   앱 상태
+   --------------------------------------------------------------- */
+let appState = {
+  imageEl:        null,
+  ocrText:        '',
+  ocrIndicators:  {},
+  indicators:     {},     // collectIndicators() 결과 저장
+  investStyle:    'balanced',
+  customWeights:  { ...WEIGHTS.balanced },
+  lastResult:     null,
+};
+
+/* ================================================================
+   유틸 함수
+   ================================================================ */
+
+/** 문자열에서 숫자 파싱 (%, $, , 제거) */
+function parseNum(str) {
+  if (str === null || str === undefined || str === '') return null;
+  const s = String(str).replace(/,/g, '').replace(/%/g, '').replace(/\$/g, '').trim();
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+
+/** 현재 투자 성향의 가중치 반환 */
+function getActiveWeights() {
+  if (appState.investStyle === 'custom') return { ...appState.customWeights };
+  return { ...WEIGHTS[appState.investStyle] };
+}
+
+/** 값 0~100 클램프 */
+function clamp(v) { return Math.max(0, Math.min(100, v)); }
+
+/** 선형 보간 점수 계산 */
+function interp(val, points) {
+  if (val === null || val === undefined) return null;
+  points = [...points].sort((a, b) => a[0] - b[0]);
+  if (val <= points[0][0]) return points[0][1];
+  if (val >= points[points.length - 1][0]) return points[points.length - 1][1];
+  for (let i = 0; i < points.length - 1; i++) {
+    const [x0, y0] = points[i];
+    const [x1, y1] = points[i + 1];
+    if (val >= x0 && val <= x1) return y0 + (y1 - y0) * (val - x0) / (x1 - x0);
+  }
+  return null;
+}
+
+/** 가중 평균 (null 제외) */
+function wavg(pairs) {
+  let sum = 0, wsum = 0;
+  for (const [v, w] of pairs) {
+    if (v !== null && v !== undefined && !isNaN(v)) { sum += v * w; wsum += w; }
+  }
+  return wsum > 0 ? sum / wsum : null;
+}
+
+/** 알림 표시 */
+function showAlert(elId, msg, cls, timeout = 0) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.textContent = msg;
+  el.className = `alert ${cls} visible`;
+  if (timeout) setTimeout(() => el.classList.remove('visible'), timeout);
+}
+
+/* ================================================================
+   지표값 읽기
+   ================================================================ */
+function collectIndicators() {
+  const data = {};
+  document.querySelectorAll('#review-tbody input[data-key]').forEach(inp => {
+    const k = inp.dataset.key;
+    const v = parseNum(inp.value);
+    if (v !== null) data[k] = v;
+  });
+  // targetPriceGap 재계산 후 UI 반영
+  if (data.targetPrice != null && data.price != null && data.price !== 0) {
+    data.targetPriceGap = parseFloat((((data.targetPrice - data.price) / data.price) * 100).toFixed(1));
+    const gapInp = document.getElementById('ind-targetPriceGap');
+    if (gapInp) gapInp.value = data.targetPriceGap;
+  }
+  return data;
+}
+
+/* ================================================================
+   검수 테이블 렌더링 (요구사항 #15 — STEP 2 강화)
+   - 모든 지표명에 termLink() 적용
+   - Target Price Gap 자동 계산 실시간 표시
+   - OCR 매칭 상태 배지
+   - 그룹 헤더 구분
+   ================================================================ */
+function renderReviewTable(ocrData) {
+  const tbody = document.getElementById('review-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  /* ── 그룹 헤더 행 ──────────────────────────────────────── */
+  function makeGroupHeader(text) {
+    const tr = document.createElement('tr');
+    tr.className = 'group-header';
+    tr.innerHTML = `<td colspan="3">${text}</td>`;
+    return tr;
+  }
+
+  /* ── 지표 행 ───────────────────────────────────────────── */
+  function makeRow(key, label, hint, ocrVal, isCore, glossaryKey) {
+    const matched    = ocrVal !== null && ocrVal !== undefined;
+    const tr         = document.createElement('tr');
+    const labelHtml  = glossaryKey
+      ? termLink(glossaryKey, label)
+      : `<span>${label}</span>`;
+    const matchedBadge = matched
+      ? `<span style="font-size:0.7rem;color:var(--green);margin-left:4px;">✓ OCR</span>`
+      : '';
+
+    tr.innerHTML = `
+      <td class="indicator-name">
+        <span class="${isCore ? 'indicator-required' : 'indicator-optional'}">${labelHtml}</span>
+        <span style="font-size:0.72rem;color:var(--muted-2);margin-left:4px;">${hint}</span>
+        ${matchedBadge}
+      </td>
+      <td class="ocr-val ${matched ? 'matched' : 'unmatched'}">
+        ${matched ? ocrVal : '—'}
+      </td>
+      <td>
+        <input type="number" step="any"
+          id="ind-${key}"
+          data-key="${key}"
+          value="${matched ? ocrVal : ''}"
+          placeholder="${matched ? '' : '직접 입력'}"
+          class="${matched ? 'ocr-modified' : ''}"
+        />
+      </td>`;
+    return tr;
+  }
+
+  /* ── 핵심 지표 19개 그룹 ───────────────────────────────── */
+  // A. 밸류에이션
+  tbody.appendChild(makeGroupHeader('🔴 핵심 지표 (19개) — * 필수 &nbsp;|&nbsp; 🅐 밸류에이션'));
+  CORE_INDICATORS.slice(0, 5).forEach(([key, label, hint]) => {
+    tbody.appendChild(makeRow(key, label, hint, ocrData[key] ?? null, true, key));
+  });
+
+  // B. 성장성
+  tbody.appendChild(makeGroupHeader('&nbsp;&nbsp;&nbsp;🅑 성장성'));
+  CORE_INDICATORS.slice(5, 9).forEach(([key, label, hint]) => {
+    tbody.appendChild(makeRow(key, label, hint, ocrData[key] ?? null, true, key));
+  });
+
+  // C. 수익성
+  tbody.appendChild(makeGroupHeader('&nbsp;&nbsp;&nbsp;🅒 수익성'));
+  CORE_INDICATORS.slice(9, 13).forEach(([key, label, hint]) => {
+    tbody.appendChild(makeRow(key, label, hint, ocrData[key] ?? null, true, key));
+  });
+
+  // D. 재무 안정성
+  tbody.appendChild(makeGroupHeader('&nbsp;&nbsp;&nbsp;🅓 재무 안정성'));
+  CORE_INDICATORS.slice(13, 15).forEach(([key, label, hint]) => {
+    tbody.appendChild(makeRow(key, label, hint, ocrData[key] ?? null, true, key));
+  });
+
+  // E. 기술적 위치
+  tbody.appendChild(makeGroupHeader('&nbsp;&nbsp;&nbsp;🅔 기술적 위치'));
+  CORE_INDICATORS.slice(15, 18).forEach(([key, label, hint]) => {
+    tbody.appendChild(makeRow(key, label, hint, ocrData[key] ?? null, true, key));
+  });
+
+  // F. 리스크
+  tbody.appendChild(makeGroupHeader('&nbsp;&nbsp;&nbsp;🅕 리스크'));
+  CORE_INDICATORS.slice(18, 19).forEach(([key, label, hint]) => {
+    tbody.appendChild(makeRow(key, label, hint, ocrData[key] ?? null, true, key));
+  });
+
+  /* ── Target Price Gap (자동 계산, readonly) ─────────────── */
+  const gapVal = ocrData.targetPriceGap ?? null;
+  const gapTr  = document.createElement('tr');
+  gapTr.id     = 'tpgap-row';
+  gapTr.innerHTML = `
+    <td class="indicator-name">
+      <span class="indicator-optional">
+        ${termLink('targetPriceGap','Target Price Gap')}
+        <small style="color:var(--muted-2);margin-left:4px;">(Price·TP 입력 시 자동 계산)</small>
+      </span>
+    </td>
+    <td class="ocr-val ${gapVal !== null ? 'matched' : 'unmatched'}">
+      ${gapVal !== null ? gapVal + '%' : '—'}
+    </td>
+    <td>
+      <input type="number" step="any" id="ind-targetPriceGap" data-key="targetPriceGap"
+        value="${gapVal !== null ? gapVal : ''}" placeholder="자동 계산"
+        class="${gapVal !== null ? 'ocr-modified' : ''}"
+        readonly style="background:var(--paper-3);color:var(--muted);cursor:default;" />
+    </td>`;
+  tbody.appendChild(gapTr);
+
+  /* ── 보조 지표 (Price 입력 + 10개) ─────────────────────── */
+  tbody.appendChild(makeGroupHeader('🔵 보조 지표 &nbsp;|&nbsp; Price 입력'));
+
+  PRICE_AUX_INDICATORS.forEach(([key, label, hint]) => {
+    tbody.appendChild(makeRow(key, label, hint, ocrData[key] ?? null, false, null));
+  });
+
+  tbody.appendChild(makeGroupHeader('&nbsp;&nbsp;&nbsp;보조 지표 10개'));
+  OPT_INDICATORS.filter(([k]) => k !== 'targetPriceGap').forEach(([key, label, hint]) => {
+    tbody.appendChild(makeRow(key, label, hint, ocrData[key] ?? null, false, key));
+  });
+
+  /* ── 이벤트: 수정 감지 + Gap 재계산 ─────────────────────── */
+  tbody.querySelectorAll('input[data-key]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      if (!inp.readOnly) inp.classList.remove('ocr-modified');
+      if (inp.dataset.key === 'price' || inp.dataset.key === 'targetPrice') {
+        recalcTargetPriceGap();
+      }
+    });
+  });
+
+  /* ── OCR 매칭 요약 업데이트 ───────────────────────────────── */
+  _updateOcrSummary(ocrData);
+}
+
+/** OCR 결과 요약 업데이트 */
+function _updateOcrSummary(ocrData) {
+  const coreCount = CORE_INDICATORS.filter(([k]) => ocrData[k] !== undefined).length;
+  const optCount  = OPT_INDICATORS.filter(([k]) => ocrData[k] !== undefined).length;
+  const totalCount = coreCount + optCount;
+  if (totalCount === 0) return;
+
+  const existing = document.getElementById('ocr-summary-msg');
+  const el = existing || document.createElement('div');
+  el.id        = 'ocr-summary-msg';
+  el.className = 'alert alert-info visible';
+  el.style.marginBottom = '8px';
+  el.textContent =
+    `🔍 자동 인식 결과 — 핵심 ${coreCount}/19개, 보조 ${optCount}/10개 (총 ${totalCount}개 인식됨). ` +
+    `빈 항목은 직접 입력해 주세요.`;
+
+  const wrap = document.querySelector('#input-section .review-table-wrap');
+  if (wrap && !existing) wrap.parentNode.insertBefore(el, wrap);
+}
+
+function recalcTargetPriceGap() {
+  const priceInp = document.getElementById('ind-price');
+  const tpInp    = document.getElementById('ind-targetPrice');
+  const gapInp   = document.getElementById('ind-targetPriceGap');
+  if (!priceInp || !tpInp || !gapInp) return;
+  const p  = parseNum(priceInp.value);
+  const tp = parseNum(tpInp.value);
+  if (p !== null && tp !== null && p !== 0) {
+    gapInp.value = parseFloat((((tp - p) / p) * 100).toFixed(1));
+  } else {
+    gapInp.value = '';
+  }
+}
+
+/* ================================================================
+   OCR: 지표 매칭 강화 (요구사항 #18 — STEP 2 전면 강화)
+   ================================================================ */
+function matchIndicators(rawText) {
+  const result  = {};
+  const used    = new Set(); // 이미 소비된 줄 인덱스 (중복 매칭 방지)
+  const lines   = rawText.split('\n');
+  const allText = rawText.toLowerCase();
+
+  /* ── 숫자 파싱 헬퍼 ───────────────────────────────────────── */
+  function extractN(str) {
+    if (!str) return null;
+    const s = String(str).replace(/,/g, '').trim();
+    const m = s.match(/^-?\d+\.?\d*/);
+    return m ? parseFloat(m[0]) : null;
+  }
+  function extractPct(str) {
+    if (!str) return null;
+    const m = String(str).match(/(-?\d+\.?\d*)%/);
+    return m ? parseFloat(m[1]) : null;
+  }
+
+  /* ── 전략 1: inline 패턴 (패턴 + 즉시 숫자) ─────────────── */
+  function tryInline(patterns) {
+    for (const pat of patterns) {
+      // e.g. "Forward P/E  30.89" or "Forward P/E: 30.89"
+      const re = new RegExp(pat + '[\\s\\t:=|/]+(-?\\d+\\.?\\d*%?)', 'i');
+      const m  = allText.match(re);
+      if (m) {
+        const n = parseFloat(m[1].replace(/%/g, '').trim());
+        if (!isNaN(n)) return n;
+      }
+    }
+    return null;
+  }
+
+  /* ── 전략 2: 다음줄 숫자 (Finviz table 형식) ─────────────── */
+  function tryNextLine(patterns) {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].toLowerCase().trim();
+      if (!line) continue;
+      for (const pat of patterns) {
+        if (!new RegExp('^' + pat + '$', 'i').test(line) &&
+            !new RegExp(pat, 'i').test(line)) continue;
+
+        // 같은 줄 숫자 (우선순위 낮음 — 라벨 전용 줄이 대부분)
+        const sameMatch = line.match(/-?\d+\.?\d*%?/g);
+        if (sameMatch && sameMatch.length === 1 && !used.has(i)) {
+          const n = parseFloat(sameMatch[0].replace(/%/g, ''));
+          if (!isNaN(n)) { used.add(i); return n; }
+        }
+
+        // 다음 1~3줄에서 숫자 단독 줄 탐색
+        for (let j = i + 1; j < Math.min(i + 4, lines.length); j++) {
+          if (used.has(j)) continue;
+          const nxt = lines[j].trim();
+          // 숫자[%] 단독 줄
+          if (/^-?\d+\.?\d*%?$/.test(nxt)) {
+            const n = parseFloat(nxt.replace(/%/g, ''));
+            if (!isNaN(n)) { used.add(i); used.add(j); return n; }
+          }
+          // "숫자 (숫자%)" 형식 — 일부 Finviz 변형
+          const m2 = nxt.match(/^(-?\d+\.?\d*)\s*\(/);
+          if (m2) { used.add(i); used.add(j); return parseFloat(m2[1]); }
+          // 빈 줄은 건너뜀, 비숫자 줄은 탐색 종료
+          if (nxt && !/\d/.test(nxt)) break;
+        }
+      }
+    }
+    return null;
+  }
+
+  /* ── 전략 3: 탭 구분 형식 (key\tvalue) ───────────────────── */
+  function tryTabbed(patterns) {
+    for (const line of lines) {
+      const parts = line.split(/\t+/);
+      if (parts.length < 2) continue;
+      const label = parts[0].toLowerCase().trim();
+      for (const pat of patterns) {
+        if (new RegExp('^' + pat + '$', 'i').test(label) ||
+            new RegExp(pat, 'i').test(label)) {
+          const val = parts[parts.length - 1].trim();
+          const n   = extractPct(val) ?? extractN(val);
+          if (n !== null && !isNaN(n)) return n;
+        }
+      }
+    }
+    return null;
+  }
+
+  /* ── 지표별 최적 전략 선택 ───────────────────────────────── */
+  function findValue(patterns) {
+    if (!patterns || patterns.length === 0) return null;
+    return tryInline(patterns)
+        ?? tryNextLine(patterns)
+        ?? tryTabbed(patterns)
+        ?? null;
+  }
+
+  /* ── 지표 열거 (핵심→보조→Price 순) ────────────────────────── */
+  const allIndicators = [...CORE_INDICATORS, ...OPT_INDICATORS, ...PRICE_AUX_INDICATORS];
+  allIndicators.forEach(([key, , , pats]) => {
+    if (!pats || pats.length === 0) return;
+    if (result[key] !== undefined) return; // 이미 매칭됨
+    const val = findValue(pats);
+    if (val !== null) result[key] = val;
+  });
+
+  /* ── OCR 오인식 보정 ──────────────────────────────────────── */
+  // Tesseract가 'O'를 '0'으로 읽거나 '/' 를 '|'로 읽는 경우 처리
+  // (패턴에 이미 반영돼 있으나 추가 보정: RSI 30→30, 숫자 후처리)
+  const sanitize = (v) => (v !== null && !isNaN(v)) ? v : null;
+  Object.keys(result).forEach(k => { result[k] = sanitize(result[k]); });
+
+  /* ── targetPriceGap 자동 계산 ────────────────────────────── */
+  if (result.targetPrice != null && result.price != null && result.price !== 0) {
+    result.targetPriceGap = parseFloat(
+      (((result.targetPrice - result.price) / result.price) * 100).toFixed(1)
+    );
+  }
+
+  return result;
+}
+
+/* ================================================================
+   Finviz 텍스트 파서 강화 (요구사항 #18 — STEP 2)
+   ─ 전략 A: 라벨-값 쌍 (연속 두 줄)
+   ─ 전략 B: 탭/공백 분리 인라인 형식
+   ─ 전략 C: 패턴 매칭 fallback (matchIndicators 위임)
+   ================================================================ */
+function parseFinvizText(raw) {
+  const lines  = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  const result = {};
+
+  /* ── 라벨→{key, type} 매핑 (v9 완전판) ─────────────────────
+     - type 'num' : 숫자 그대로
+     - type 'pct' : % 포함된 값에서 숫자 추출 (없으면 숫자 그대로 허용)
+     - type 'pct_or_num': % 있으면 pct, 없으면 num
+  ─────────────────────────────────────────────────────────── */
+  const MAP = [
+    // ── 핵심 지표 19개 ──
+    // 밸류에이션
+    ['Forward P/E',         'forwardPE',    'num'],
+    ['Fwd P/E',             'forwardPE',    'num'],
+    ['Forward PE',          'forwardPE',    'num'],
+    ['Fwd PE',              'forwardPE',    'num'],
+    ['P/E (Fwd)',           'forwardPE',    'num'],
+    ['P/E Fwd',             'forwardPE',    'num'],
+    ['PEG',                 'peg',          'num'],
+    ['PEG Ratio',           'peg',          'num'],
+    ['P/S',                 'ps',           'num'],
+    ['Price/Sales',         'ps',           'num'],
+    ['P/FCF',               'pFcf',         'num'],
+    ['P/Free Cash Flow',    'pFcf',         'num'],
+    ['PFCF',                'pFcf',         'num'],
+    ['P FCF',               'pFcf',         'num'],
+    ['EV/EBITDA',           'evEbitda',     'num'],
+    ['EV / EBITDA',         'evEbitda',     'num'],
+    // 성장성
+    ['EPS next Y',          'epsNextY',     'pct_or_num'],
+    ['EPS Next Y',          'epsNextY',     'pct_or_num'],
+    ['EPS next Year',       'epsNextY',     'pct_or_num'],
+    ['EPS Next Year',       'epsNextY',     'pct_or_num'],
+    ['EPS next 5Y',         'epsNext5Y',    'pct_or_num'],
+    ['EPS Next 5Y',         'epsNext5Y',    'pct_or_num'],
+    ['EPS next 5 Years',    'epsNext5Y',    'pct_or_num'],
+    ['EPS Q/Q',             'epsQQ',        'pct_or_num'],
+    ['EPS Q Q',             'epsQQ',        'pct_or_num'],
+    ['EPS QoQ',             'epsQQ',        'pct_or_num'],
+    ['EPS QOQ',             'epsQQ',        'pct_or_num'],
+    ['Sales Q/Q',           'salesQQ',      'pct_or_num'],
+    ['Sales Q Q',           'salesQQ',      'pct_or_num'],
+    ['Sales QoQ',           'salesQQ',      'pct_or_num'],
+    ['Sales QOQ',           'salesQQ',      'pct_or_num'],
+    ['Rev Q/Q',             'salesQQ',      'pct_or_num'],
+    // 수익성
+    ['ROIC',                'roic',         'pct_or_num'],
+    ['Return on Inv. Capital','roic',        'pct_or_num'],
+    ['Oper. Margin',        'operMargin',   'pct_or_num'],
+    ['Oper Margin',         'operMargin',   'pct_or_num'],
+    ['Operating Margin',    'operMargin',   'pct_or_num'],
+    ['Op. Margin',          'operMargin',   'pct_or_num'],
+    ['Profit Margin',       'profitMargin', 'pct_or_num'],
+    ['Net Margin',          'profitMargin', 'pct_or_num'],
+    ['Net Profit Margin',   'profitMargin', 'pct_or_num'],
+    ['ROE',                 'roe',          'pct_or_num'],
+    ['Return on Equity',    'roe',          'pct_or_num'],
+    // 재무 안정성
+    ['Debt/Eq',             'debtEq',       'num'],
+    ['Debt/Equity',         'debtEq',       'num'],
+    ['D/E Ratio',           'debtEq',       'num'],
+    ['LT Debt/Eq',          null,           null],  // 무시
+    ['Current Ratio',       'currentRatio', 'num'],
+    ['Curr. Ratio',         'currentRatio', 'num'],
+    // 기술적
+    ['SMA200',              'sma200',       'pct_or_num'],
+    ['SMA 200',             'sma200',       'pct_or_num'],
+    ['200-Day SMA',         'sma200',       'pct_or_num'],
+    ['SMA50',               'sma50',        'pct_or_num'],
+    ['SMA 50',              'sma50',        'pct_or_num'],
+    ['50-Day SMA',          'sma50',        'pct_or_num'],
+    ['SMA20',               null,           null],  // 무시
+    ['RSI (14)',             'rsi',          'num'],
+    ['RSI(14)',              'rsi',          'num'],
+    ['RSI 14',              'rsi',          'num'],
+    ['RSI',                 'rsi',          'num'],
+    ['Rel Volume',          null,           null],
+    ['Beta',                'beta',         'num'],
+    // ── Price 보조 ──
+    ['Price',               'price',        'num'],
+    ['Current Price',       'price',        'num'],
+    ['Stock Price',         'price',        'num'],
+    ['Target Price',        'targetPrice',  'num'],
+    ['1-Year Target',       'targetPrice',  'num'],
+    ['1 Year Target',       'targetPrice',  'num'],
+    // ── 보조 지표 10개 (v9) ──
+    ['EV/Sales',            'evSales',      'num'],
+    ['EV / Sales',          'evSales',      'num'],
+    ['P/E',                 'pe',           'num'],
+    ['Trailing P/E',        'pe',           'num'],
+    ['P/E (TTM)',            'pe',           'num'],
+    ['Sales Y/Y TTM',       'salesYyTtm',   'pct_or_num'],
+    ['Sales Y/Y',           'salesYyTtm',   'pct_or_num'],
+    ['Rev Y/Y TTM',         'salesYyTtm',   'pct_or_num'],
+    ['Revenue Growth TTM',  'salesYyTtm',   'pct_or_num'],
+    ['Gross Margin',        'grossMargin',  'pct_or_num'],
+    ['Gross Profit Margin', 'grossMargin',  'pct_or_num'],
+    ['Quick Ratio',         'quickRatio',   'num'],
+    ['Insider Trans',       'insiderTrans', 'pct_or_num'],
+    ['Insider Transaction', 'insiderTrans', 'pct_or_num'],
+    ['Insider Trading',     'insiderTrans', 'pct_or_num'],
+    ['Inst Trans',          'instTrans',    'pct_or_num'],
+    ['Inst. Trans',         'instTrans',    'pct_or_num'],
+    ['Institutional Trans', 'instTrans',    'pct_or_num'],
+    ['Short Float',         'shortFloat',   'pct_or_num'],
+    ['Short Float %',       'shortFloat',   'pct_or_num'],
+    ['Short Interest',      'shortFloat',   'pct_or_num'],
+    ['Perf Quarter',        'perfQuarter',  'pct_or_num'],
+    ['Perf. Quarter',       'perfQuarter',  'pct_or_num'],
+    ['Quarterly Perf.',     'perfQuarter',  'pct_or_num'],
+    // ── v8 잔재 → 무시 ──
+    ['P/B',                 null,           null],
+    ['P/C',                 null,           null],
+    ['Insider Own',         null,           null],
+    ['Inst Own',            null,           null],
+    ['Dividend TTM',        null,           null],
+    ['Dividend Est.',       null,           null],
+    ['EPS (ttm)',           null,           null],
+  ];
+
+  /* ── 라벨 → {key, type} 색인 ────────────────────────────── */
+  const labelLookup = {};
+  MAP.forEach(([label, key, type]) => {
+    if (key && !labelLookup[label.toLowerCase()]) {
+      labelLookup[label.toLowerCase()] = { key, type };
+    }
+  });
+
+  /* ── 값 추출 헬퍼 ────────────────────────────────────────── */
+  function extractNum(val) {
+    const s = String(val).replace(/,/g, '').trim();
+    const m = s.match(/^-?\d+\.?\d*/);
+    return m ? parseFloat(m[0]) : null;
+  }
+  function extractPct(val) {
+    const m = String(val).match(/(-?\d+\.?\d*)%/);
+    return m ? parseFloat(m[1]) : null;
+  }
+  function extractVal(val, type) {
+    const s = String(val).trim();
+    if (type === 'pct')         return extractPct(s);
+    if (type === 'pct_or_num')  return extractPct(s) ?? extractNum(s);
+    return extractNum(s); // 'num'
+  }
+
+  /* ── 전략 A: 연속 두 줄 (라벨 줄 → 값 줄) ──────────────── */
+  const seen = {};
+  for (let i = 0; i < lines.length - 1; i++) {
+    const rawLabel = lines[i];
+    const rawValue = lines[i + 1];
+    const meta     = labelLookup[rawLabel.toLowerCase()];
+    if (!meta) continue;
+    const { key, type } = meta;
+    if (seen[key]) continue;
+    const num = extractVal(rawValue, type);
+    if (num !== null && !isNaN(num)) {
+      result[key] = num;
+      seen[key]   = true;
+      i++;  // 값 줄 소비
+    }
+  }
+
+  /* ── 전략 B: 인라인 탭/공백 분리 형식 ───────────────────── */
+  //  예: "Forward P/E\t30.89" 또는 "Forward P/E   30.89"
+  if (Object.keys(result).length < 5) {
+    for (const line of lines) {
+      const parts = line.split(/\t{1,}|\s{3,}/);
+      if (parts.length < 2) continue;
+      const rawLabel = parts[0].trim();
+      const rawValue = parts[parts.length - 1].trim();
+      const meta     = labelLookup[rawLabel.toLowerCase()];
+      if (!meta || seen[meta.key]) continue;
+      const num = extractVal(rawValue, meta.type);
+      if (num !== null && !isNaN(num)) {
+        result[meta.key] = num;
+        seen[meta.key]   = true;
+      }
+    }
+  }
+
+  /* ── 전략 C: 미인식 지표 → matchIndicators fallback ─────── */
+  const unmatched = [...CORE_INDICATORS, ...OPT_INDICATORS, ...PRICE_AUX_INDICATORS]
+    .filter(([k]) => result[k] === undefined && k !== 'targetPriceGap');
+  if (unmatched.length > 0) {
+    const fallback = matchIndicators(raw);
+    unmatched.forEach(([k]) => {
+      if (fallback[k] !== undefined && result[k] === undefined) {
+        result[k] = fallback[k];
+      }
+    });
+  }
+
+  /* ── targetPriceGap 자동 계산 ────────────────────────────── */
+  if (result.targetPrice && result.price && result.price !== 0) {
+    result.targetPriceGap = parseFloat(
+      (((result.targetPrice - result.price) / result.price) * 100).toFixed(1)
+    );
+  }
+
+  return result;
+}
+
+/* ================================================================
+   이미지 로드
+   ================================================================ */
+function loadImageFile(file) {
+  if (!file || !file.type.startsWith('image/')) {
+    alert('이미지 파일만 지원합니다 (PNG, JPG, WEBP).');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      appState.imageEl = img;
+      const previewImg = document.getElementById('preview-img');
+      previewImg.src = e.target.result;
+      document.getElementById('preview-area').classList.add('visible');
+      document.getElementById('drop-zone').style.display = 'none';
+      runOCR();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ================================================================
+   Tesseract OCR
+   ================================================================ */
+async function runOCR() {
+  if (!appState.imageEl) return;
+  const progressArea = document.getElementById('ocr-progress-area');
+  const progressBar  = document.getElementById('ocr-progress-bar');
+  const progressText = document.getElementById('ocr-progress-text');
+  const btn          = document.getElementById('btn-run-ocr');
+
+  progressArea.classList.add('visible');
+  btn.disabled = true;
+  btn.textContent = '⏳ OCR 분석 중...';
+
+  try {
+    const result = await Tesseract.recognize(appState.imageEl, 'eng', {
+      logger: (m) => {
+        if (m.status === 'recognizing text') {
+          const pct = Math.round(m.progress * 100);
+          progressBar.style.width = pct + '%';
+          progressText.textContent = `OCR 인식 중... ${pct}%`;
+        } else if (m.status === 'loading tesseract core') {
+          progressText.textContent = 'Tesseract 로딩 중...';
+        } else if (m.status === 'initializing api') {
+          progressText.textContent = 'OCR 엔진 초기화 중...';
+        }
+      }
+    });
+    appState.ocrText = result.data.text;
+    progressText.textContent = '✅ OCR 완료!';
+    progressBar.style.width = '100%';
+
+    document.getElementById('ocr-raw-area').classList.add('visible');
+    document.getElementById('ocr-raw-content').textContent = appState.ocrText;
+
+    appState.ocrIndicators = matchIndicators(appState.ocrText);
+    renderReviewTable(appState.ocrIndicators);
+    document.getElementById('input-section').scrollIntoView({ behavior: 'smooth' });
+
+  } catch (err) {
+    progressText.textContent = '❌ OCR 오류: ' + err.message;
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔄 OCR 재실행';
+  }
+}
+
+/* ================================================================
+   투자 성향 탭 UI
+   ================================================================ */
+function initStyleTabs() {
+  const tabs = document.querySelectorAll('.style-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      appState.investStyle = tab.dataset.style;
+      // 사용자 지정 → 현재 선택된 프리셋 가중치로 초기화
+      if (tab.dataset.style === 'custom' && !appState._customInited) {
+        appState.customWeights = { ...WEIGHTS.balanced };
+        appState._customInited = true;
+      }
+      updateWeightPreview();
+      const editor = document.getElementById('weight-editor');
+      if (appState.investStyle === 'custom') {
+        editor.classList.add('visible');
+        renderWeightInputs();
+      } else {
+        editor.classList.remove('visible');
+      }
+    });
+  });
+}
+
+function updateWeightPreview() {
+  const w       = getActiveWeights();
+  const preview = document.getElementById('weight-preview');
+  if (!preview) return;
+  preview.innerHTML = Object.entries(WEIGHT_LABELS)
+    .map(([k, label]) => `<span class="weight-chip">${label} <strong>${w[k]}%</strong></span>`)
+    .join('');
+}
+
+function renderWeightInputs() {
+  const grid = document.getElementById('weight-inputs');
+  if (!grid) return;
+  const w = appState.customWeights;
+  grid.innerHTML = Object.entries(WEIGHT_LABELS).map(([k, label]) => `
+    <div class="weight-item input-group">
+      <label>${label}</label>
+      <input type="number" min="0" max="100" step="1" value="${w[k]}"
+        data-wkey="${k}" id="w-${k}" />
+    </div>`).join('');
+  grid.querySelectorAll('input[data-wkey]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      appState.customWeights[inp.dataset.wkey] = parseNum(inp.value) || 0;
+      validateWeightSum();
+      updateWeightPreview();
+    });
+  });
+  validateWeightSum();
+}
+
+function validateWeightSum() {
+  const w    = appState.customWeights;
+  const sum  = Object.values(w).reduce((a, b) => a + b, 0);
+  const disp = document.getElementById('weight-sum-display');
+  const btn  = document.getElementById('btn-analyze');
+  if (Math.abs(sum - 100) < 0.01) {
+    if (disp) { disp.textContent = `합계: ${sum} ✅`; disp.className = 'ok'; }
+    if (btn)  btn.disabled = false;
+  } else {
+    if (disp) { disp.textContent = `합계: ${sum} ❌ (100이 되어야 합니다)`; disp.className = 'err'; }
+    if (btn)  btn.disabled = true;
+  }
+}
+
+/* ================================================================
+   이벤트 바인딩 (v8 패턴 기반 + v9 수정)
+   ================================================================ */
+function initEvents() {
+  const dropZone  = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+
+  // 파일 업로드
+  dropZone?.addEventListener('click', () => fileInput.click());
+  fileInput?.addEventListener('change', (e) => {
+    if (e.target.files[0]) loadImageFile(e.target.files[0]);
+  });
+
+  // 드래그앤드롭
+  dropZone?.addEventListener('dragover',  (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone?.addEventListener('dragleave', ()  => dropZone.classList.remove('dragover'));
+  dropZone?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) loadImageFile(file);
+  });
+
+  // 클립보드 붙여넣기 (이미지)
+  document.addEventListener('paste', (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) { loadImageFile(item.getAsFile()); break; }
+    }
+  });
+
+  // OCR 버튼
+  document.getElementById('btn-run-ocr')?.addEventListener('click', runOCR);
+
+  // 이미지 제거
+  document.getElementById('btn-clear-image')?.addEventListener('click', () => {
+    appState.imageEl = null;
+    appState.ocrText = '';
+    document.getElementById('preview-area').classList.remove('visible');
+    document.getElementById('drop-zone').style.display = '';
+    document.getElementById('ocr-progress-area').classList.remove('visible');
+    document.getElementById('ocr-raw-area').classList.remove('visible');
+    document.getElementById('ocr-progress-bar').style.width = '0%';
+  });
+
+  // OCR 원문 토글
+  document.getElementById('ocr-raw-toggle')?.addEventListener('click', () => {
+    const content = document.getElementById('ocr-raw-content');
+    const btn     = document.getElementById('ocr-raw-toggle');
+    if (content) {
+      const isOpen = content.classList.toggle('open');
+      btn.textContent = (isOpen ? '▼' : '▶') + ' OCR 원문 보기 / 숨기기';
+    }
+  });
+
+  // input 섹션의 "OCR 원문 보기" 버튼
+  document.getElementById('btn-show-ocr-raw')?.addEventListener('click', () => {
+    document.getElementById('ocr-section').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('ocr-raw-area').classList.add('visible');
+    document.getElementById('ocr-raw-content').classList.add('open');
+  });
+
+  // ── Finviz 텍스트 파서 ──────────────────────────────────────
+  document.getElementById('btn-parse-finviz')?.addEventListener('click', () => {
+    const raw   = document.getElementById('finviz-paste-box').value.trim();
+    const resEl = document.getElementById('text-parse-result');
+    if (!raw) {
+      resEl.innerHTML = '<span style="color:var(--orange);">⚠️ 텍스트를 붙여넣은 뒤 실행하세요.</span>';
+      return;
+    }
+    const matched    = parseFinvizText(raw);
+    const count      = Object.keys(matched).length;
+    if (count === 0) {
+      resEl.innerHTML = '<span style="color:var(--red);">❌ 인식된 지표가 없습니다. Finviz 형식인지 확인하세요.</span>';
+      return;
+    }
+    renderReviewTable(matched);
+
+    const allMeta    = [...CORE_INDICATORS, ...OPT_INDICATORS, ...PRICE_AUX_INDICATORS];
+    const coreHit    = CORE_INDICATORS.filter(([k]) => matched[k] !== undefined).length;
+    const optHit     = OPT_INDICATORS.filter(([k]) => matched[k] !== undefined).length;
+    const missedCore = CORE_INDICATORS.filter(([k]) => matched[k] === undefined).map(([,l]) => l);
+
+    let msg = `✅ ${count}개 인식 — 핵심 ${coreHit}/19, 보조 ${optHit}/10`;
+    if (missedCore.length > 0 && missedCore.length <= 8) {
+      msg += `<br><span style="color:var(--orange);font-size:0.8rem;">⚠️ 미인식 핵심 지표: ${missedCore.join(' · ')}</span>`;
+    }
+    resEl.style.color = '';
+    resEl.innerHTML   = `<span style="color:var(--green);">${msg}</span>`;
+    document.getElementById('input-section').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // textarea paste → 80ms 후 자동 파싱 (v8 패턴 유지)
+  document.getElementById('finviz-paste-box')?.addEventListener('paste', () => {
+    setTimeout(() => document.getElementById('btn-parse-finviz')?.click(), 80);
+  });
+
+  document.getElementById('btn-clear-paste')?.addEventListener('click', () => {
+    document.getElementById('finviz-paste-box').value = '';
+    const resEl = document.getElementById('text-parse-result');
+    resEl.textContent = '';
+    resEl.style.color = '';
+  });
+  // ─────────────────────────────────────────────────────────────
+
+  // 예시값 채우기 — 개별 input 세팅 방식 (v8 패턴, renderReviewTable보다 안전)
+  document.getElementById('btn-fill-example')?.addEventListener('click', () => {
+    if (!document.getElementById('review-tbody').children.length) renderReviewTable({});
+    Object.entries(EXAMPLE_VALUES).forEach(([k, v]) => {
+      const inp = document.getElementById(`ind-${k}`);
+      if (inp && !inp.readOnly) { inp.value = v; inp.classList.remove('ocr-modified'); }
+    });
+    // targetPriceGap 자동 계산
+    const p = EXAMPLE_VALUES.price, t = EXAMPLE_VALUES.targetPrice;
+    const gapInp = document.getElementById('ind-targetPriceGap');
+    if (gapInp && p && t) gapInp.value = (((t - p) / p) * 100).toFixed(1);
+    showAlert('input-warn-msg', '✅ NVDA 가상 예시값이 채워졌습니다. 분석 실행을 누르세요.', 'alert-success', 4000);
+  });
+
+  // 모든 값 초기화
+  document.getElementById('btn-reset-all')?.addEventListener('click', () => {
+    document.querySelectorAll('#review-tbody input').forEach(inp => {
+      inp.value = '';
+      inp.classList.remove('ocr-modified');
+    });
+    document.getElementById('ticker-input').value = '';
+  });
+
+  // 가중치 기본값 복원
+  document.getElementById('btn-reset-weights')?.addEventListener('click', () => {
+    appState.customWeights = { ...WEIGHTS.balanced };
+    renderWeightInputs();
+    updateWeightPreview();
+  });
+
+  // 분석 실행
+  document.getElementById('btn-analyze')?.addEventListener('click', () => {
+    if (!document.getElementById('review-tbody').children.length) {
+      showAlert('input-error-msg', '⚠️ 먼저 지표값을 입력하거나 예시값을 채워주세요.', 'alert-error', 3000);
+      return;
+    }
+    const data = collectIndicators();
+    appState.indicators = data; // 상태에 저장
+    if (typeof runAnalysis === 'function') {
+      runAnalysis(data);
+    } else {
+      showAlert('input-warn-msg', '⚙️ STEP 1 완료 상태 — 분석 엔진은 STEP 3에서 구현됩니다.', 'alert-info', 4000);
+    }
+  });
+
+  initStorageEvents();
+}
+
+/* ================================================================
+   저장/불러오기 이벤트 (v9: localStorage 키 'finviz_v9_history', 최대 5개)
+   ================================================================ */
+function initStorageEvents() {
+  document.getElementById('btn-print')?.addEventListener('click', () => window.print());
+
+  document.getElementById('btn-save')?.addEventListener('click', () => {
+    if (!appState.lastResult) {
+      showAlert('input-warn-msg', '⚠️ 저장할 분석 결과가 없습니다. 먼저 분석을 실행하세요.', 'alert-warning', 3000);
+      return;
+    }
+    const r       = appState.lastResult;
+    const history = JSON.parse(localStorage.getItem('finviz_v9_history') || '[]');
+    history.unshift({
+      ticker:     r.ticker,
+      date:       r.date,
+      grade:      r.adjustedGrade,
+      gradeLabel: r.gradeLabel,
+      totalScore: r.totalScore,
+      style:      r.style,
+      weights:    r.weights,
+      data:       r.data
+    });
+    if (history.length > 5) history.pop();
+    localStorage.setItem('finviz_v9_history', JSON.stringify(history));
+    loadSavedList();
+    showAlert('input-warn-msg', '✅ 분석이 저장되었습니다.', 'alert-success', 2000);
+  });
+
+  document.getElementById('btn-export-json')?.addEventListener('click', () => {
+    if (!appState.lastResult) {
+      showAlert('input-warn-msg', '⚠️ 내보낼 분석 결과가 없습니다.', 'alert-warning', 3000);
+      return;
+    }
+    const blob = new Blob([JSON.stringify(appState.lastResult, null, 2)], { type: 'application/json' });
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(blob);
+    a.download = `finviz_v9_${appState.lastResult.ticker}_${appState.lastResult.date}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  document.getElementById('btn-import-json')?.addEventListener('click', () => {
+    document.getElementById('import-file').click();
+  });
+
+  document.getElementById('import-file')?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const saved = JSON.parse(ev.target.result);
+        if (!saved || !saved.data) throw new Error('data 필드 없음');
+        // 지표값 복원
+        Object.entries(saved.data).forEach(([k, v]) => {
+          const inp = document.getElementById(`ind-${k}`);
+          if (inp) inp.value = v;
+        });
+        if (saved.ticker) document.getElementById('ticker-input').value = saved.ticker;
+        // 투자 성향 복원
+        if (saved.style) {
+          document.querySelectorAll('.style-tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.style === saved.style);
+          });
+          appState.investStyle = saved.style;
+          if (saved.style === 'custom' && saved.weights) {
+            appState.customWeights = { ...saved.weights };
+            appState._customInited  = true;
+          }
+          updateWeightPreview();
+        }
+        showAlert('input-warn-msg', '✅ JSON 불러오기 완료. 분석 실행을 누르세요.', 'alert-success', 3000);
+        document.getElementById('input-section').scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        showAlert('input-error-msg', '❌ JSON 파일 파싱 오류: ' + err.message, 'alert-error', 4000);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+}
+
+function loadSavedList() {
+  const list    = document.getElementById('saved-list');
+  if (!list) return;
+  const history = JSON.parse(localStorage.getItem('finviz_v9_history') || '[]');
+  if (!history.length) {
+    list.innerHTML = '<div class="empty-saved">저장된 분석이 없습니다.</div>';
+    return;
+  }
+  list.innerHTML = history.map((item, idx) => `
+    <div class="saved-item" data-idx="${idx}">
+      <span class="si-ticker">${item.ticker}</span>
+      <span class="grade-badge grade-${item.grade}" style="padding:2px 8px;font-size:0.78rem;">${item.gradeLabel}</span>
+      <span class="si-date">${item.date}</span>
+    </div>`).join('');
+  list.querySelectorAll('.saved-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const saved = history[+el.dataset.idx];
+      if (!saved?.data) return;
+      Object.entries(saved.data).forEach(([k, v]) => {
+        const inp = document.getElementById(`ind-${k}`);
+        if (inp) inp.value = v;
+      });
+      if (saved.ticker) document.getElementById('ticker-input').value = saved.ticker;
+      if (saved.style) {
+        document.querySelectorAll('.style-tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.style === saved.style);
+        });
+        appState.investStyle = saved.style;
+        if (saved.style === 'custom' && saved.weights) {
+          appState.customWeights = { ...saved.weights };
+          appState._customInited  = true;
+        }
+        updateWeightPreview();
+      }
+      showAlert('input-warn-msg', '✅ 저장된 분석을 복원했습니다. 분석 실행을 누르세요.', 'alert-success', 3000);
+      document.getElementById('input-section').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+}
+
+/* ================================================================
+   STEP 3 — 점수 계산 엔진 (v9 기준 전면 수정)
+   ================================================================ */
+
+/* ---------------------------------------------------------------
+   밸류에이션 점수 (요구사항 #4: P/FCF 포함 5개)
+   ForwardPE 30, PEG 25, P/S 20, P/FCF 15, EV/EBITDA 10
+   --------------------------------------------------------------- */
+function scoreValuation(d) {
+  const fpe  = d.forwardPE  != null
+    ? interp(d.forwardPE,  [[5,100],[12,85],[18,70],[25,50],[35,30],[50,10]])
+    : null;
+  const peg  = d.peg        != null
+    ? interp(d.peg,        [[0.5,100],[1,85],[1.5,68],[2,50],[3,25],[4,10]])
+    : null;
+  const ps   = d.ps         != null
+    ? interp(d.ps,         [[1,100],[3,80],[6,60],[10,45],[20,25],[30,10]])
+    : null;
+  const pfcf = d.pFcf       != null
+    ? (d.pFcf <= 0 ? 5                                              // 현금흐름 적자
+      : interp(d.pFcf,     [[10,100],[20,80],[35,60],[60,35],[100,15],[150,5]]))
+    : null;
+  const eveb = d.evEbitda   != null
+    ? interp(d.evEbitda,   [[5,100],[10,80],[15,65],[20,50],[30,30],[50,10]])
+    : null;
+
+  const pairs = [[fpe,30],[peg,25],[ps,20],[pfcf,15],[eveb,10]];
+  return { score: wavg(pairs), detail: { fpe, peg, ps, pfcf, eveb } };
+}
+
+/* ---------------------------------------------------------------
+   성장성 점수 (EPS nextY 30, EPS next5Y 25, EPS Q/Q 25, Sales Q/Q 20)
+   --------------------------------------------------------------- */
+function scoreGrowth(d) {
+  const eny = d.epsNextY  != null
+    ? interp(d.epsNextY,  [[-30,0],[-5,15],[0,30],[5,50],[10,70],[20,90],[35,100]])
+    : null;
+  const en5 = d.epsNext5Y != null
+    ? interp(d.epsNext5Y, [[-10,0],[0,20],[5,40],[10,60],[20,82],[30,100]])
+    : null;
+  const eqq = d.epsQQ     != null
+    ? interp(d.epsQQ,     [[-30,0],[-5,20],[0,40],[10,65],[20,85],[35,100]])
+    : null;
+  const sqq = d.salesQQ   != null
+    ? interp(d.salesQQ,   [[-20,0],[-3,20],[0,38],[8,65],[15,85],[25,100]])
+    : null;
+
+  // EPS Q/Q + Sales Q/Q 조합 보너스/페널티
+  let bonus = 0;
+  if (eqq !== null && sqq !== null) {
+    if      (eqq >= 75 && sqq >= 65)  bonus =  5;   // 양쪽 다 강함
+    else if (eqq >= 65 && sqq < 38)   bonus = -3;   // EPS만 (비용 삭감 의혹)
+    else if (eqq < 38  && sqq >= 65)  bonus =  2;   // 매출 성장, EPS 약함
+    else if (eqq < 35  && sqq < 35)   bonus = -6;   // 둘 다 약함 (성장 둔화)
+  }
+  const raw = wavg([[eny,30],[en5,25],[eqq,25],[sqq,20]]);
+  return { score: raw !== null ? clamp(raw + bonus) : null,
+           detail: { eny, en5, eqq, sqq, bonus } };
+}
+
+/* ---------------------------------------------------------------
+   수익성 점수 (ROIC 35, OperMargin 30, ProfitMargin 20, ROE 15)
+   + 비영업이익 경고, 이자/세금 경고
+   --------------------------------------------------------------- */
+function scoreProfitability(d) {
+  const roic = d.roic         != null
+    ? (d.roic < 0 ? 0 : interp(d.roic, [[0,0],[5,38],[10,60],[15,80],[20,95],[30,100]]))
+    : null;
+  const opm  = d.operMargin   != null
+    ? interp(d.operMargin,   [[-25,0],[-5,15],[0,30],[8,55],[15,72],[25,88],[40,100]])
+    : null;
+  const pm   = d.profitMargin != null
+    ? interp(d.profitMargin, [[-25,0],[-5,15],[0,30],[5,50],[10,68],[20,88],[35,100]])
+    : null;
+  const roe  = d.roe          != null
+    ? (d.roe < 0 ? 0 : interp(d.roe, [[0,0],[8,45],[15,70],[20,88],[30,100]]))
+    : null;
+
+  // 비영업이익 / 이자·세금 경고 (요구사항 #9)
+  const warnFlags = [];
+  if (d.profitMargin != null && d.operMargin != null) {
+    const diff = d.profitMargin - d.operMargin;
+    if (diff > 10) {
+      warnFlags.push({
+        severity:'warning', icon:'⚠️',
+        title:'비영업이익 의존 가능성',
+        desc:`Profit Margin(${d.profitMargin}%)이 Operating Margin(${d.operMargin}%)보다 `+
+             `${diff.toFixed(1)}%p 높습니다. 일회성 비영업이익 포함 여부를 확인하세요.`
+      });
+    }
+    if (d.operMargin - d.profitMargin > 20) {
+      warnFlags.push({
+        severity:'warning', icon:'⚠️',
+        title:'이자·세금 부담 과중',
+        desc:`Operating Margin(${d.operMargin}%)과 Profit Margin(${d.profitMargin}%) 차이가 `+
+             `${(d.operMargin - d.profitMargin).toFixed(1)}%p — 이자비용 또는 세금 부담이 큽니다.`
+      });
+    }
+  }
+  return { score: wavg([[roic,35],[opm,30],[pm,20],[roe,15]]),
+           detail: { roic, opm, pm, roe }, warnFlags };
+}
+
+/* ---------------------------------------------------------------
+   재무 안정성 점수 (Debt/Eq 55, Current Ratio 45)
+   --------------------------------------------------------------- */
+function scoreSafety(d) {
+  const de = d.debtEq       != null
+    ? interp(d.debtEq,      [[0,100],[0.3,88],[0.5,75],[1,55],[2,28],[3,8],[5,0]])
+    : null;
+  const cr = d.currentRatio != null
+    ? interp(d.currentRatio, [[0.3,5],[0.8,25],[1,50],[1.5,72],[2,88],[3,100],[5,85]])
+    : null;
+
+  const warnFlags = [];
+  if (de !== null && cr !== null) {
+    if (de < 30 && cr < 40)
+      warnFlags.push({ severity:'critical', icon:'🚨', title:'재무 위험 복합',
+        desc:'부채비율 높음 + 유동비율 낮음 — 단기 유동성 위기 가능성이 있습니다.' });
+    else if (de > 88 && cr > 88)
+      warnFlags.push({ severity:'info', icon:'✅', title:'매우 안정적',
+        desc:'무차입 고유동성 — 재무 건전성이 매우 높습니다.' });
+  }
+  return { score: wavg([[de,55],[cr,45]]), detail: { de, cr }, warnFlags };
+}
+
+/* ---------------------------------------------------------------
+   기술적 위치 점수 (SMA200 45, SMA50 35, RSI 20)
+   RSI 기준 v8:>80 → v9:>70 (요구사항 #9)
+   --------------------------------------------------------------- */
+function scoreTechnical(d) {
+  const s200 = d.sma200 != null
+    ? interp(d.sma200, [[-30,5],[-15,22],[-5,45],[0,60],[8,78],[15,90],[25,100]])
+    : null;
+  const s50  = d.sma50  != null
+    ? interp(d.sma50,  [[-25,8],[-10,28],[0,55],[8,78],[15,95],[20,100]])
+    : null;
+  const rsi  = d.rsi != null
+    ? (() => {
+        const r = d.rsi;
+        if      (r < 25)   return 30;   // 극단 과매도
+        if      (r < 30)   return 42;   // v9: <30 → 과매도 경고
+        if      (r < 40)   return 62;
+        if      (r <= 60)  return 100;  // 이상적 구간
+        if      (r <= 65)  return 85;
+        if      (r <= 70)  return 55;   // v9: >70 → 과열 경고
+        if      (r <= 80)  return 28;
+        return 12;                       // >80 극단 과열
+      })()
+    : null;
+
+  const warnFlags = [];
+  if (s200 !== null && rsi !== null && s200 < 45 && rsi < 50)
+    warnFlags.push({ severity:'warning', icon:'⚠️', title:'추세 하락 구간',
+      desc:`SMA200 대비 ${d.sma200}% + RSI ${d.rsi} — 장기·단기 모두 약세입니다.` });
+
+  return { score: wavg([[s200,45],[s50,35],[rsi,20]]),
+           detail: { s200, s50, rsi }, warnFlags };
+}
+
+/* ---------------------------------------------------------------
+   리스크 점수 (Beta 단독 모듈 — 요구사항 #11)
+   투자 성향별 별도 기준
+   --------------------------------------------------------------- */
+function scoreRisk(d, style) {
+  if (d.beta == null) return { score: null, detail: {} };
+  const bps = {
+    aggressive:   [[0,70],[0.8,82],[1.3,100],[1.8,85],[2.2,65],[2.8,38],[4,10]],
+    balanced:     [[0,80],[0.6,90],[1,100],[1.5,75],[2,48],[2.5,22],[3,8]],
+    conservative: [[0,100],[0.5,100],[0.8,85],[1.2,62],[1.5,38],[2,15],[3,5]]
+  };
+  const pts = bps[style] || bps.balanced;
+  return { score: clamp(interp(d.beta, pts)), detail: { beta: d.beta } };
+}
+
+/* ---------------------------------------------------------------
+   하드 필터 10가지 (요구사항 #9 — v9 기준 대폭 강화)
+   --------------------------------------------------------------- */
+function checkHardFilters(d, scores) {
+  const warns = [];
+  const add   = (severity, icon, title, desc) =>
+    warns.push({ severity, icon, title, desc });
+
+  // 1. P/FCF ≤ 0 → 현금흐름 적자 (요구사항 #9)
+  if (d.pFcf != null && d.pFcf <= 0)
+    add('critical','🚨','현금흐름 적자',
+      `P/FCF(${d.pFcf}) ≤ 0 — 잉여현금흐름(FCF)이 마이너스 상태입니다. 실질 수익 창출 능력을 점검하세요.`);
+
+  // 2. P/FCF ≥ 100 → 현금흐름 대비 고평가 (요구사항 #9)
+  if (d.pFcf != null && d.pFcf >= 100)
+    add('warning','⚠️','현금흐름 대비 고평가',
+      `P/FCF(${d.pFcf}) ≥ 100 — 잉여현금흐름 대비 주가 부담이 매우 큽니다.`);
+
+  // 3. EPS Q/Q AND Sales Q/Q 동시 음수 → 성장 둔화 (요구사항 #9)
+  if (d.epsQQ != null && d.salesQQ != null && d.epsQQ < 0 && d.salesQQ < 0)
+    add('critical','🚨','성장 동반 둔화',
+      `EPS Q/Q(${d.epsQQ}%) + Sales Q/Q(${d.salesQQ}%) 모두 음수 — 실적·매출 동반 역성장 구간입니다.`);
+
+  // 4. SMA200 음수 → 장기 추세 약세 (요구사항 #9)
+  if (d.sma200 != null && d.sma200 < 0)
+    add('warning','📉','장기 추세 약세',
+      `SMA200 대비 ${d.sma200}% — 현재가가 200일 이동평균선 아래에 있습니다.`);
+
+  // 5. RSI > 70 → 단기 과열 (v8:>80 → v9:>70, 요구사항 #9)
+  if (d.rsi != null && d.rsi > 70)
+    add('warning','🌡️','RSI 단기 과열',
+      `RSI(${d.rsi}) > 70 — 단기 과매수 구간입니다. 신규 진입 시 가격 조정 위험을 고려하세요.`);
+
+  // 6. RSI < 30 → 과매도 (요구사항 #9)
+  if (d.rsi != null && d.rsi < 30)
+    add('warning','📉','RSI 과매도',
+      `RSI(${d.rsi}) < 30 — 과매도 구간입니다. 반등 가능성이 있으나 추세 확인이 필요합니다.`);
+
+  // 7. ProfitMargin > OperMargin + 10 → 비영업이익 가능성
+  if (d.profitMargin != null && d.operMargin != null &&
+      d.profitMargin > d.operMargin + 10)
+    add('warning','⚠️','비영업이익 의존 가능성',
+      `Profit Margin(${d.profitMargin}%) − Operating Margin(${d.operMargin}%) = `+
+      `+${(d.profitMargin - d.operMargin).toFixed(1)}%p. 일회성 이익 포함 여부를 확인하세요.`);
+
+  // 8. OperMargin > ProfitMargin + 20 → 이자·세금 부담
+  if (d.operMargin != null && d.profitMargin != null &&
+      d.operMargin > d.profitMargin + 20)
+    add('warning','⚠️','이자·세금 부담 과중',
+      `Operating Margin(${d.operMargin}%) − Profit Margin(${d.profitMargin}%) = `+
+      `+${(d.operMargin - d.profitMargin).toFixed(1)}%p — 이자비용 또는 법인세 부담이 큽니다.`);
+
+  // 9. ROE 높음 + Debt/Eq 높음 → 레버리지 착시 (요구사항 #9)
+  if (d.roe != null && d.debtEq != null && d.roe > 30 && d.debtEq > 2)
+    add('warning','⚠️','ROE 레버리지 착시 가능성',
+      `ROE(${d.roe}%)가 높지만 Debt/Eq(${d.debtEq})도 높습니다. `+
+      `부채 레버리지로 인한 ROE 과장 여부를 ROIC와 함께 확인하세요.`);
+
+  // 10. Beta ≥ 2.0 → 고변동성 (요구사항 #9)
+  if (d.beta != null && d.beta >= 2.0)
+    add('warning','⚡','고변동성 종목',
+      `Beta(${d.beta}) ≥ 2.0 — 시장 대비 변동성이 2배 이상입니다. 보유 비중 관리가 필요합니다.`);
+
+  // 기존 v8 필터 유지
+  if (d.debtEq != null && d.debtEq > 3)
+    add('critical','🚨','과도한 부채',
+      `Debt/Eq(${d.debtEq}) > 3 — 재무 레버리지가 매우 높습니다.`);
+  if (d.currentRatio != null && d.currentRatio < 0.8)
+    add('critical','🚨','단기 유동성 위험',
+      `Current Ratio(${d.currentRatio}) < 0.8 — 유동부채 대비 유동자산이 부족합니다.`);
+  if (d.roic != null && d.roic < 0)
+    add('critical','🚨','ROIC 음수',
+      `ROIC(${d.roic}%) — 투하자본에서 손실이 발생 중입니다.`);
+  if (d.operMargin != null && d.operMargin < 0)
+    add('warning','⚠️','영업 적자',
+      `Operating Margin(${d.operMargin}%) — 영업 단계에서 손실이 발생하고 있습니다.`);
+
+  return warns;
+}
+
+/* ---------------------------------------------------------------
+   보조 지표 경고 (v9 기준 — OPT_INDICATORS 10개 대응)
+   --------------------------------------------------------------- */
+function checkOptionalWarnings(d) {
+  const warns = [];
+  const add   = (severity, icon, title, desc) =>
+    warns.push({ severity, icon, title, desc, type:'optional' });
+
+  // Target Price Gap 음수 경고 (요구사항 #10 문구 적용)
+  if (d.targetPriceGap != null && d.targetPriceGap < 0)
+    add('warning','📉','목표주가 하회',
+      `Target Price Gap이 음수입니다. 현재가가 목표주가보다 높아 컨센서스 대비 주가 부담이 있습니다. (Gap: ${d.targetPriceGap.toFixed(1)}%)`);
+
+  // Target Price Gap 큰 양수 → 기대감 높음
+  if (d.targetPriceGap != null && d.targetPriceGap > 30)
+    add('info','📈','애널리스트 기대 큼',
+      `Target Price Gap ${d.targetPriceGap.toFixed(1)}% — 애널리스트 컨센서스 목표가 대비 상승여력이 큽니다.`);
+
+  // Short Float 높음
+  if (d.shortFloat != null && d.shortFloat > 20)
+    add('warning','⚠️','높은 공매도 비율',
+      `Short Float(${d.shortFloat}%) > 20% — 시장의 부정적 시각이 높습니다.`);
+  if (d.shortFloat != null && d.shortFloat > 10 && d.shortFloat <= 20)
+    add('info','💡','주의할 공매도 비율',
+      `Short Float(${d.shortFloat}%) — 시장 우려가 어느 정도 있습니다.`);
+
+  // Gross Margin 낮음
+  if (d.grossMargin != null && d.grossMargin < 20)
+    add('warning','⚠️','낮은 매출총이익률',
+      `Gross Margin(${d.grossMargin}%) < 20% — 원가 경쟁 심화 또는 저마진 사업 구조입니다.`);
+
+  // Insider Trans 음수 (순매도)
+  if (d.insiderTrans != null && d.insiderTrans < -5)
+    add('info','💡','내부자 순매도',
+      `Insider Trans(${d.insiderTrans}%) — 내부자 매도가 우세합니다. 경영진 시각 확인이 필요합니다.`);
+
+  // Inst Trans 음수 (기관 이탈)
+  if (d.instTrans != null && d.instTrans < -5)
+    add('info','💡','기관 순매도',
+      `Inst Trans(${d.instTrans}%) — 기관의 매도가 우세합니다.`);
+
+  // Quick Ratio 낮음
+  if (d.quickRatio != null && d.quickRatio < 0.8)
+    add('warning','⚠️','당좌비율 낮음',
+      `Quick Ratio(${d.quickRatio}) < 0.8 — 재고를 제외한 단기 유동성이 부족합니다.`);
+
+  // Sales Y/Y TTM 음수
+  if (d.salesYyTtm != null && d.salesYyTtm < 0)
+    add('warning','⚠️','연간 매출 역성장',
+      `Sales Y/Y TTM(${d.salesYyTtm}%) — 최근 12개월 기준 매출이 감소하고 있습니다.`);
+
+  // Perf Quarter 극단적 약세
+  if (d.perfQuarter != null && d.perfQuarter < -20)
+    add('warning','📉','분기 주가 급락',
+      `Perf Quarter(${d.perfQuarter}%) — 최근 분기 주가가 크게 하락했습니다.`);
+
+  // EV/Sales 과도하게 높음 (업종에 따라 다르지만 50 이상은 일반적으로 극단적)
+  if (d.evSales != null && d.evSales > 50)
+    add('info','💡','EV/Sales 극단 고평가',
+      `EV/Sales(${d.evSales}) > 50 — 매출 대비 기업가치가 매우 높습니다. 성장 모멘텀이 뒷받침되어야 합니다.`);
+
+  return warns;
+}
+
+/* ---------------------------------------------------------------
+   분석 신뢰도 계산 (요구사항 #12)
+   19개 핵심 지표 입력 개수 기준
+   --------------------------------------------------------------- */
+function calcReliability(d) {
+  const filled = CORE_INDICATORS.filter(([k]) => d[k] != null).length;
+  let level, label, color;
+  if      (filled >= 16) { level = 'high';   label = '높음';   color = 'var(--green)'; }
+  else if (filled >= 11) { level = 'medium'; label = '보통';   color = 'var(--orange)'; }
+  else                   { level = 'low';    label = '낮음';   color = 'var(--red)'; }
+  return { filled, total: 19, level, label, color };
+}
+
+/* ---------------------------------------------------------------
+   등급 결정 (요구사항 #7 — v9 기준선 변경 + 하향 로직)
+   v8: 80/65/48/32 → v9: 80/70/55/40
+   --------------------------------------------------------------- */
+function calcGrade(score, hardWarnings, scores) {
+  // 기본 등급
+  let baseGrade;
+  if      (score >= 80) baseGrade = 1;   // 강한 매수 후보
+  else if (score >= 70) baseGrade = 2;   // 분할매수 후보
+  else if (score >= 55) baseGrade = 3;   // 관망
+  else if (score >= 40) baseGrade = 4;   // 비중 축소 후보
+  else                  baseGrade = 5;   // 매수 제외
+
+  // 중대경고(critical) 개수별 하향
+  const critCount = hardWarnings.filter(w => w.severity === 'critical').length;
+  let adjusted = critCount === 1
+    ? baseGrade + 1
+    : critCount >= 2
+      ? Math.min(5, baseGrade + 2)
+      : baseGrade;
+
+  // 재무위험 + 성장둔화 → 최소 관망(3)
+  const hasFinRisk   = hardWarnings.some(w => w.title.includes('재무') || w.title.includes('부채') || w.title.includes('유동성'));
+  const hasGrowthWk  = hardWarnings.some(w => w.title.includes('성장'));
+  if (hasFinRisk && hasGrowthWk) adjusted = Math.max(adjusted, 3);
+
+  // SMA200 음수 + 성장 둔화 → 최소 비중 축소 후보(4)
+  if (scores && scores.technical != null && scores.growth != null &&
+      scores.technical < 50 && scores.growth < 40)
+    adjusted = Math.max(adjusted, 4);
+
+  adjusted = Math.min(5, adjusted);
+
+  const labels = ['', '강한 매수 후보', '분할매수 후보', '관망', '비중 축소 후보', '매수 제외'];
+  return { baseGrade, adjustedGrade: adjusted, gradeLabel: labels[adjusted] };
+}
+
+/* ---------------------------------------------------------------
+   사분면 계산 (요구사항 #8 — v9 완전 수정)
+   quality = growth*0.4 + profitability*0.4 + safety*0.2
+   Q1.5 없음: quality≥65 && 45≤priceBurden<65 → Q1/Q2 경계에 dot 표시
+   --------------------------------------------------------------- */
+function calcQuadrant(scores) {
+  // 기업의 질 (가중 평균)
+  const g = scores.growth       ?? null;
+  const p = scores.profitability ?? null;
+  const s = scores.safety       ?? null;
+
+  let quality;
+  let qualParts = 0, qualSum = 0;
+  if (g != null) { qualSum += g * 0.4; qualParts += 0.4; }
+  if (p != null) { qualSum += p * 0.4; qualParts += 0.4; }
+  if (s != null) { qualSum += s * 0.2; qualParts += 0.2; }
+  quality = qualParts > 0 ? qualSum / qualParts : 50;
+
+  // 가격 부담 (밸류에이션 역수)
+  const priceBurden = scores.valuation != null ? 100 - scores.valuation : 50;
+
+  // 사분면 판정 (Q1.5 → 경계 표시 처리)
+  let region;
+  const boundary = quality >= 65 && priceBurden >= 45 && priceBurden < 65;
+  if      (quality >= 65 && priceBurden < 45)  region = { id:'q1', name:'① 좋은 기업 · 합리적 가격', action:'강한 매수 후보 / 분할매수 후보' };
+  else if (boundary)                            region = { id:'q-boundary', name:'Q1↔Q2 경계 구간', action:'분할매수 후보 / 관망' };
+  else if (quality >= 65 && priceBurden >= 65)  region = { id:'q2', name:'② 좋은 기업 · 과열 가격', action:'조정 대기 / 소량 분할 접근' };
+  else if (quality < 65  && priceBurden < 50)   region = { id:'q3', name:'③ 기업 질 불확실 · 싼 가격', action:'고난도 / 관망' };
+  else                                           region = { id:'q4', name:'④ 기업 질 낮음 · 비싼 가격', action:'매수 제외' };
+
+  return { priceBurden: Math.round(priceBurden), quality: Math.round(quality), region };
+}
+
+/* ---------------------------------------------------------------
+   민감도 계산 TOP 5
+   --------------------------------------------------------------- */
+function calcSensitivity(data, weights, style) {
+  const base = _quickScore(data, weights, style);
+  const res  = [];
+
+  CORE_INDICATORS.forEach(([key, label]) => {
+    const val = data[key];
+    if (val == null) return;
+    const delta     = Math.abs(val) * 0.1 || 1;
+    const upScore   = _quickScore({ ...data, [key]: val + delta }, weights, style);
+    const downScore = _quickScore({ ...data, [key]: val - delta }, weights, style);
+    const impact    = Math.max(Math.abs(upScore - base), Math.abs(downScore - base));
+    res.push({ key, label, impact,
+      upDelta: parseFloat((upScore - base).toFixed(1)),
+      downDelta: parseFloat((downScore - base).toFixed(1)) });
+  });
+
+  return res.sort((a,b) => b.impact - a.impact).slice(0, 5);
+}
+
+/* ---------------------------------------------------------------
+   빠른 점수 계산 (시뮬레이터·민감도용)
+   --------------------------------------------------------------- */
+function _quickScore(d, weights, style) {
+  const s = {
+    valuation:    scoreValuation(d).score,
+    growth:       scoreGrowth(d).score,
+    profitability:scoreProfitability(d).score,
+    safety:       scoreSafety(d).score,
+    technical:    scoreTechnical(d).score,
+    risk:         scoreRisk(d, style).score,
+  };
+  return clamp(Math.round(wavg([
+    [s.valuation,    weights.val   ],
+    [s.growth,       weights.growth],
+    [s.profitability,weights.profit],
+    [s.safety,       weights.safety],
+    [s.technical,    weights.tech  ],
+    [s.risk,         weights.risk  ],
+  ]) || 0));
+}
+
+/* ================================================================
+   분석 실행 메인 (요구사항 #7~#12 모두 반영)
+   ================================================================ */
+function runAnalysis(data) {
+  // 최소 입력 검증
+  const filledCoreCount = CORE_INDICATORS.filter(([k]) => data[k] != null).length;
+  if (filledCoreCount < 3) {
+    showAlert('input-error-msg',
+      `⚠️ 핵심 지표가 ${filledCoreCount}개만 입력됐습니다. 최소 3개 이상 입력해주세요.`,
+      'alert-error', 4000);
+    return;
+  }
+
+  const style   = appState.investStyle;
+  const weights = getActiveWeights();
+
+  // 6개 모듈 점수 계산
+  const valRes  = scoreValuation(data);
+  const growRes = scoreGrowth(data);
+  const profRes = scoreProfitability(data);
+  const safeRes = scoreSafety(data);
+  const techRes = scoreTechnical(data);
+  const riskRes = scoreRisk(data, style);
+
+  const scores = {
+    valuation:    valRes.score,
+    growth:       growRes.score,
+    profitability:profRes.score,
+    safety:       safeRes.score,
+    technical:    techRes.score,
+    risk:         riskRes.score,
+  };
+
+  // 경고 수집 (하드필터 + 내부모듈 경고 + 보조지표 경고)
+  const hardWarnings = checkHardFilters(data, scores);
+  const optWarnings  = checkOptionalWarnings(data);
+
+  // 수익성·안정성·기술 내부 warnFlags 병합
+  [profRes, safeRes, techRes].forEach(res => {
+    (res.warnFlags || []).forEach(w => {
+      // checkHardFilters에서 이미 중복 처리된 것은 제외
+      const dup = hardWarnings.some(h => h.title === w.title);
+      if (!dup) hardWarnings.push(w);
+    });
+  });
+
+  const allWarnings = [...hardWarnings, ...optWarnings];
+
+  // 종합 점수
+  const totalScore = clamp(Math.round(
+    wavg([
+      [scores.valuation,    weights.val   ],
+      [scores.growth,       weights.growth],
+      [scores.profitability,weights.profit],
+      [scores.safety,       weights.safety],
+      [scores.technical,    weights.tech  ],
+      [scores.risk,         weights.risk  ],
+    ]) || 0
+  ));
+
+  // 등급 / 사분면 / 신뢰도 / 민감도
+  const gradeInfo   = calcGrade(totalScore, hardWarnings, scores);
+  const quadrant    = calcQuadrant(scores);
+  const reliability = calcReliability(data);
+  const sensitivity = calcSensitivity(data, weights, style);
+
+  const result = {
+    ticker:   document.getElementById('ticker-input').value.trim() || '—',
+    date:     new Date().toLocaleDateString('ko-KR'),
+    style,
+    weights,
+    data,
+    scores,
+    totalScore,
+    ...gradeInfo,
+    quadrant,
+    reliability,
+    allWarnings,
+    hardWarnings,
+    optWarnings,
+    sensitivity,
+    details: { valRes, growRes, profRes, safeRes, techRes, riskRes },
+  };
+
+  appState.lastResult = result;
+
+  // 결과 렌더링 (STEP 4에서 완전 구현)
+  if (typeof renderResults === 'function') renderResults(result);
+  else console.log('[STEP 3] 분석 완료 — 결과 UI는 STEP 4에서 구현:', result);
+}
+
+console.log('[STEP 4] 점수 계산 엔진 로드 완료');
+
+/* ================================================================
+   STEP 4 — 결과 화면 렌더링 (요구사항 #19 순서 완전 구현)
+   ================================================================ */
+
+/* ---------------------------------------------------------------
+   메인 renderResults — 11단계 순서로 렌더링
+   --------------------------------------------------------------- */
+function renderResults(result) {
+  const section = document.getElementById('results-section');
+  section.classList.add('visible');
+
+  renderReportHeader(result);    // 1. 리포트 헤더
+  renderSummaryCards(result);    // 2. 요약 카드
+  renderQuadrant(result);        // 3. 사분면 시각화
+  renderModuleScores(result);    // 4. 6개 모듈 점수
+  renderExplanation(result);     // 5. 왜 이런 점수인가
+  renderWarnings(result);        // 6. 경고 카드
+  renderSensitivity(result);     // 7. 점수 민감도 TOP 5
+  renderSimulator(result);       // 8. 시나리오 시뮬레이터
+  renderTransition(result);      // 9. 등급 전환 조건
+  renderNextAction(result);      // 10. 다음 행동 제안
+  // 11. 저장/출력 영역 — HTML에 고정 존재
+
+  section.scrollIntoView({ behavior: 'smooth' });
+
+  const crit = result.hardWarnings.filter(w => w.severity === 'critical').length;
+  showAlert('input-warn-msg',
+    `✅ 분석 완료 — 종합 ${result.totalScore}점 · ${result.gradeLabel}` +
+    ` · 신뢰도 ${result.reliability.label}(${result.reliability.filled}/19)` +
+    (crit ? ` · ⚠️ 심각경고 ${crit}건` : ''),
+    'alert-success', 6000);
+}
+
+/* ---------------------------------------------------------------
+   1. 리포트 헤더 (요구사항 #12: 신뢰도 포함)
+   --------------------------------------------------------------- */
+function renderReportHeader(r) {
+  document.getElementById('result-ticker').textContent = r.ticker;
+  document.getElementById('result-total-score').textContent = r.totalScore;
+  document.getElementById('result-meta').textContent =
+    `${r.date} · ${STYLE_LABEL(r.style)} · 입력 ${r.reliability.filled}/19개`;
+
+  const badge = document.getElementById('result-grade-badge');
+  badge.textContent = r.gradeLabel;
+  badge.className   = `grade-badge grade-${r.adjustedGrade}`;
+
+  const relBadge = document.getElementById('result-reliability-badge');
+  if (relBadge) {
+    relBadge.textContent = `신뢰도 ${r.reliability.label} (${r.reliability.filled}/19)`;
+    relBadge.className   = `reliability-badge reliability-${r.reliability.level}`;
+  }
+}
+
+function STYLE_LABEL(s) {
+  return { aggressive:'공격형', balanced:'균형형', conservative:'보수형', custom:'사용자지정' }[s] || s;
+}
+
+/* ---------------------------------------------------------------
+   2. 요약 카드 5개 (요구사항 #12: 신뢰도 카드 포함)
+   --------------------------------------------------------------- */
+function renderSummaryCards(r) {
+  // 종합점수
+  const scScore = document.getElementById('sc-score');
+  if (scScore) scScore.textContent = r.totalScore + '점';
+  const scGradeSub = document.getElementById('sc-grade-sub');
+  if (scGradeSub) scGradeSub.textContent = r.gradeLabel;
+
+  // 사분면
+  const scQ = document.getElementById('sc-quadrant');
+  const scQSub = document.getElementById('sc-quadrant-sub');
+  if (scQ) scQ.textContent = r.quadrant.region.name;
+  if (scQSub) scQSub.textContent = r.quadrant.region.action;
+
+  // 신뢰도
+  const scRel = document.getElementById('sc-reliability');
+  const scRelSub = document.getElementById('sc-reliability-sub');
+  if (scRel) scRel.textContent = `${r.reliability.label} (${r.reliability.filled}/19)`;
+  if (scRelSub) scRelSub.textContent =
+    r.reliability.level === 'high'   ? '결과 신뢰도가 높습니다' :
+    r.reliability.level === 'medium' ? '핵심 지표 추가 입력 권장' :
+                                       '지표 입력 수가 부족합니다';
+
+  // 핵심 강점 (상위 2개 모듈)
+  const scStr = document.getElementById('sc-strengths');
+  if (scStr) {
+    const topModules = _topModules(r.scores, 2, 'top');
+    scStr.innerHTML = topModules.length
+      ? topModules.map(m => `<span style="display:block;">${m.icon} ${m.label}: ${m.score}점</span>`).join('')
+      : '—';
+  }
+
+  // 핵심 경고
+  const scWarn = document.getElementById('sc-warnings-summary');
+  if (scWarn) {
+    const crits = r.hardWarnings.filter(w => w.severity === 'critical');
+    scWarn.innerHTML = crits.length
+      ? crits.slice(0,2).map(w => `<span style="display:block;">${w.icon} ${w.title}</span>`).join('')
+      : (r.hardWarnings.length ? `⚠️ 경고 ${r.hardWarnings.length}건` : '✅ 심각 경고 없음');
+  }
+}
+
+function _topModules(scores, n, dir) {
+  const meta = [
+    { key:'valuation',    label:'밸류에이션', icon:'💰' },
+    { key:'growth',       label:'성장성',      icon:'📈' },
+    { key:'profitability',label:'수익성',      icon:'💎' },
+    { key:'safety',       label:'재무안정성',  icon:'🛡️' },
+    { key:'technical',    label:'기술적위치',  icon:'📊' },
+    { key:'risk',         label:'리스크',      icon:'⚡' },
+  ];
+  return meta
+    .filter(m => scores[m.key] != null)
+    .map(m => ({ ...m, score: scores[m.key] }))
+    .sort((a,b) => dir === 'top' ? b.score - a.score : a.score - b.score)
+    .slice(0, n);
+}
+
+/* ---------------------------------------------------------------
+   3. 사분면 시각화 (요구사항 #8: Q1.5 경계선 처리)
+   --------------------------------------------------------------- */
+function renderQuadrant(r) {
+  const q     = r.quadrant;
+  const dot   = document.getElementById('stock-dot');
+  const tkEl  = document.getElementById('dot-ticker');
+  const scEl  = document.getElementById('dot-score');
+  const ttip  = document.getElementById('quadrant-tooltip');
+  const bline = document.getElementById('q-boundary-line');
+
+  if (!dot) return;
+
+  // 사분면 내 dot 위치 계산
+  // X: priceBurden 0→100 → left: 5%→95%
+  // Y: quality 0→100 → top: 95%→5% (반전)
+  const xPct = clamp(q.priceBurden, 0, 100);
+  const yPct = clamp(q.quality, 0, 100);
+  const left = 5 + (xPct / 100) * 90;
+  const top  = 95 - (yPct / 100) * 90;
+
+  dot.style.display = 'block';
+  dot.style.left    = `${left.toFixed(1)}%`;
+  dot.style.top     = `${top.toFixed(1)}%`;
+
+  // 경계(Q-boundary) 처리 — Q1.5 없음, 경계선에 표시
+  if (q.region.id === 'q-boundary') {
+    dot.style.borderColor = 'var(--orange)';
+    dot.style.boxShadow   = '0 0 0 3px rgba(217,119,6,0.35)';
+    if (bline) bline.style.display = 'block';
+  } else {
+    dot.style.borderColor = '';
+    dot.style.boxShadow   = '';
+    if (bline) bline.style.display = 'none';
+  }
+
+  // 종목명 (2배 크기)
+  if (tkEl) { tkEl.textContent = r.ticker; tkEl.style.fontSize = '1rem'; }
+  if (scEl) scEl.textContent = r.totalScore;   // CSS ::after 가 '점' 자동 추가
+
+  // 툴팁 콘텐츠 (구조화)
+  if (ttip) {
+    ttip.innerHTML =
+      `<div class="tt-row"><span class="tt-label">종목</span><span class="tt-val">${r.ticker}</span></div>` +
+      `<div class="tt-row"><span class="tt-label">종합 점수</span><span class="tt-val">${r.totalScore}점</span></div>` +
+      `<div class="tt-row"><span class="tt-label">사분면</span><span class="tt-val">${q.region.name}</span></div>` +
+      `<div class="tt-row"><span class="tt-label">퀄리티</span><span class="tt-val">${q.quality}</span></div>` +
+      `<div class="tt-row"><span class="tt-label">가격부담</span><span class="tt-val">${q.priceBurden}</span></div>`;
+  }
+
+  // 툴팁 마우스 이벤트
+  if (dot && ttip) {
+    dot.onmouseenter = () => ttip.classList.add('visible');
+    dot.onmouseleave = () => ttip.classList.remove('visible');
+    dot.onmousemove  = (e) => {
+      const canvas = dot.closest('.quadrant-canvas');
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const tx = e.clientX - rect.left + 12;
+      const ty = e.clientY - rect.top  + 12;
+      ttip.style.left = `${Math.min(tx, rect.width  - 210)}px`;
+      ttip.style.top  = `${Math.min(ty, rect.height - 120)}px`;
+    };
+  }
+
+  // 점수 표시 업데이트
+  const qd = document.getElementById('quality-score-display');
+  const pb = document.getElementById('price-burden-display');
+  if (qd) qd.textContent = q.quality;
+  if (pb) pb.textContent = q.priceBurden;
+}
+
+/* ---------------------------------------------------------------
+   4. 6개 모듈 점수 막대
+   --------------------------------------------------------------- */
+function renderModuleScores(r) {
+  const grid = document.getElementById('module-scores-grid');
+  if (!grid) return;
+
+  const modules = [
+    { key:'valuation',    label:'밸류에이션', icon:'💰', weight: r.weights.val    },
+    { key:'growth',       label:'성장성',      icon:'📈', weight: r.weights.growth },
+    { key:'profitability',label:'수익성',      icon:'💎', weight: r.weights.profit },
+    { key:'safety',       label:'재무안정성',  icon:'🛡️', weight: r.weights.safety },
+    { key:'technical',    label:'기술적위치',  icon:'📊', weight: r.weights.tech   },
+    { key:'risk',         label:'리스크',      icon:'⚡', weight: r.weights.risk   },
+  ];
+
+  grid.innerHTML = modules.map(m => {
+    const sc  = r.scores[m.key];
+    const scStr = sc != null ? sc : '—';
+    const pct = sc != null ? sc : 0;
+    const color = pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--orange)' : 'var(--red)';
+    return `
+      <div class="module-score-card">
+        <div class="ms-header">
+          <span class="ms-icon">${m.icon}</span>
+          <span class="ms-label">${m.label}</span>
+          <span class="ms-weight text-muted fs-xs">(가중치 ${m.weight}%)</span>
+          <span class="ms-score fw-bold" style="color:${color};margin-left:auto;">${scStr}점</span>
+        </div>
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" style="width:${pct}%;background:${color};"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ---------------------------------------------------------------
+   5. 왜 이런 점수인가 (요구사항 #24: 합리적 가격 근거 + termLink)
+   --------------------------------------------------------------- */
+function renderExplanation(r) {
+  const el = document.getElementById('explanation-content');
+  if (!el) return;
+
+  const d  = r.data;
+  const sc = r.scores;
+  const q  = r.quadrant;
+  const parts = [];
+
+  /* 종합점수 */
+  parts.push(`<div class="explain-block">
+    <h4>📌 종합 점수 ${r.totalScore}점 · ${r.gradeLabel}</h4>
+    <p>${STYLE_LABEL(r.style)} 성향 기준으로 계산된 결과입니다.
+      ${r.baseGrade !== r.adjustedGrade
+        ? `기본 등급은 <strong>${['','강한 매수 후보','분할매수 후보','관망','비중 축소 후보','매수 제외'][r.baseGrade]}</strong>이었으나,
+           중대 경고 ${r.hardWarnings.filter(w=>w.severity==='critical').length}건으로 인해 <strong>${r.gradeLabel}</strong>로 하향되었습니다.`
+        : '경고로 인한 등급 하향은 없습니다.'}
+    </p>
+  </div>`);
+
+  /* 사분면 위치 이유 */
+  parts.push(`<div class="explain-block">
+    <h4>📌 사분면: ${q.region.name}</h4>
+    <p>기업의 질 점수 <strong>${q.quality}점</strong>(성장×0.4 + 수익성×0.4 + 안정성×0.2),
+       가격 부담 점수 <strong>${q.priceBurden}점</strong>(100 − 밸류에이션 점수).</p>
+    ${q.region.id === 'q-boundary'
+      ? `<p style="color:var(--orange);">⚠️ Q1↔Q2 경계 구간입니다. 기업 질은 우량하지만 가격 부담이 중간 수준입니다.</p>`
+      : ''}
+  </div>`);
+
+  /* 합리적 가격 근거 설명 (요구사항 #24) */
+  const valDetail = [];
+  if (d.forwardPE != null)  valDetail.push(`${termLink('forwardPE','Forward P/E')} ${d.forwardPE}x`);
+  if (d.ps != null)         valDetail.push(`${termLink('ps','P/S')} ${d.ps}x`);
+  if (d.evEbitda != null)   valDetail.push(`${termLink('evEbitda','EV/EBITDA')} ${d.evEbitda}x`);
+  if (d.pFcf != null)       valDetail.push(`${termLink('pFcf','P/FCF')} ${d.pFcf}x`);
+  if (d.peg != null)        valDetail.push(`${termLink('peg','PEG')} ${d.peg}x`);
+
+  if (valDetail.length) {
+    const valScore = sc.valuation ?? '—';
+    const valJudge = valScore >= 70 ? '합리적 수준' : valScore >= 50 ? '다소 부담' : '고평가 우려';
+    parts.push(`<div class="explain-block">
+      <h4>💰 밸류에이션 — ${valJudge} (${valScore}점)</h4>
+      <p>입력된 지표: ${valDetail.join(', ')}.</p>
+      <p>밸류에이션 점수가 높을수록 현재 주가가 실적·성장 대비 합리적임을 의미합니다.
+         ${valScore >= 70 ? 'Forward P/E, P/S, EV/EBITDA 등이 업계 평균 대비 양호한 수준으로 평가됩니다.' :
+           valScore >= 50 ? '일부 지표가 고평가 구간에 있어 추가 조정 가능성을 고려하세요.' :
+           '복수의 밸류에이션 지표가 부담 구간에 있습니다. 성장성이 뒷받침되지 않으면 주의가 필요합니다.'}
+      </p>
+    </div>`);
+  }
+
+  /* 성장성 설명 */
+  if (sc.growth != null) {
+    const growthItems = [];
+    if (d.epsNextY  != null) growthItems.push(`${termLink('epsNextY','EPS next Y')} ${d.epsNextY}%`);
+    if (d.epsNext5Y != null) growthItems.push(`${termLink('epsNext5Y','EPS next 5Y')} ${d.epsNext5Y}%`);
+    if (d.epsQQ     != null) growthItems.push(`${termLink('epsQQ','EPS Q/Q')} ${d.epsQQ}%`);
+    if (d.salesQQ   != null) growthItems.push(`${termLink('salesQQ','Sales Q/Q')} ${d.salesQQ}%`);
+    parts.push(`<div class="explain-block">
+      <h4>📈 성장성 ${sc.growth}점</h4>
+      <p>${growthItems.length ? growthItems.join(', ') + '.' : '성장 지표 미입력.'}
+         ${sc.growth >= 70 ? ' 분기·연간 성장 모멘텀이 양호합니다.' :
+           sc.growth >= 50 ? ' 성장세가 보통 수준입니다.' :
+           ' 성장 둔화 또는 역성장 구간을 확인하세요.'}</p>
+    </div>`);
+  }
+
+  /* 수익성 설명 */
+  if (sc.profitability != null) {
+    const profItems = [];
+    if (d.roic         != null) profItems.push(`${termLink('roic','ROIC')} ${d.roic}%`);
+    if (d.operMargin   != null) profItems.push(`${termLink('operMargin','Oper.Margin')} ${d.operMargin}%`);
+    if (d.profitMargin != null) profItems.push(`${termLink('profitMargin','Profit Margin')} ${d.profitMargin}%`);
+    if (d.roe          != null) profItems.push(`${termLink('roe','ROE')} ${d.roe}%`);
+    parts.push(`<div class="explain-block">
+      <h4>💎 수익성 ${sc.profitability}점</h4>
+      <p>${profItems.length ? profItems.join(', ') + '.' : '수익성 지표 미입력.'}
+         ${sc.profitability >= 70 ? ' ROIC가 자본 비용을 상회하거나 마진이 업계 대비 우수합니다.' :
+           sc.profitability >= 50 ? ' 보통 수준의 수익 구조입니다.' :
+           ' 수익 창출 능력 개선이 필요합니다.'}</p>
+    </div>`);
+  }
+
+  /* 재무 안정성 */
+  if (sc.safety != null) {
+    const safeItems = [];
+    if (d.debtEq       != null) safeItems.push(`${termLink('debtEq','Debt/Eq')} ${d.debtEq}x`);
+    if (d.currentRatio != null) safeItems.push(`${termLink('currentRatio','Current Ratio')} ${d.currentRatio}x`);
+    parts.push(`<div class="explain-block">
+      <h4>🛡️ 재무 안정성 ${sc.safety}점</h4>
+      <p>${safeItems.length ? safeItems.join(', ') + '.' : '재무 안정성 지표 미입력.'}
+         ${sc.safety >= 70 ? ' 부채 수준이 낮고 유동성이 충분합니다.' :
+           sc.safety >= 50 ? ' 보통 수준의 재무 안정성입니다.' :
+           ' 부채 과다 또는 유동비율 부족 — 재무 리스크를 확인하세요.'}</p>
+    </div>`);
+  }
+
+  /* 기술적 위치 */
+  if (sc.technical != null) {
+    const techItems = [];
+    if (d.sma200 != null) techItems.push(`${termLink('sma200','SMA200')} ${d.sma200>0?'+':''}${d.sma200}%`);
+    if (d.sma50  != null) techItems.push(`${termLink('sma50','SMA50')} ${d.sma50>0?'+':''}${d.sma50}%`);
+    if (d.rsi    != null) techItems.push(`${termLink('rsi','RSI')} ${d.rsi}`);
+    parts.push(`<div class="explain-block">
+      <h4>📊 기술적 위치 ${sc.technical}점</h4>
+      <p>${techItems.length ? techItems.join(', ') + '.' : '기술적 지표 미입력.'}
+         ${sc.technical >= 70 ? ' 이동평균 대비 상승 추세이며 RSI가 과열/과매도 구간을 벗어났습니다.' :
+           sc.technical >= 50 ? ' 기술적 위치가 중립 수준입니다.' :
+           ' 장기/단기 이동평균 아래 또는 RSI 극단 구간에 있습니다.'}</p>
+    </div>`);
+  }
+
+  /* 리스크 (Beta) */
+  if (sc.risk != null && d.beta != null) {
+    parts.push(`<div class="explain-block">
+      <h4>⚡ 리스크 ${sc.risk}점 — ${termLink('beta','Beta')} ${d.beta}</h4>
+      <p>${STYLE_LABEL(r.style)} 성향 기준.
+         ${d.beta < 1 ? '시장 대비 저변동성 종목입니다.' :
+           d.beta < 1.5 ? '시장과 비슷한 수준의 변동성입니다.' :
+           d.beta < 2 ? '시장 대비 변동성이 높습니다.' :
+           '고변동성 종목 — 포지션 크기 관리가 중요합니다.'}
+      </p>
+    </div>`);
+  }
+
+  /* 등급 하향 이유 */
+  if (r.baseGrade !== r.adjustedGrade) {
+    parts.push(`<div class="explain-block" style="border-left:3px solid var(--red);padding-left:12px;">
+      <h4>🔻 등급 하향 이유</h4>
+      <ul style="margin:0;padding-left:16px;">
+        ${r.hardWarnings.filter(w=>w.severity==='critical').map(w=>`<li>${w.icon} ${w.title}</li>`).join('')}
+      </ul>
+    </div>`);
+  }
+
+  el.innerHTML = parts.join('');
+}
+
+/* ---------------------------------------------------------------
+   6. 경고 카드 (요구사항 #9 — termLink 적용)
+   --------------------------------------------------------------- */
+function renderWarnings(r) {
+  const grid = document.getElementById('warnings-grid');
+  if (!grid) return;
+
+  if (!r.allWarnings.length) {
+    grid.innerHTML = '<div class="no-warnings">✅ 경고 항목이 없습니다.</div>';
+    return;
+  }
+
+  const critFirst = [...r.allWarnings].sort((a,b) => {
+    const ord = { critical:0, warning:1, info:2 };
+    return (ord[a.severity]??3) - (ord[b.severity]??3);
+  });
+
+  grid.innerHTML = critFirst.map(w => {
+    const cls = w.severity === 'critical' ? 'warn-card warn-critical' :
+                w.severity === 'warning'  ? 'warn-card warn-warning'  :
+                                            'warn-card warn-info';
+    const badge = w.type === 'optional' ? '<span class="warn-opt-badge">보조지표</span>' : '';
+    return `<div class="${cls}">
+      <div class="warn-header">${w.icon} <strong>${w.title}</strong>${badge}</div>
+      <div class="warn-desc">${w.desc}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------------------------------------------------------------
+   7. 점수 민감도 TOP 5 (요구사항 — termLink 적용)
+   --------------------------------------------------------------- */
+function renderSensitivity(r) {
+  const list = document.getElementById('sensitivity-list');
+  if (!list || !r.sensitivity.length) return;
+
+  const max = r.sensitivity[0].impact || 1;
+
+  list.innerHTML = r.sensitivity.map((item, i) => {
+    const pct  = (item.impact / max) * 100;
+    const upC  = item.upDelta > 0 ? 'var(--green)' : 'var(--red)';
+    const dnC  = item.downDelta < 0 ? 'var(--red)' : 'var(--green)';
+    return `
+      <div class="sensitivity-item">
+        <div class="si-rank">#${i+1}</div>
+        <div class="si-body">
+          <div class="si-name">${termLink(item.key, item.label)}</div>
+          <div class="si-bar-bg">
+            <div class="si-bar-fill" style="width:${pct.toFixed(1)}%;"></div>
+          </div>
+          <div class="si-deltas">
+            <span style="color:${upC};">▲ +10% → ${item.upDelta>0?'+':''}${item.upDelta}점</span>
+            <span style="color:${dnC}; margin-left:12px;">▼ -10% → ${item.downDelta>0?'+':''}${item.downDelta}점</span>
+          </div>
+        </div>
+        <div class="si-impact">±${item.impact.toFixed(1)}점</div>
+      </div>`;
+  }).join('');
+}
+
+/* ================================================================
+   STEP 5 — 시나리오 시뮬레이터 전면 고도화 (요구사항 #11)
+   19개 핵심 지표 전체 슬라이더 + P/FCF·Beta 포함
+   그룹 구분 / termLink / 즉시 반영 / 프리셋 v9 기준
+   ================================================================ */
+
+let simData  = {};   // 시뮬레이터 작업 데이터 (원래값 복사본)
+let _simRef  = null; // 원본 result 참조
+
+const SIM_SLIDER_CFG = {
+  forwardPE:    { min:3,    max:100, step:0.5,  label:'Forward P/E',     unit:'x'  },
+  peg:          { min:0,    max:6,   step:0.05, label:'PEG',             unit:'x'  },
+  ps:           { min:0,    max:50,  step:0.1,  label:'P/S',             unit:'x'  },
+  pFcf:         { min:-50,  max:250, step:1,    label:'P/FCF',           unit:'x'  },
+  evEbitda:     { min:0,    max:80,  step:0.5,  label:'EV/EBITDA',       unit:'x'  },
+  epsNextY:     { min:-60,  max:120, step:0.5,  label:'EPS next Y',      unit:'%'  },
+  epsNext5Y:    { min:-30,  max:100, step:0.5,  label:'EPS next 5Y',     unit:'%'  },
+  epsQQ:        { min:-80,  max:150, step:0.5,  label:'EPS Q/Q',         unit:'%'  },
+  salesQQ:      { min:-50,  max:100, step:0.5,  label:'Sales Q/Q',       unit:'%'  },
+  roic:         { min:-30,  max:60,  step:0.5,  label:'ROIC',            unit:'%'  },
+  operMargin:   { min:-40,  max:60,  step:0.5,  label:'Oper. Margin',    unit:'%'  },
+  profitMargin: { min:-40,  max:60,  step:0.5,  label:'Profit Margin',   unit:'%'  },
+  roe:          { min:-50,  max:100, step:0.5,  label:'ROE',             unit:'%'  },
+  debtEq:       { min:0,    max:6,   step:0.05, label:'Debt/Eq',         unit:'x'  },
+  currentRatio: { min:0,    max:6,   step:0.05, label:'Current Ratio',   unit:'x'  },
+  sma200:       { min:-60,  max:120, step:0.5,  label:'SMA200',          unit:'%'  },
+  sma50:        { min:-50,  max:100, step:0.5,  label:'SMA50',           unit:'%'  },
+  rsi:          { min:10,   max:90,  step:0.5,  label:'RSI(14)',         unit:''   },
+  beta:         { min:0,    max:4.5, step:0.05, label:'Beta',            unit:'x'  },
+};
+
+const SIM_GROUPS = [
+  { label:'💰 밸류에이션', keys:['forwardPE','peg','ps','pFcf','evEbitda'] },
+  { label:'📈 성장성',      keys:['epsNextY','epsNext5Y','epsQQ','salesQQ'] },
+  { label:'💎 수익성',      keys:['roic','operMargin','profitMargin','roe'] },
+  { label:'🛡️ 재무 안정성',keys:['debtEq','currentRatio'] },
+  { label:'📊 기술적 위치',keys:['sma200','sma50','rsi'] },
+  { label:'⚡ 리스크',      keys:['beta'] },
+];
+
+/* v9 기준 프리셋 (요구사항 #11) */
+const SIM_PRESETS = {
+  '1': (b) => ({   // 조정 후 매수 가능 — 밸류에이션 20% 하락
+    forwardPE: _pct(b.forwardPE, 0.80),
+    ps:        _pct(b.ps,        0.78),
+    pFcf:      _pct(b.pFcf,      0.80),
+    evEbitda:  _pct(b.evEbitda,  0.80),
+  }),
+  '2': (b) => ({   // 성장 둔화
+    epsQQ:    -10, salesQQ: -8,
+    epsNextY:  Math.min(b.epsNextY ?? 5, 3),
+    epsNext5Y: Math.min(b.epsNext5Y ?? 10, 5),
+  }),
+  '3': (b) => ({   // 기술적 악화
+    sma200: Math.min(b.sma200 ?? 0, -15),
+    sma50:  Math.min(b.sma50  ?? 0, -10),
+    rsi:    35,
+  }),
+  '4': (b) => ({   // 실적 개선
+    epsQQ:    Math.max(b.epsQQ    ?? 5, 20),
+    salesQQ:  Math.max(b.salesQQ  ?? 5, 15),
+    roic:     (b.roic ?? 10) + 6,
+    operMargin:(b.operMargin ?? 15) + 4,
+  }),
+  '5': (b) => ({   // 안전성 개선
+    debtEq:       Math.max(0, (b.debtEq ?? 1) * 0.5),
+    currentRatio: (b.currentRatio ?? 1.5) * 1.4,
+    beta:         Math.max(0.5, (b.beta ?? 1.2) * 0.8),
+  }),
+};
+
+function _pct(v, ratio) {
+  if (v == null) return null;
+  return parseFloat((v * ratio).toFixed(2));
+}
+
+function renderSimulator(r) {
+  _simRef  = r;
+  simData  = { ...r.data };
+
+  const controls = document.getElementById('simulator-controls');
+  if (!controls) return;
+
+  /* ── 슬라이더 그리드 렌더링 ─────────────────────────────── */
+  controls.innerHTML = SIM_GROUPS.map(g => {
+    const rows = g.keys.map(key => {
+      const cfg  = SIM_SLIDER_CFG[key];
+      const cur  = r.data[key];
+      const val  = cur != null ? cur : ((cfg.min + cfg.max) / 2);
+      const hasVal = cur != null;
+      const dispVal = hasVal ? _fmt(val, cfg.unit) : '미입력';
+      return `
+        <div class="sim-slider-row ${hasVal ? '' : 'sim-row-inactive'}" data-key="${key}">
+          <div class="ssl-label">
+            ${termLink(key, cfg.label)}
+            ${hasVal ? '' : '<span class="ssl-na-badge">미입력</span>'}
+          </div>
+          <div class="ssl-slider-wrap">
+            <input type="range"
+              min="${cfg.min}" max="${cfg.max}" step="${cfg.step}"
+              value="${_clampSlider(val, cfg.min, cfg.max)}"
+              data-key="${key}" data-orig="${val}"
+              class="sim-slider${hasVal ? '' : ' sim-slider-inactive'}" />
+            <div class="ssl-minmax">
+              <span>${cfg.min}${cfg.unit}</span>
+              <span>${cfg.max}${cfg.unit}</span>
+            </div>
+          </div>
+          <div class="ssl-val-wrap">
+            <div class="ssl-val" id="ssl-${key}">${dispVal}</div>
+            ${hasVal
+              ? `<div class="ssl-orig text-muted fs-xs">원래: ${_fmt(cur, cfg.unit)}</div>`
+              : `<div class="ssl-orig text-muted fs-xs" style="color:var(--muted-2)">값 없음</div>`}
+          </div>
+        </div>`;
+    }).join('');
+    return `
+      <div class="sim-group">
+        <div class="sim-group-label">${g.label}</div>
+        ${rows}
+      </div>`;
+  }).join('');
+
+  /* ── 슬라이더 이벤트 ─────────────────────────────────────── */
+  controls.querySelectorAll('.sim-slider').forEach(sl => {
+    sl.addEventListener('input', () => {
+      const key = sl.dataset.key;
+      const val = parseFloat(sl.value);
+      simData[key] = val;
+      const el = document.getElementById(`ssl-${key}`);
+      if (el) {
+        const cfg = SIM_SLIDER_CFG[key];
+        el.textContent = _fmt(val, cfg.unit);
+        // 원래값과 다르면 강조
+        const orig = parseFloat(sl.dataset.orig);
+        el.style.color = Math.abs(val - orig) > 0.01 ? 'var(--blue)' : '';
+      }
+      updateSimulator(r);
+    });
+  });
+
+  /* ── 프리셋 버튼 바인딩 ─────────────────────────────────── */
+  document.querySelectorAll('.btn-preset').forEach(btn => {
+    btn.addEventListener('click', () => applyPreset(btn.dataset.preset, r));
+  });
+
+  updateSimulator(r);
+}
+
+function _fmt(val, unit) {
+  if (val == null) return '—';
+  const n = parseFloat(val);
+  return isNaN(n) ? '—' : (n % 1 === 0 ? n : n.toFixed(1)) + (unit || '');
+}
+
+function _clampSlider(val, min, max) {
+  return Math.min(max, Math.max(min, parseFloat(val) || 0));
+}
+
+function applyPreset(preset, r) {
+  const base = r.data;
+
+  if (preset === 'reset') {
+    simData = { ...base };
+  } else {
+    const fn = SIM_PRESETS[preset];
+    if (!fn) return;
+    const patch = fn(base);
+    // null 값(원본 미입력)은 패치하지 않음
+    const cleanPatch = Object.fromEntries(
+      Object.entries(patch).filter(([,v]) => v != null)
+    );
+    simData = { ...base, ...cleanPatch };
+  }
+
+  /* 슬라이더 UI 갱신 */
+  const controls = document.getElementById('simulator-controls');
+  if (controls) {
+    controls.querySelectorAll('.sim-slider').forEach(sl => {
+      const key = sl.dataset.key;
+      if (simData[key] != null) {
+        const cfg = SIM_SLIDER_CFG[key];
+        const v   = _clampSlider(simData[key], cfg.min, cfg.max);
+        sl.value  = v;
+        const el  = document.getElementById(`ssl-${key}`);
+        if (el) {
+          el.textContent = _fmt(v, cfg.unit);
+          const orig = parseFloat(sl.dataset.orig);
+          el.style.color = Math.abs(v - orig) > 0.01 ? 'var(--blue)' : '';
+        }
+      }
+    });
+  }
+  updateSimulator(r);
+}
+
+function updateSimulator(r) {
+  const weights  = r.weights;
+  const style    = r.style;
+
+  /* 시나리오 점수 계산 */
+  const simScores = {
+    valuation:     scoreValuation(simData).score,
+    growth:        scoreGrowth(simData).score,
+    profitability: scoreProfitability(simData).score,
+    safety:        scoreSafety(simData).score,
+    technical:     scoreTechnical(simData).score,
+    risk:          scoreRisk(simData, style).score,
+  };
+  const simScore = clamp(Math.round(wavg([
+    [simScores.valuation,    weights.val   ],
+    [simScores.growth,       weights.growth],
+    [simScores.profitability,weights.profit],
+    [simScores.safety,       weights.safety],
+    [simScores.technical,    weights.tech  ],
+    [simScores.risk,         weights.risk  ],
+  ]) || 0));
+
+  /* v9 등급 기준 적용 */
+  const simGradeIdx = simScore >= 80 ? 1 : simScore >= 70 ? 2 : simScore >= 55 ? 3 : simScore >= 40 ? 4 : 5;
+  const simGradeLabel = ['','강한 매수 후보','분할매수 후보','관망','비중 축소 후보','매수 제외'][simGradeIdx];
+  const simQ = calcQuadrant(simScores);
+  const delta = simScore - r.totalScore;
+
+  /* UI 업데이트 */
+  _setText('sim-current-score', r.totalScore + '점');
+  _setText('sim-current-grade', r.gradeLabel);
+  _setText('sim-scenario-score', simScore + '점');
+  _setText('sim-scenario-grade', simGradeLabel);
+  _setText('sim-current-quadrant', r.quadrant.region.name);
+  _setText('sim-scenario-quadrant', simQ.region.name);
+
+  const chgInd = document.getElementById('sim-change-indicator');
+  if (chgInd) {
+    chgInd.className = `change-indicator ${delta > 1 ? 'positive' : delta < -1 ? 'negative' : 'neutral'}`;
+    chgInd.textContent = Math.abs(delta) < 0.5 ? '변화 없음' :
+      `${delta > 0 ? '▲' : '▼'} ${delta > 0 ? '+' : ''}${delta.toFixed(1)}점`;
+  }
+
+  /* 모듈별 점수 변화 breakdown */
+  const breakdown = document.getElementById('sim-breakdown');
+  if (breakdown) {
+    const MODULE_META = [
+      { key:'valuation',    label:'밸류에이션', wkey:'val'    },
+      { key:'growth',       label:'성장성',      wkey:'growth' },
+      { key:'profitability',label:'수익성',      wkey:'profit' },
+      { key:'safety',       label:'재무안정성',  wkey:'safety' },
+      { key:'technical',    label:'기술적위치',  wkey:'tech'   },
+      { key:'risk',         label:'리스크',      wkey:'risk'   },
+    ];
+    breakdown.innerHTML = MODULE_META.map(m => {
+      const orig = r.scores[m.key];
+      const sim  = simScores[m.key];
+      if (orig == null && sim == null) return '';
+      const d = (sim ?? 0) - (orig ?? 0);
+      const color = d > 2 ? 'var(--green)' : d < -2 ? 'var(--red)' : 'var(--muted)';
+      return `<div class="sim-bd-row">
+        <span class="sim-bd-label">${m.label}</span>
+        <span class="sim-bd-orig">${orig ?? '—'}점</span>
+        <span class="sim-bd-arrow">→</span>
+        <span class="sim-bd-sim" style="color:${color};font-weight:700;">${sim != null ? sim + '점' : '—'}</span>
+        <span class="sim-bd-delta" style="color:${color};">${d !== 0 ? (d > 0 ? '+' : '') + d.toFixed(0) : ''}</span>
+      </div>`;
+    }).join('');
+  }
+
+  /* 변화된 지표 목록 */
+  const reasons = document.getElementById('sim-change-reasons');
+  if (reasons) {
+    const diffs = [];
+    CORE_INDICATORS.forEach(([key, label]) => {
+      const orig = r.data[key];
+      const sim  = simData[key];
+      if (orig != null && sim != null && Math.abs(sim - orig) > 0.01) {
+        diffs.push({ label, from: orig, to: sim });
+      }
+    });
+    reasons.innerHTML = diffs.length
+      ? `<div class="fs-xs text-muted" style="margin-bottom:4px;">변화된 지표 (${diffs.length}개)</div>` +
+        diffs.map(d =>
+          `<div class="fs-xs" style="margin-bottom:2px;">
+            <strong>${d.label}</strong>: ${d.from} → <span style="color:var(--blue);">${d.to}</span>
+          </div>`
+        ).join('')
+      : '<div class="fs-xs text-muted">변경된 지표 없음 — 슬라이더를 조정하거나 프리셋을 선택하세요</div>';
+  }
+}
+
+function _setText(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+function _quickGrade(score) {
+  const labels = ['','강한 매수 후보','분할매수 후보','관망','비중 축소 후보','매수 제외'];
+  const g = score >= 80 ? 1 : score >= 70 ? 2 : score >= 55 ? 3 : score >= 40 ? 4 : 5;
+  return labels[g];
+}
+
+/* ---------------------------------------------------------------
+   9. 등급 전환 조건 자동 제시 (요구사항 #19)
+   --------------------------------------------------------------- */
+function renderTransition(r) {
+  const el = document.getElementById('transition-content');
+  if (!el) return;
+
+  const g = r.adjustedGrade;
+  const s = r.scores;
+  const d = r.data;
+  const blocks = [];
+
+  // 현재 등급에서 상향 조건
+  const upConds = [];
+  const dnConds = [];
+
+  if (g >= 2) {
+    // 강한 매수 후보로 가려면 총점 80+ 필요
+    if (r.totalScore < 80) upConds.push('종합점수 80점 이상 달성');
+    if (s.valuation != null && s.valuation < 65)
+      upConds.push(`${termLink('forwardPE','밸류에이션')} 점수 개선 (현재 ${s.valuation}점)`);
+    if (s.growth != null && s.growth < 65)
+      upConds.push(`${termLink('epsNextY','성장성')} 지표 개선 (현재 ${s.growth}점)`);
+    if (r.hardWarnings.filter(w=>w.severity==='critical').length > 0)
+      upConds.push('심각 경고 해소 필요 (' + r.hardWarnings.filter(w=>w.severity==='critical').map(w=>w.title).join(', ') + ')');
+  }
+
+  if (g <= 4) {
+    // 매수 제외 / 비중축소 조건
+    if (d.sma200 != null && d.sma200 < 0)
+      dnConds.push(`${termLink('sma200','SMA200')} 추가 하락 시 기술적 추세 악화`);
+    if (d.epsQQ != null && d.salesQQ != null && (d.epsQQ < 0 || d.salesQQ < 0))
+      dnConds.push('EPS Q/Q + Sales Q/Q 동반 음수 지속 시 등급 하향 가능');
+    if (d.debtEq != null && d.debtEq > 2)
+      dnConds.push(`${termLink('debtEq','Debt/Eq')} 상승 또는 유동성 악화 시 재무위험`);
+  }
+
+  // 매수 전환 조건
+  if (g >= 3) {
+    blocks.push(`
+      <div class="transition-block">
+        <h4>🟢 매수 전환 조건</h4>
+        <ul>${upConds.length ? upConds.map(c=>`<li>${c}</li>`).join('') : '<li>현재 등급에서 상향 조건 없음</li>'}</ul>
+      </div>`);
+  }
+
+  // 비중축소 / 매수 제외 경보
+  if (dnConds.length) {
+    blocks.push(`
+      <div class="transition-block" style="border-left-color:var(--red);">
+        <h4>🔴 비중 축소 / 매수 제외 전환 조건</h4>
+        <ul>${dnConds.map(c=>`<li>${c}</li>`).join('')}</ul>
+      </div>`);
+  }
+
+  // 관망 유지 조건
+  if (g === 3) {
+    blocks.push(`
+      <div class="transition-block" style="border-left-color:var(--orange);">
+        <h4>🟡 관망 유지 권고</h4>
+        <p>현재 분기 실적 발표 후 EPS/Sales Q/Q 방향성 확인 후 재평가를 권장합니다.</p>
+      </div>`);
+  }
+
+  el.innerHTML = blocks.join('') || '<p class="text-muted">전환 조건 분석 데이터가 부족합니다.</p>';
+}
+
+/* ---------------------------------------------------------------
+   10. 다음 행동 제안 (요구사항 #19 — 등급별 맞춤)
+   --------------------------------------------------------------- */
+function renderNextAction(r) {
+  const card = document.getElementById('next-action-card');
+  if (!card) return;
+
+  const actions = {
+    1: {
+      color: 'var(--green)',
+      icon: '🟢',
+      title: '강한 매수 후보 — 진입 검토',
+      body: `
+        <p>기업의 질과 가격 모두 우수한 구간입니다.</p>
+        <ul>
+          <li>📌 분기 실적 발표 일정 확인 후 이벤트 리스크 관리</li>
+          <li>📌 시장 전체 변동성(VIX) 고려하여 분할 매수 전략 검토</li>
+          <li>📌 보유 후 ${termLink('sma200','SMA200')} 하향 이탈 시 손절 기준 설정</li>
+        </ul>`
+    },
+    2: {
+      color: 'var(--olive)',
+      icon: '🟡',
+      title: '분할매수 후보 — 소량 진입 후 관망',
+      body: `
+        <p>기업 펀더멘털은 양호하나 점수가 추가 개선 여지 있습니다.</p>
+        <ul>
+          <li>📌 1/3 분할 매수 후 실적 발표 또는 조정 시 추가 매수 검토</li>
+          <li>📌 ${termLink('rsi','RSI')} 50 이하 조정 시 추가 진입 기준 설정</li>
+          <li>📌 핵심 경고 해소 여부를 다음 분기 실적에서 확인</li>
+        </ul>`
+    },
+    3: {
+      color: 'var(--orange)',
+      icon: '🟠',
+      title: '관망 — 실적 확인 후 재평가',
+      body: `
+        <p>현 시점 신규 진입보다는 관찰이 적합합니다.</p>
+        <ul>
+          <li>📌 다음 분기 EPS Q/Q, Sales Q/Q 방향성 확인</li>
+          <li>📌 ${termLink('sma200','SMA200')} 위로 회복 시 재분석 진행</li>
+          <li>📌 경고 항목 해소 여부 모니터링</li>
+        </ul>`
+    },
+    4: {
+      color: 'var(--red-light)',
+      icon: '🔴',
+      title: '비중 축소 후보 — 기존 보유자 리스크 관리',
+      body: `
+        <p>기존 보유 중이라면 비중 축소를 검토할 구간입니다.</p>
+        <ul>
+          <li>📌 추가 매수 자제 — 평단가 관리 우선</li>
+          <li>📌 실적 추가 악화 시 전체 매도 기준 설정</li>
+          <li>📌 ${termLink('debtEq','재무 안정성')} 지표 분기별 추적</li>
+        </ul>`
+    },
+    5: {
+      color: 'var(--red)',
+      icon: '⛔',
+      title: '매수 제외 — 관심 종목에서 제외 권고',
+      body: `
+        <p>펀더멘털 또는 가격 구조상 투자 매력이 낮습니다.</p>
+        <ul>
+          <li>📌 신규 매수 불가 — 다른 종목 탐색 권장</li>
+          <li>📌 기존 보유자는 청산 또는 최소 비중으로 감축 검토</li>
+          <li>📌 구조적 개선 확인 전까지 재분석 보류</li>
+        </ul>`
+    },
+  };
+
+  const act = actions[r.adjustedGrade] || actions[3];
+  card.style.borderLeftColor = act.color;
+  card.innerHTML = `
+    <div class="na-header" style="color:${act.color};">${act.icon} ${act.title}</div>
+    <div class="na-body">${act.body}</div>
+    <div class="na-reliability" style="margin-top:12px;font-size:0.82rem;color:var(--muted);">
+      ⚠️ 분석 신뢰도: ${r.reliability.label} (${r.reliability.filled}/19개 입력)
+      ${r.reliability.level !== 'high' ? ' — 추가 지표 입력 시 더 정확한 결과를 얻을 수 있습니다.' : ''}
+    </div>`;
+}
+
+/* ================================================================
+   ※ STEP 1~5 모두 완료 ✅
+   ================================================================ */
+
+/* ================================================================
+   초기화
+   ================================================================ */
+function init() {
+  renderReviewTable({});
+  initStyleTabs();
+  updateWeightPreview();
+  initEvents();
+  loadSavedList();
+  console.log('[STEP 5 완료] 시뮬레이터 고도화 + 저장/출력 완성 — v9 초기화 완료');
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
