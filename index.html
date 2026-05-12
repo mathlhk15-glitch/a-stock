@@ -498,40 +498,69 @@
       display: flex; justify-content: space-between;
       margin-top: var(--space-xs); font-size: 0.72rem; color: var(--muted);
     }
-    .quadrant-axis-y-wrap { display: flex; gap: var(--space-xs); align-items: stretch; }
-    /* Y축: writing-mode vertical-rl, rotate(180deg) → 위=우량기업, 아래=취약기업 (정방향) */
+    .quadrant-axis-y-wrap { display: flex; gap: 4px; align-items: stretch; }
+    .quadrant-axis-y-container {
+      position: relative;
+      width: 22px;
+      flex-shrink: 0;
+    }
     .quadrant-axis-y {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
+      position: absolute;
+      top: 0; bottom: 0; left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+    .quadrant-axis-y span {
       font-size: 0.65rem; color: var(--muted);
-      display: flex; justify-content: space-between;
-      padding: var(--space-xs) 0; width: 16px;
+      white-space: nowrap;
       user-select: none;
+      display: block;
+      transform: rotate(-90deg);
     }
 
-    /* 종목 마커 — 사각형, 종목명·점수 분리 */
+    /* 종목 마커 — 사각형, 종목명(위)·점수(아래) 세로 배치 */
     .stock-dot {
       position: absolute;
-      width: auto; min-width: 48px; max-width: 70px;
-      padding: 4px 7px;
+      width: auto; min-width: 52px; max-width: 90px;
+      padding: 5px 8px;
       border-radius: 6px;
       background: var(--ink);
       border: 2px solid #fff; box-shadow: var(--shadow-md);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 2px;
+      gap: 3px;
       transform: translate(-50%, -50%); cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s; z-index: 10;
     }
     .stock-dot:hover { transform: translate(-50%, -50%) scale(1.1); box-shadow: var(--shadow-lg); }
     .stock-dot .dot-ticker {
-      font-size: 0.72rem; font-weight: 800; color: #fff; line-height: 1.2;
-      text-align: center; max-width: 66px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      display: block;
+      font-size: 0.78rem; font-weight: 800; color: #fff; line-height: 1.2;
+      text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .stock-dot .dot-score {
-      font-size: 0.62rem; color: rgba(255,255,255,0.85); font-weight: 500; line-height: 1.1;
+      display: block;
+      font-size: 0.68rem; color: rgba(255,255,255,0.85); font-weight: 500; line-height: 1.1;
+      text-align: center; white-space: nowrap;
     }
-    .stock-dot .dot-score::after { content: '점'; font-size: 0.58rem; }
+    .stock-dot .dot-score::after { content: '점'; font-size: 0.64rem; }
+
+    /* 데스크탑: 회사명·점수 2배 크기 */
+    @media (min-width: 769px) {
+      .stock-dot {
+        min-width: 80px; max-width: 130px;
+        padding: 7px 12px; gap: 4px;
+      }
+      .stock-dot .dot-ticker {
+        font-size: 1.56rem;
+      }
+      .stock-dot .dot-score {
+        font-size: 1.36rem;
+      }
+      .stock-dot .dot-score::after { font-size: 1.28rem; }
+    }
 
     .quadrant-tooltip {
       position: absolute; background: var(--ink); color: #fff;
@@ -724,7 +753,8 @@
       .quadrant-canvas { aspect-ratio: 1 / 1; }
       .q-region .q-label { font-size: 0.62rem; }
       .q-region .q-sub   { font-size: 0.55rem; }
-      .quadrant-axis-y { font-size: 0.58rem; width: 14px; }
+      .quadrant-axis-y-container { width: 18px; }
+      .quadrant-axis-y span { font-size: 0.58rem; }
     }
     @media (max-width: 480px) {
       .summary-cards { grid-template-columns: 1fr; }
@@ -1173,9 +1203,11 @@
       <h2 class="section-title"><span class="icon">📌</span> 기업의 질 × 가격 부담 사분면</h2>
       <p class="section-subtitle">X축: 가격 부담 (오른쪽일수록 고평가) · Y축: 기업의 질 (위쪽일수록 우량)</p>
       <div class="quadrant-axis-y-wrap">
-        <div class="quadrant-axis-y">
-          <span>우량 기업 ▲</span>
-          <span>▼ 취약기업</span>
+        <div class="quadrant-axis-y-container">
+          <div class="quadrant-axis-y">
+            <span>우량 기업 ▲</span>
+            <span>▼ 취약기업</span>
+          </div>
         </div>
         <div style="flex:1;">
           <div class="quadrant-wrapper">
@@ -3384,7 +3416,7 @@ function renderExplanation(r) {
       ],
     },
     'q3': {
-      label: '싼 가격 (주의)',
+      label: '싼 가격',
       color: 'var(--blue)',
       why: `멀티플 기준으로는 저렴하지만 <strong>기업 질이 검증되지 않아 가치함정(Value Trap) 위험</strong>이 있습니다.`,
       detail: [
