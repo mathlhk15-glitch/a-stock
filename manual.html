@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Q-MAP 3.7 완전 초보 매뉴얼</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --cream:    #FBF7EF;
+  --cream-2:  #F3EDE0;
+  --cream-3:  #EDE5D2;
+  --ink:      #1A1208;
+  --ink-2:    #3D3019;
+  --muted:    #7A6E5C;
+  --gold:     #B8860B;
+  --gold-2:   #D4A017;
+  --gold-bg:  rgba(184,134,11,0.10);
+  --red:      #C0392B;
+  --red-bg:   rgba(192,57,43,0.09);
+  --green:    #1A6B35;
+  --green-bg: rgba(26,107,53,0.09);
+  --blue:     #1A4E8C;
+  --blue-bg:  rgba(26,78,140,0.09);
+  --orange:   #C05A00;
+  --orange-bg:rgba(192,90,0,0.09);
+  --purple:   #5B2C8C;
+  --border:   #DDD5C0;
+  --shadow:   0 2px 16px rgba(26,18,8,0.08);
+  --teal:     #0E7490;
+  --teal-bg:  rgba(14,116,144,0.09);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+/* ===== 상단 히어로 ===== */
+.hero {
+  background: var(--ink);
+  color: #FBF7EF;
+  text-align: center;
+  padding: 72px 24px 56px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 24px,
+    rgba(255,255,255,0.025) 24px,
+    rgba(255,255,255,0.025) 25px
+  );
+}
+.hero-emoji { font-size: 4rem; display: block; margin-bottom: 16px; position: relative; }
+.hero h1 {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  position: relative;
+  margin-bottom: 12px;
+}
+.hero-sub {
+  font-size: 1.05rem;
+  opacity: 0.72;
+  max-width: 560px;
+  margin: 0 auto 24px;
+  position: relative;
+}
+.hero-badge {
+  display: inline-block;
+  background: var(--gold);
+  color: #fff;
+  padding: 6px 20px;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  position: relative;
+  margin: 4px;
+}
+.hero-badge.new {
+  background: #0E7490;
+}
+
+/* ===== 목차 네비게이션 ===== */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--ink);
+  border-bottom: 2px solid var(--gold);
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-bar::-webkit-scrollbar { display: none; }
+.nav-inner {
+  display: flex;
+  gap: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  white-space: nowrap;
+}
+.nav-item {
+  color: rgba(251,247,239,0.65);
+  text-decoration: none;
+  padding: 13px 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all 0.15s;
+  border-bottom: 3px solid transparent;
+  display: inline-block;
+}
+.nav-item:hover {
+  color: var(--gold-2);
+  border-bottom-color: var(--gold-2);
+  background: rgba(255,255,255,0.05);
+}
+.nav-item--back {
+  color: var(--gold-2) !important;
+  border-right: 1px solid rgba(255,255,255,0.15);
+  padding-right: 20px;
+  margin-right: 4px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+.nav-item--back:hover {
+  color: #fff !important;
+  background: rgba(184,134,11,0.25) !important;
+  border-bottom-color: var(--gold) !important;
+}
+.nav-item.new-tag::after {
+  content: 'NEW';
+  font-size: 0.6rem;
+  background: var(--teal);
+  color: #fff;
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* ===== 메인 컨테이너 ===== */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ===== 섹션 공통 ===== */
+.section { margin-top: 72px; }
+.section-num {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.section-title {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.section-lead {
+  font-size: 1.02rem;
+  color: var(--muted);
+  margin-bottom: 32px;
+  line-height: 1.7;
+}
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, var(--gold), transparent);
+  margin-bottom: 32px;
+}
+
+/* ===== NEW 배지 ===== */
+.badge-new {
+  display: inline-block;
+  background: var(--teal);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: 0.05em;
+}
+.badge-updated {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: 0.05em;
+}
+
+/* ===== 카드 ===== */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-weight: 900;
+  font-size: 1rem;
+  color: var(--ink);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .emoji { font-size: 1.25rem; }
+
+/* ===== 알림박스 ===== */
+.tip-box {
+  border-left: 4px solid var(--gold);
+  background: var(--gold-bg);
+  border-radius: 0 10px 10px 0;
+  padding: 16px 20px;
+  margin: 20px 0;
+  font-size: 0.93rem;
+  line-height: 1.7;
+}
+.tip-box.red { border-color: var(--red); background: var(--red-bg); }
+.tip-box.green { border-color: var(--green); background: var(--green-bg); }
+.tip-box.blue { border-color: var(--blue); background: var(--blue-bg); }
+.tip-box.teal { border-color: var(--teal); background: var(--teal-bg); }
+.tip-box strong { display: block; margin-bottom: 4px; }
+
+/* ===== 예시박스 ===== */
+.example-box {
+  background: var(--cream-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin: 16px 0;
+  font-size: 0.92rem;
+  line-height: 1.75;
+}
+.example-label {
+  display: inline-block;
+  background: var(--gold);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 99px;
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+}
+.example-box.fun { background: #FFF9EC; border-color: #E8D99A; }
+.example-box.teal { background: rgba(14,116,144,0.06); border-color: rgba(14,116,144,0.2); }
+
+/* ===== 단계별 스텝 ===== */
+.steps { display: flex; flex-direction: column; gap: 16px; }
+.step {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+.step-num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nanum Myeongjo', serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-body { flex: 1; }
+.step-body strong { display: block; font-size: 1rem; margin-bottom: 4px; }
+.step-body p { font-size: 0.92rem; color: var(--muted); line-height: 1.7; }
+
+/* ===== 그리드 ===== */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 640px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* ===== 신호등 카드 ===== */
+.signal-cards { display: flex; flex-direction: column; gap: 12px; }
+.signal-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.signal-icon { font-size: 1.8rem; flex-shrink: 0; }
+.signal-body strong { font-size: 0.95rem; display: block; margin-bottom: 3px; }
+.signal-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+.signal-card.green  { border-left: 5px solid #1A6B35; }
+.signal-card.blue   { border-left: 5px solid #1A4E8C; }
+.signal-card.yellow { border-left: 5px solid #C07800; }
+.signal-card.red    { border-left: 5px solid #C0392B; }
+.signal-card.gray   { border-left: 5px solid #9E9688; border-left-style: dashed; }
+
+/* ===== 탭 구조 설명 카드 ===== */
+.tab-cards { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.tab-card {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+  transition: background 0.15s;
+}
+.tab-card:last-child { border-bottom: none; }
+.tab-card:hover { background: var(--cream); }
+.tab-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.tab-emoji { font-size: 1.4rem; }
+.tab-name { font-weight: 900; font-size: 0.98rem; color: var(--ink); }
+.tab-difficulty {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 99px;
+}
+.diff-easy   { background: var(--green-bg);  color: var(--green); }
+.diff-medium { background: var(--orange-bg); color: var(--orange); }
+.diff-hard   { background: var(--red-bg);    color: var(--red); }
+.diff-new    { background: var(--teal-bg);   color: var(--teal); }
+.tab-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+/* ===== 용어 사전 ===== */
+.glossary { display: flex; flex-direction: column; gap: 0; }
+.glossary-item {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.glossary-item:last-child { border-bottom: none; }
+.glossary-term { font-weight: 900; font-size: 0.92rem; color: var(--blue); }
+.glossary-def { font-size: 0.9rem; color: var(--ink-2); line-height: 1.7; }
+.glossary-ex { font-size: 0.82rem; color: var(--muted); margin-top: 4px; font-style: italic; }
+@media (max-width: 560px) {
+  .glossary-item { grid-template-columns: 1fr; gap: 6px; }
+}
+
+/* ===== 규칙 박스 ===== */
+.rule-list { display: flex; flex-direction: column; gap: 0; }
+.rule-item {
+  display: flex;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px dashed var(--border);
+  align-items: flex-start;
+}
+.rule-item:last-child { border-bottom: none; }
+.rule-num {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--cream-3);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: center;
+  -webkit-text-stroke: 1.5px var(--gold);
+}
+.rule-body strong { display: block; font-size: 0.98rem; margin-bottom: 4px; }
+.rule-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+/* ===== FAQ ===== */
+.faq { display: flex; flex-direction: column; gap: 12px; }
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+.faq-q {
+  width: 100%;
+  text-align: left;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.faq-q:hover { background: var(--cream); }
+.faq-q::before { content: 'Q'; background: var(--gold); color: #fff; border-radius: 4px; padding: 2px 8px; font-size: 0.75rem; flex-shrink: 0; }
+.faq-q .arrow { margin-left: auto; transition: transform 0.25s; font-size: 0.75rem; color: var(--muted); }
+.faq-item.open .faq-q .arrow { transform: rotate(180deg); }
+.faq-a {
+  display: none;
+  padding: 0 20px 18px 20px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.75;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.faq-item.open .faq-a { display: block; }
+
+/* ===== 모듈 설명 테이블 ===== */
+.module-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin: 16px 0;
+}
+.module-table th {
+  background: var(--ink);
+  color: #FBF7EF;
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+.module-table th:first-child { border-radius: 6px 0 0 0; }
+.module-table th:last-child { border-radius: 0 6px 0 0; }
+.module-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.65;
+}
+.module-table tr:nth-child(even) td { background: var(--cream-2); }
+.module-table tr:last-child td { border-bottom: none; }
+
+/* ===== 사분면 설명 ===== */
+.quadrant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 20px 0; }
+.q-card { padding: 20px; border-radius: 10px; font-size: 0.88rem; line-height: 1.65; }
+.q-card strong { display: block; margin-bottom: 6px; font-size: 0.95rem; }
+.q1 { background: rgba(26,107,53,0.10); border: 1px solid rgba(26,107,53,0.25); }
+.q2 { background: rgba(184,134,11,0.10); border: 1px solid rgba(184,134,11,0.25); }
+.q3 { background: rgba(26,78,140,0.10);  border: 1px solid rgba(26,78,140,0.25); }
+.q4 { background: rgba(92,44,140,0.10);  border: 1px solid rgba(92,44,140,0.25); }
+.q-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.q1 .q-tag { background: #1A6B35; color: #fff; }
+.q2 .q-tag { background: #B8860B; color: #fff; }
+.q3 .q-tag { background: #1A4E8C; color: #fff; }
+.q4 .q-tag { background: #5B2C8C; color: #fff; }
+
+/* ===== 체크리스트 ===== */
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.check-item:hover { background: var(--cream); border-color: var(--gold); }
+.check-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.check-item.checked { background: var(--green-bg); border-color: var(--green); }
+
+/* ===== 신기능 하이라이트 박스 ===== */
+.new-feature-box {
+  background: linear-gradient(135deg, rgba(14,116,144,0.06), rgba(26,78,140,0.06));
+  border: 1.5px solid rgba(14,116,144,0.3);
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin: 20px 0;
+}
+.new-feature-box .nf-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.nf-label {
+  display: inline-block;
+  background: var(--teal);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 99px;
+  letter-spacing: 0.08em;
+}
+.new-feature-box .nf-title {
+  font-weight: 900;
+  font-size: 0.98rem;
+  color: var(--teal);
+}
+.new-feature-box .nf-body {
+  font-size: 0.9rem;
+  color: var(--ink-2);
+  line-height: 1.75;
+}
+
+/* ===== 버전 타임라인 ===== */
+.version-timeline { display: flex; flex-direction: column; gap: 0; }
+.vt-item {
+  display: flex;
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.vt-item:last-child { border-bottom: none; }
+.vt-ver {
+  font-family: 'Nanum Myeongjo', serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--gold);
+  min-width: 56px;
+  padding-top: 2px;
+}
+.vt-body strong { display: block; font-size: 0.92rem; margin-bottom: 3px; }
+.vt-body p { font-size: 0.85rem; color: var(--muted); line-height: 1.65; }
+
+/* ===== 카톡 공유 프리뷰 ===== */
+.kakao-preview-demo {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.85rem;
+  margin: 16px 0;
+}
+.kp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+.kp-title { font-size: 1rem; font-weight: 900; }
+.kp-date { font-size: 0.72rem; color: #93c5fd; margin-top: 2px; }
+.kp-weather {
+  text-align: center;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 8px 14px;
+}
+.kp-weather .icon { font-size: 1.6rem; display: block; }
+.kp-weather .lbl { font-size: 0.72rem; font-weight: 800; color: #bfdbfe; }
+.kp-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+.kp-metric { background: rgba(255,255,255,0.06); border-radius: 8px; padding: 8px; }
+.kp-metric .lbl { font-size: 0.65rem; color: #94a3b8; }
+.kp-metric .val { font-size: 0.95rem; font-weight: 800; }
+.kp-conclusion {
+  background: rgba(21,128,61,0.2);
+  border: 1px solid rgba(21,128,61,0.4);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.kp-signals { display: flex; flex-direction: column; gap: 6px; }
+.kp-signal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 0.82rem;
+}
+.kp-signal .sig-ticker { font-weight: 900; min-width: 60px; }
+.kp-signal .sig-sub { color: #94a3b8; font-size: 0.72rem; }
+
+/* ===== 맨 위로 ===== */
+.back-top {
+  position: fixed;
+  bottom: 28px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  background: var(--ink);
+  color: var(--gold-2);
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  transition: transform 0.2s;
+  z-index: 200;
+}
+.back-top:hover { transform: translateY(-3px); }
+
+/* ===== 푸터 ===== */
+.footer {
+  background: var(--ink);
+  color: rgba(251,247,239,0.55);
+  text-align: center;
+  padding: 36px 20px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+@media print {
+  .nav-bar, .back-top { display: none !important; }
+  body { font-size: 12px; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate { animation: fadeInUp 0.5s ease both; }
+</style>
+</head>
+<body>
+
+<!-- 히어로 -->
+<div class="hero">
+  <span class="hero-emoji">📊</span>
+  <h1>Q-MAP 3.7 완전 초보 매뉴얼</h1>
+  <p class="hero-sub">주식도, 경제도 처음인 가족을 위한<br>쉽고 재미있는 사용 설명서</p>
+  <span class="hero-badge">📌 v10.7 카톡공유 기준</span>
+  <span class="hero-badge new">💬 카톡 공유 기능 신규 추가</span>
+</div>
+
+<!-- 네비게이션 -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a class="nav-item nav-item--back" href="index.html" target="_blank" rel="noopener">← Q-MAP 앱으로</a>
+    <a class="nav-item" href="#intro">🌱 시작하기 전에</a>
+    <a class="nav-item" href="#whats-new">✨ 3.7 새 기능</a>
+    <a class="nav-item" href="#overview">🗺️ 전체 구조</a>
+    <a class="nav-item" href="#tab-family">🏠 가족 대시보드</a>
+    <a class="nav-item new-tag" href="#tab-share">💬 카톡 공유</a>
+    <a class="nav-item" href="#tab-analyzer">📊 종목 분석기</a>
+    <a class="nav-item" href="#tab-qmap">📋 Q-MAP 평가표</a>
+    <a class="nav-item" href="#tab-portfolio">💼 포트폴리오</a>
+    <a class="nav-item" href="#tab-guide">📖 운용 매뉴얼</a>
+    <a class="nav-item" href="#glossary">📚 용어 사전</a>
+    <a class="nav-item" href="#faq">❓ FAQ</a>
+    <a class="nav-item" href="#rules">✅ 황금 규칙</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ===================================================
+     0. 시작하기 전에
+=================================================== -->
+<section class="section" id="intro">
+  <div class="section-num">INTRODUCTION</div>
+  <h2 class="section-title">📌 시작하기 전에 꼭 읽으세요</h2>
+  <p class="section-lead">이 프로그램이 뭔지, 어떻게 쓰는 건지 딱 3분만 읽어보세요.</p>
+  <div class="divider"></div>
+
+  <div class="card">
+    <div class="card-title"><span class="emoji">🤔</span> Q-MAP이 대체 뭔가요?</div>
+    <p style="font-size:0.93rem; line-height:1.8; color:var(--ink-2);">
+      Q-MAP은 <strong>\"우리 가족이 산 주식이 지금 건강한가?\"</strong>를 한눈에 보여주는 프로그램입니다.<br>
+      신호등처럼 🟢초록·🔵파랑·🟡노랑·🔴빨강으로 알려줘서, 주식을 전혀 몰라도 결론을 읽을 수 있게 만들어졌어요.<br><br>
+      <strong>3.7 버전부터는</strong> 분석 결과를 <strong>카톡으로 가족에게 쉽게 공유</strong>할 수 있는 기능이 추가됐습니다.
+    </p>
+  </div>
+
+  <div class="example-box fun">
+    <span class="example-label">🍔 이런 느낌이에요</span>
+    <p>햄버거 가게를 차렸다고 해봐요.<br>
+    \"이 가게, 지금 잘 되고 있나?\"를 알려면 <strong>매출, 손님 수, 재료비, 경쟁 가게</strong> 등을 봐야 하죠.<br>
+    Q-MAP은 <strong>주식 회사의 성적표</strong>를 자동으로 분석해서, 🟢\"보유해도 됩니다\" / 🔴\"점검이 필요합니다\"라고 알려줍니다.<br>
+    그리고 이제는 그 결과를 <strong>가족 카톡방에 한 방에 보낼 수 있어요!</strong></p>
+  </div>
+
+  <div class="tip-box">
+    <strong>⚠️ 가장 중요한 것 하나</strong>
+    이 프로그램은 <strong>\"언제 사고 팔아라\"고 명령하지 않습니다.</strong><br>
+    결정은 <strong>월 1회, 실적 발표 후, 빨간 경고가 있을 때만</strong> 합니다. 매일 들여다봐도 괜찮지만, 매일 매매하면 안 됩니다.
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="emoji">✅</span> 이런 분께 딱!</div>
+      <ul style="font-size:0.9rem; color:var(--muted); padding-left:18px; line-height:2;">
+        <li>주식 용어를 잘 모르는 분</li>
+        <li>매일 불안해서 팔고 싶은 분</li>
+        <li>가족이 함께 투자를 관리하고 싶은 분</li>
+        <li>결과를 카톡으로 공유하고 싶은 분</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="emoji">❌</span> 이건 아닙니다</div>
+      <ul style="font-size:0.9rem; color:var(--muted); padding-left:18px; line-height:2;">
+        <li>단기 단타 매매 도구가 아닙니다</li>
+        <li>당장 오를 종목을 추천하지 않습니다</li>
+        <li>100% 수익을 보장하지 않습니다</li>
+        <li>전문 투자 조언이 아닙니다</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     NEW. 3.7 새 기능 요약
+=================================================== -->
+<section class="section" id="whats-new">
+  <div class="section-num">WHAT'S NEW</div>
+  <h2 class="section-title">✨ 3.7에서 달라진 것들</h2>
+  <p class="section-lead">3.0 대비 3.7에서 새롭게 추가·개선된 핵심 기능입니다. 기존 사용자라면 이 섹션부터 읽으세요.</p>
+  <div class="divider"></div>
+
+  <div class="version-timeline">
+    <div class="vt-item">
+      <div class="vt-ver">v10.7</div>
+      <div class="vt-body">
+        <strong>💬 카톡 공유 모드 <span class="badge-new">NEW</span></strong>
+        <p>가족 대시보드 분석 결과를 카톡 문구·한 장 이미지·PDF로 바로 공유할 수 있습니다. 자료 입력은 선생님 혼자 하고, 가족에게는 보기 쉬운 요약만 보내는 방식입니다.</p>
+      </div>
+    </div>
+    <div class="vt-item">
+      <div class="vt-ver">v10.6</div>
+      <div class="vt-body">
+        <strong>💰 금액 기반 포트폴리오 / HTML 보고서 가져오기 <span class="badge-new">NEW</span></strong>
+        <p>종목 비중(%)이 아닌 실제 금액으로 입력하면 비중이 자동 계산됩니다. 기존 HTML 보고서 파일을 업로드해서 포트폴리오를 한 번에 불러올 수도 있습니다.</p>
+      </div>
+    </div>
+    <div class="vt-item">
+      <div class="vt-ver">v10.5</div>
+      <div class="vt-body">
+        <strong>⚡ 간편 포트폴리오 입력 UI <span class="badge-updated">개선</span></strong>
+        <p>종목 등록 화면이 훨씬 빠르고 간편해졌습니다. 필수 항목만 입력하면 나머지는 자동으로 채워집니다.</p>
+      </div>
+    </div>
+    <div class="vt-item">
+      <div class="vt-ver">v10.3</div>
+      <div class="vt-body">
+        <strong>🏠 가족 모드 대시보드 <span class="badge-updated">개선</span></strong>
+        <p>등록 종목 수, 평균 Q-MAP 점수, 현금 비중, 위험 신호 수가 한눈에 보이는 통계 카드가 추가됐습니다.</p>
+      </div>
+    </div>
+    <div class="vt-item">
+      <div class="vt-ver">v10.2</div>
+      <div class="vt-body">
+        <strong>📋 원칙 카드 · 붕괴 신호 · 매매 기록 보강 <span class="badge-updated">개선</span></strong>
+        <p>Q-MAP 평가표에 원칙 카드, 가설 붕괴 신호 체크, 검토 과제 섹션이 추가됐습니다.</p>
+      </div>
+    </div>
+    <div class="vt-item">
+      <div class="vt-ver">v9</div>
+      <div class="vt-body">
+        <strong>🔬 분석 신뢰도 배지 · 5등급 체계 <span class="badge-updated">개선</span></strong>
+        <p>종목 분석기에 분석 신뢰도(High/Medium/Low) 표시가 추가됐고, 매수 등급이 5단계(강한 매수 후보 → 분할매수 → 관망 → 비중축소 → 매수제외)로 세분화됐습니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="new-feature-box" style="margin-top:24px;">
+    <div class="nf-header">
+      <span class="nf-label">핵심 변화</span>
+      <span class="nf-title">3.0과 3.7, 뭐가 다른가요?</span>
+    </div>
+    <div class="nf-body">
+      <strong>3.0</strong> — 선생님(관리자)이 혼자 분석하고, 가족이 직접 프로그램을 열어서 확인하는 방식<br>
+      <strong>3.7</strong> — 선생님이 분석 후 <strong>카톡 문구·이미지·PDF를 바로 생성</strong>해서 가족에게 보낼 수 있는 방식<br><br>
+      가족이 프로그램을 직접 열 필요 없이, <strong>카톡 한 장으로 오늘의 상태를 파악</strong>할 수 있습니다.
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     1. 전체 구조
+=================================================== -->
+<section class="section" id="overview">
+  <div class="section-num">CHAPTER 1</div>
+  <h2 class="section-title">🗺️ 프로그램 전체 구조 훑어보기</h2>
+  <p class="section-lead">Q-MAP 3.7은 6개의 탭으로 이루어져 있어요. 3.0의 5개 탭에서 카톡 공유 탭이 새로 추가됐습니다.</p>
+  <div class="divider"></div>
+
+  <div class="tab-cards">
+    <div class="tab-card">
+      <div class="tab-card-header">
+        <span class="tab-emoji">🏠</span>
+        <span class="tab-name">가족 대시보드</span>
+        <span class="tab-difficulty diff-easy">★ 쉬움 — 매일 여기만 보세요</span>
+      </div>
+      <p class="tab-desc">오늘 우리 가족 주식이 어떤 상태인지 신호등으로 알려줍니다. 등록 종목 수·평균 점수·현금 비중·위험 신호 통계카드가 추가됐습니다. <strong>초보 가족은 여기만 매일 봐도 됩니다.</strong></p>
+    </div>
+    <div class="tab-card">
+      <div class="tab-card-header">
+        <span class="tab-emoji">💬</span>
+        <span class="tab-name">카톡 공유 <span class="badge-new" style="font-size:0.65rem; padding:1px 6px;">NEW</span></span>
+        <span class="tab-difficulty diff-new">★ 쉬움 — 가족에게 보낼 때</span>
+      </div>
+      <p class="tab-desc">포트폴리오 분석 결과를 한 장 이미지·카톡 문구·PDF로 만들어 가족에게 보냅니다. 공유 옵션(날씨, 신호등, 위험 종목, 원칙)을 골라 내보낼 수 있습니다.</p>
+    </div>
+    <div class="tab-card">
+      <div class="tab-card-header">
+        <span class="tab-emoji">📊</span>
+        <span class="tab-name">종목 분석기</span>
+        <span class="tab-difficulty diff-medium">★★ 중간 — 월 1회 또는 새 종목 살 때</span>
+      </div>
+      <p class="tab-desc">Finviz에서 데이터를 가져와 분석합니다. 이제 <strong>분석 신뢰도(High/Medium/Low)</strong>가 표시되고, 등급이 5단계로 세분화됐습니다.</p>
+    </div>
+    <div class="tab-card">
+      <div class="tab-card-header">
+        <span class="tab-emoji">📋</span>
+        <span class="tab-name">Q-MAP 평가표</span>
+        <span class="tab-difficulty diff-medium">★★ 중간 — 실적 발표 후 채점</span>
+      </div>
+      <p class="tab-desc">보유 중인 종목을 직접 채점합니다. <strong>원칙 카드, 붕괴 신호 체크리스트, 검토 과제</strong>가 추가돼 더 체계적인 점검이 가능합니다.</p>
+    </div>
+    <div class="tab-card">
+      <div class="tab-card-header">
+        <span class="tab-emoji">💼</span>
+        <span class="tab-name">포트폴리오 관리</span>
+        <span class="tab-difficulty diff-medium">★★ 중간 — 종목 등록/관리</span>
+      </div>
+      <p class="tab-desc">가족이 보유한 모든 종목을 등록하고 비중을 관리합니다. <strong>금액으로 입력하면 비중이 자동 계산</strong>되고, 기존 HTML 보고서를 가져오는 기능이 추가됐습니다.</p>
+    </div>
+    <div class="tab-card">
+      <div class="tab-card-header">
+        <span class="tab-emoji">📖</span>
+        <span class="tab-name">운용 매뉴얼</span>
+        <span class="tab-difficulty diff-easy">★ 쉬움 — 기준표 참고용</span>
+      </div>
+      <p class="tab-desc">Q-MAP 시스템의 모든 규칙과 기준이 정리된 탭입니다. 추가매수 조건, 손절 기준, 비중 한도 등 헷갈릴 때 펼쳐보세요.</p>
+    </div>
+  </div>
+
+  <div class="tip-box green">
+    <strong>💡 추천 순서 (3.7 버전)</strong>
+    처음 시작하는 날: <strong>포트폴리오 관리 탭</strong>에서 종목 등록 → 이후 매일: <strong>가족 대시보드</strong>만 확인 → 가족에게 공유: <strong>카톡 공유 탭</strong>에서 전송 → 월 1회: <strong>Q-MAP 평가표</strong>로 채점
+  </div>
+</section>
+
+<!-- ===================================================
+     2. 가족 대시보드
+=================================================== -->
+<section class="section" id="tab-family">
+  <div class="section-num">CHAPTER 2</div>
+  <h2 class="section-title">🏠 가족 대시보드 사용법</h2>
+  <p class="section-lead">가장 중요한 탭입니다. 매일 아침 이것만 봐도 됩니다. 5분이면 충분합니다.</p>
+  <div class="divider"></div>
+
+  <!-- 통계 카드 (신규) -->
+  <div class="new-feature-box">
+    <div class="nf-header">
+      <span class="nf-label">v10.3 추가</span>
+      <span class="nf-title">상단 4개 통계 카드</span>
+    </div>
+    <div class="nf-body">
+      3.7에서는 가족 대시보드 상단에 <strong>4개의 통계 카드</strong>가 생겼습니다.
+      <div style="display:grid; grid-template-columns: repeat(2,1fr); gap:10px; margin-top:12px; font-size:0.88rem;">
+        <div style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:12px;">
+          <strong style="display:block; margin-bottom:3px;">등록 종목</strong>
+          <span style="color:var(--muted);">포트폴리오에 등록된 종목 수</span>
+        </div>
+        <div style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:12px;">
+          <strong style="display:block; margin-bottom:3px;">평균 Q-MAP</strong>
+          <span style="color:var(--muted);">7점 이상이면 보유 중심</span>
+        </div>
+        <div style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:12px;">
+          <strong style="display:block; margin-bottom:3px;">현금 비중</strong>
+          <span style="color:var(--muted);">평시 5~10% 유지 권장</span>
+        </div>
+        <div style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:12px;">
+          <strong style="display:block; margin-bottom:3px;">위험 신호</strong>
+          <span style="color:var(--muted);">빨강·가설 붕괴 종목 수</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 투자 날씨 -->
+  <div class="card">
+    <div class="card-title"><span class="emoji">🌤️</span> 투자 날씨란?</div>
+    <p style="font-size:0.92rem; color:var(--ink-2); line-height:1.8;">
+      화면 오른쪽 상단에 날씨 아이콘이 있습니다. 우리 가족 포트폴리오 전체 상태를 날씨로 표현한 것입니다.
+    </p>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;">
+      <span style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:0.88rem;">☀️ 맑음 — 보유 중심, 큰 이상 없음</span>
+      <span style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:0.88rem;">🌤️ 맑음+기회 — 추가매수 후보 있음</span>
+      <span style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:0.88rem;">⛅ 기회+주의 — 점검 우선</span>
+      <span style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:0.88rem;">🌥️ 흐림 — 추가매수 보류</span>
+      <span style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:0.88rem;">⛈️ 폭풍 주의 — 점검 즉시 필요</span>
+    </div>
+  </div>
+
+  <!-- 신호등 설명 -->
+  <h3 style="font-size:1.1rem; font-weight:800; margin: 28px 0 16px;">🚦 종목별 신호등 이해하기</h3>
+  <div class="signal-cards">
+    <div class="signal-card green">
+      <div class="signal-icon">🟢</div>
+      <div class="signal-body">
+        <strong>초록 — "계획대로 보유"</strong>
+        <p>사업가설이 살아있고 점수도 정상입니다. 아무것도 안 해도 됩니다. 오늘도 내일도 그냥 두세요.</p>
+      </div>
+    </div>
+    <div class="signal-card blue">
+      <div class="signal-icon">🔵</div>
+      <div class="signal-body">
+        <strong>파랑 — "좋은 종목, 눌림 때만 추가매수 후보"</strong>
+        <p>Q-MAP 점수 9점 이상의 우수 종목입니다. 단, <strong>가격이 떨어진 날(눌림목)</strong>에만 추가 매수를 검토합니다. 오른 날 추격매수는 금지.</p>
+      </div>
+    </div>
+    <div class="signal-card yellow">
+      <div class="signal-icon">🟡</div>
+      <div class="signal-body">
+        <strong>노랑 — "신규·추가매수 중단, 관찰"</strong>
+        <p>점수가 낮아졌거나 종목 비중이 너무 높습니다. 파는 게 아니라 <strong>추가로 사는 것을 멈추고 지켜보는</strong> 상태입니다.</p>
+      </div>
+    </div>
+    <div class="signal-card red">
+      <div class="signal-icon">🔴</div>
+      <div class="signal-body">
+        <strong>빨강 — "선생님 점검 필요"</strong>
+        <p>사업가설이 붕괴되거나 Q-MAP 점수가 낮습니다. 즉흥 판단하지 말고 <strong>Q-MAP 평가표에서 사업가설을 재검토</strong>하세요.</p>
+      </div>
+    </div>
+    <div class="signal-card gray">
+      <div class="signal-icon">⚪</div>
+      <div class="signal-body">
+        <strong>회색 — "아직 평가 전"</strong>
+        <p>Q-MAP 점수가 입력되지 않은 종목입니다. 위험한 게 아니라 <strong>아직 채점을 안 한 것</strong>입니다. Q-MAP 평가표에서 먼저 점수를 넣어주세요.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 오늘의 행동 확인 -->
+  <h3 style="font-size:1.1rem; font-weight:800; margin: 32px 0 16px;">🧭 "오늘 매매해도 되나?" 버튼 사용법</h3>
+  <div class="card">
+    <p style="font-size:0.93rem; color:var(--ink-2); line-height:1.8; margin-bottom:16px;">
+      화면 중간에 <strong>"확인하기"</strong> 버튼이 있습니다. 그 위에는 오늘 기분을 선택하는 버튼이 있어요.
+    </p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>오늘 시장 분위기 선택</strong>
+          <p>😊 오른 날 / 😐 보통 날 / 😟 내린 날 — 중에 하나를 누릅니다.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>"확인하기" 버튼 클릭</strong>
+          <p>아래에 오늘의 행동 원칙이 나타납니다. 이걸 읽고 그대로 따르면 됩니다.</p>
+        </div>
+      </div>
+    </div>
+    <div class="example-box fun" style="margin-top:16px;">
+      <span class="example-label">💬 예시 결과</span>
+      <p><strong>😊 오른 날:</strong> 오른 날은 추격매수하는 날이 아닙니다. 계획대로 보유하세요.</p>
+      <br>
+      <p><strong>😟 내린 날:</strong> 가격 하락이 곧 사업가설 붕괴는 아닙니다. 빨간 신호가 없다면 기다립니다.</p>
+    </div>
+  </div>
+
+  <!-- 초보 5원칙 -->
+  <h3 style="font-size:1.1rem; font-weight:800; margin: 32px 0 16px;">👨‍👩‍👧‍👦 우리집 초보 투자 5원칙</h3>
+  <div class="rule-list">
+    <div class="rule-item"><span class="rule-num">1</span><div class="rule-body"><strong>매일 봐도 된다 — 하지만 매일 사고팔지는 않는다</strong><p>시세를 매일 확인하는 건 괜찮아요. 하지만 그게 매매 이유가 되면 안 됩니다.</p></div></div>
+    <div class="rule-item"><span class="rule-num">2</span><div class="rule-body"><strong>오른 날 — 기뻐하되 추격매수하지 않는다</strong><p>오늘 3% 올랐다고 \"더 오를 것 같아!\" 해서 사면 대부분 고점 매수가 됩니다.</p></div></div>
+    <div class="rule-item"><span class="rule-num">3</span><div class="rule-body"><strong>내린 날 — 무서워하되 바로 팔지 않는다</strong><p>가격이 내렸다는 건 싸진 것일 수도 있어요. 빨간 신호가 없다면 기다립니다.</p></div></div>
+    <div class="rule-item"><span class="rule-num">4</span><div class="rule-body"><strong>매수 이유(사업가설)가 살아있으면 보유한다</strong><p>\"이 회사에 투자한 이유\"가 아직 유효하다면, 가격이 잠깐 내렸어도 팔 이유가 없습니다.</p></div></div>
+    <div class="rule-item"><span class="rule-num">5</span><div class="rule-body"><strong>결정일은 월 1회 또는 실적 발표 후만</strong><p>뉴스 한 줄 보고 바로 팔면 안 됩니다. 충분한 정보가 있을 때 결정합니다.</p></div></div>
+  </div>
+</section>
+
+<!-- ===================================================
+     3. 카톡 공유 (신규)
+=================================================== -->
+<section class="section" id="tab-share">
+  <div class="section-num">CHAPTER 3 — 신규 기능</div>
+  <h2 class="section-title">💬 카톡 공유 탭 사용법 <span class="badge-new">NEW in 3.7</span></h2>
+  <p class="section-lead">3.7의 가장 큰 신기능입니다. 분석 결과를 가족 카톡방에 한 번에 보낼 수 있습니다.</p>
+  <div class="divider"></div>
+
+  <div class="tip-box teal">
+    <strong>🎯 이 탭은 언제 쓰나요?</strong>
+    매주 1회(예: 일요일 저녁) 선생님이 분석 후 → 카톡 공유 탭에서 공유 옵션 설정 → 가족 카톡방에 전송하는 방식입니다.<br>
+    <strong>가족은 프로그램을 열 필요 없이 카톡 메시지 하나로 이번 주 상태를 확인합니다.</strong>
+  </div>
+
+  <!-- 공유 방법 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:24px 0 16px;">📋 공유하는 3가지 방법</h3>
+  <div class="grid-3">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2rem; margin-bottom:8px;">💬</div>
+      <strong style="display:block; margin-bottom:6px;">카톡 문구 복사</strong>
+      <p style="font-size:0.85rem; color:var(--muted);">자동 생성된 텍스트를 복사해서 카톡에 붙여넣기</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2rem; margin-bottom:8px;">📸</div>
+      <strong style="display:block; margin-bottom:6px;">한 장 이미지 저장</strong>
+      <p style="font-size:0.85rem; color:var(--muted);">요약 카드를 PNG 이미지로 저장해서 카톡에 전송</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2rem; margin-bottom:8px;">📄</div>
+      <strong style="display:block; margin-bottom:6px;">PDF 출력</strong>
+      <p style="font-size:0.85rem; color:var(--muted);">PDF로 저장해서 파일로 전송</p>
+    </div>
+  </div>
+
+  <!-- 사용 순서 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:28px 0 16px;">🔢 공유 탭 사용 순서</h3>
+  <div class="card">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>공유 옵션 선택</strong>
+          <p>포함할 내용을 체크박스로 선택합니다: 총자산·날씨 / 종목 신호등 / 위험·주의 종목 / 이번 주 원칙</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>"공유 내용 새로고침" 클릭</strong>
+          <p>오른쪽에 요약 이미지 미리보기가, 아래에 카톡 문구 미리보기가 생성됩니다.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>전송 방법 선택</strong>
+          <p>💬 카톡 문구 복사 → 카톡 붙여넣기 / 📸 한 장 이미지 저장 → 카톡 이미지 전송</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 공유 카드 미리보기 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:28px 0 16px;">🖼️ 가족에게 보이는 화면 (예시)</h3>
+  <div class="kakao-preview-demo">
+    <div class="kp-header">
+      <div>
+        <div class="kp-title">🏠 우리집 투자 주간 리포트</div>
+        <div class="kp-date">2025. 05. 22</div>
+      </div>
+      <div class="kp-weather">
+        <span class="icon">☀️</span>
+        <div class="lbl">맑음</div>
+      </div>
+    </div>
+    <div class="kp-metrics">
+      <div class="kp-metric"><div class="lbl">총 평가금액</div><div class="val">₩ 2,840만</div></div>
+      <div class="kp-metric"><div class="lbl">등록 종목</div><div class="val">8개</div></div>
+      <div class="kp-metric"><div class="lbl">위험 신호</div><div class="val">0개</div></div>
+    </div>
+    <div class="kp-conclusion">✅ 이번 주 결론: 전 종목 정상 보유 상태입니다. 추가 매매 없이 계획대로 보유하는 한 주입니다.</div>
+    <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:8px; font-weight:700;">종목 신호등</div>
+    <div class="kp-signals">
+      <div class="kp-signal"><span>🟢</span><span class="sig-ticker">NVDA</span><span class="sig-sub">계획대로 보유 · Q-MAP 9점</span></div>
+      <div class="kp-signal"><span>🔵</span><span class="sig-ticker">MSFT</span><span class="sig-sub">눌림 시 추가매수 후보</span></div>
+      <div class="kp-signal"><span>🟢</span><span class="sig-ticker">QQQ</span><span class="sig-sub">코어 자산 정상</span></div>
+    </div>
+  </div>
+  <p style="font-size:0.82rem; color:var(--muted); text-align:center; margin-top:8px;">위는 예시 이미지입니다. 실제로는 등록된 종목에 맞게 자동 생성됩니다.</p>
+
+  <div class="tip-box green">
+    <strong>💡 가족 활용 팁</strong>
+    주식을 잘 모르는 부모님이나 형제에게 매주 이 이미지를 보내면, 복잡한 설명 없이도 "이번 주는 걱정 안 해도 되는 주다" / "이번 주는 뭔가 점검이 필요한 것 같다"를 직관적으로 알 수 있습니다.
+  </div>
+</section>
+
+<!-- ===================================================
+     4. 종목 분석기
+=================================================== -->
+<section class="section" id="tab-analyzer">
+  <div class="section-num">CHAPTER 4</div>
+  <h2 class="section-title">📊 종목 분석기 사용법</h2>
+  <p class="section-lead">새 종목을 살까 고민할 때, 또는 기존 종목을 객관적으로 점검할 때 사용합니다. Finviz에서 데이터를 가져와 자동으로 분석해요.</p>
+  <div class="divider"></div>
+
+  <div class="tip-box blue">
+    <strong>💡 Finviz가 뭔가요?</strong>
+    미국 주식 데이터를 무료로 볼 수 있는 사이트입니다 (finviz.com). 주가, 매출 성장률, 수익성 등 중요한 숫자들이 한 표에 정리되어 있어요.
+  </div>
+
+  <!-- 신뢰도 배지 (신규) -->
+  <div class="new-feature-box">
+    <div class="nf-header">
+      <span class="nf-label">v9 추가</span>
+      <span class="nf-title">분석 신뢰도 배지</span>
+    </div>
+    <div class="nf-body">
+      이제 분석 결과 상단에 <strong>신뢰도(High / Medium / Low)</strong>가 표시됩니다.
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;">
+        <span style="background:rgba(21,128,61,0.2); color:#15803d; border-radius:99px; padding:4px 14px; font-size:0.82rem; font-weight:800;">● HIGH — 핵심 지표 대부분 입력됨</span>
+        <span style="background:rgba(217,119,6,0.2); color:#d97706; border-radius:99px; padding:4px 14px; font-size:0.82rem; font-weight:800;">● MEDIUM — 일부 지표 누락</span>
+        <span style="background:rgba(220,38,38,0.2); color:#dc2626; border-radius:99px; padding:4px 14px; font-size:0.82rem; font-weight:800;">● LOW — 핵심 지표 입력 권장</span>
+      </div>
+      <p style="font-size:0.88rem; color:var(--muted); margin-top:10px;">신뢰도가 낮을 때는 결과를 참고만 하고, 누락된 지표를 추가로 입력하면 분석 정확도가 높아집니다.</p>
+    </div>
+  </div>
+
+  <!-- 5등급 체계 (신규) -->
+  <div class="new-feature-box" style="margin-top:20px;">
+    <div class="nf-header">
+      <span class="nf-label">v9 개선</span>
+      <span class="nf-title">매수 등급 5단계 세분화</span>
+    </div>
+    <div class="nf-body">
+      기존 4단계에서 5단계로 세분화됐습니다.
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+        <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--green-bg); border:1px solid var(--green); border-radius:8px; font-size:0.88rem;">
+          <span style="background:var(--green); color:#fff; border-radius:99px; padding:3px 12px; font-weight:800; white-space:nowrap;">등급 1</span>
+          <span><strong>강한 매수 후보</strong> — 즉시 분할 매수 검토</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:rgba(101,163,13,0.08); border:1px solid rgba(101,163,13,0.3); border-radius:8px; font-size:0.88rem;">
+          <span style="background:#65A30D; color:#fff; border-radius:99px; padding:3px 12px; font-weight:800; white-space:nowrap;">등급 2</span>
+          <span><strong>분할매수 후보</strong> — 눌림 대기 후 단계적 매수</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--orange-bg); border:1px solid var(--orange); border-radius:8px; font-size:0.88rem;">
+          <span style="background:var(--orange); color:#fff; border-radius:99px; padding:3px 12px; font-weight:800; white-space:nowrap;">등급 3</span>
+          <span><strong>관망</strong> — 보유는 유지, 신규 매수 보류</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--red-bg); border:1px solid var(--red); border-radius:8px; font-size:0.88rem;">
+          <span style="background:var(--red); color:#fff; border-radius:99px; padding:3px 12px; font-weight:800; white-space:nowrap;">등급 4</span>
+          <span><strong>비중 축소 후보</strong> — 사업가설 재검토 후 판단</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:#f5f5f5; border:1px solid #d4d4d4; border-radius:8px; font-size:0.88rem;">
+          <span style="background:#4B4B4B; color:#fff; border-radius:99px; padding:3px 12px; font-weight:800; white-space:nowrap;">등급 5</span>
+          <span><strong>매수 제외</strong> — 신규 매수 금지</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 데이터 입력 방법 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:28px 0 16px;">📋 데이터 입력하는 2가지 방법</h3>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="emoji">📸</span> 방법 1: 이미지로 붙여넣기</div>
+      <div class="steps" style="gap:10px;">
+        <div class="step"><div class="step-num" style="width:28px;height:28px;font-size:0.85rem;">1</div><div class="step-body"><strong style="font-size:0.88rem;">finviz.com 에서 티커 검색</strong><p>예: AAPL, NVDA</p></div></div>
+        <div class="step"><div class="step-num" style="width:28px;height:28px;font-size:0.85rem;">2</div><div class="step-body"><strong style="font-size:0.88rem;">표 부분 캡처</strong><p>Windows: Win+Shift+S</p></div></div>
+        <div class="step"><div class="step-num" style="width:28px;height:28px;font-size:0.85rem;">3</div><div class="step-body"><strong style="font-size:0.88rem;">드롭존에 Ctrl+V</strong><p>또는 이미지 파일 드래그</p></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="emoji">📋</span> 방법 2: 텍스트로 붙여넣기 (더 정확)</div>
+      <div class="steps" style="gap:10px;">
+        <div class="step"><div class="step-num" style="width:28px;height:28px;font-size:0.85rem;">1</div><div class="step-body"><strong style="font-size:0.88rem;">finviz.com 에서 티커 검색</strong><p>예: AAPL, NVDA</p></div></div>
+        <div class="step"><div class="step-num" style="width:28px;height:28px;font-size:0.85rem;">2</div><div class="step-body"><strong style="font-size:0.88rem;">Ctrl+A → Ctrl+C</strong><p>페이지 전체 선택 후 복사</p></div></div>
+        <div class="step"><div class="step-num" style="width:28px;height:28px;font-size:0.85rem;">3</div><div class="step-body"><strong style="font-size:0.88rem;">텍스트 박스에 Ctrl+V</strong><p>"Finviz 텍스트 직접 붙여넣기" 박스</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 투자 성향 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:28px 0 16px;">⚡ 투자 성향 선택</h3>
+  <div class="card">
+    <p style="font-size:0.9rem; color:var(--muted); margin-bottom:16px;">분석 전에 투자 성향을 고르면, 각 지표에 다른 가중치를 줍니다.</p>
+    <div class="grid-3">
+      <div style="text-align:center; padding:16px; background:var(--red-bg); border:1px solid var(--red); border-radius:10px;">
+        <div style="font-size:1.5rem;">⚡</div>
+        <div style="font-weight:800; color:var(--red); margin:6px 0 4px;">공격형</div>
+        <div style="font-size:0.8rem; color:var(--muted);">성장성 우선</div>
+      </div>
+      <div style="text-align:center; padding:16px; background:var(--blue-bg); border:1px solid var(--blue); border-radius:10px;">
+        <div style="font-size:1.5rem;">⚖️</div>
+        <div style="font-weight:800; color:var(--blue); margin:6px 0 4px;">균형형 (기본)</div>
+        <div style="font-size:0.8rem; color:var(--muted);">성장+안정 균형</div>
+      </div>
+      <div style="text-align:center; padding:16px; background:var(--green-bg); border:1px solid var(--green); border-radius:10px;">
+        <div style="font-size:1.5rem;">🛡️</div>
+        <div style="font-weight:800; color:var(--green); margin:6px 0 4px;">보수형</div>
+        <div style="font-size:0.8rem; color:var(--muted);">안정성 우선</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6개 모듈 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:28px 0 16px;">📊 6개 모듈 점수 — 이게 뭔가요?</h3>
+  <div class="card">
+    <table class="module-table">
+      <thead><tr><th>모듈</th><th>뭘 보나요?</th><th>쉬운 설명</th></tr></thead>
+      <tbody>
+        <tr><td><strong>성장성</strong></td><td>매출·이익 얼마나 성장하나</td><td>이 회사, 매년 얼마나 크고 있나? 🌱</td></tr>
+        <tr><td><strong>수익성</strong></td><td>돈을 잘 버는가</td><td>장사해서 실제로 남는 게 있나? 💰</td></tr>
+        <tr><td><strong>가격 적정성</strong></td><td>현재 가격이 합리적인가</td><td>지금 비싸게 사는 건 아닌가? 🏷️</td></tr>
+        <tr><td><strong>재무 안전성</strong></td><td>빚은 얼마나 되나</td><td>회사가 망할 위험은 없나? 🏦</td></tr>
+        <tr><td><strong>애널리스트 시각</strong></td><td>전문가들의 평가</td><td>주식 전문가들은 어떻게 보나? 🔭</td></tr>
+        <tr><td><strong>모멘텀</strong></td><td>최근 주가 흐름</td><td>요즘 오르는 추세인가? 📈</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 사분면 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:28px 0 16px;">📌 사분면 — "기업의 질 × 가격 부담"</h3>
+  <div class="card">
+    <p style="font-size:0.9rem; color:var(--muted); margin-bottom:16px;">가로축은 "지금 비싼가", 세로축은 "좋은 회사인가"를 나타냅니다.</p>
+    <div class="quadrant-grid">
+      <div class="q-card q1"><span class="q-tag">① 매수 후보</span><strong>좋은 기업 · 합리적 가격</strong><p>가장 이상적인 위치! 분할 매수 후보입니다.</p></div>
+      <div class="q-card q2"><span class="q-tag">② 조정 대기</span><strong>좋은 기업 · 과열 가격</strong><p>회사는 좋지만 지금 너무 비쌉니다. 더 저렴해질 때를 기다리세요.</p></div>
+      <div class="q-card q3"><span class="q-tag">③ 관망</span><strong>기업 질 불확실 · 싼 가격</strong><p>싸 보이지만 회사 상태가 불분명합니다.</p></div>
+      <div class="q-card q4"><span class="q-tag">④ 매수 제외</span><strong>기업 질 낮음 · 비싼 가격</strong><p>비싼데 회사도 별로입니다. 매수하면 안 됩니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     5. Q-MAP 평가표
+=================================================== -->
+<section class="section" id="tab-qmap">
+  <div class="section-num">CHAPTER 5</div>
+  <h2 class="section-title">📋 Q-MAP 평가표 사용법</h2>
+  <p class="section-lead">보유 중인 종목을 직접 채점하는 탭입니다. 실적 발표 후, 또는 월 1회 정기 점검 시 사용합니다.</p>
+  <div class="divider"></div>
+
+  <div class="tip-box">
+    <strong>📅 언제 쓰나요?</strong>
+    실적 발표 직후 / 매월 1일 정기 점검 / 빨간 신호가 들어왔을 때
+  </div>
+
+  <!-- 신규: 원칙 카드 등 -->
+  <div class="new-feature-box">
+    <div class="nf-header">
+      <span class="nf-label">v10.2 추가</span>
+      <span class="nf-title">원칙 카드 · 붕괴 신호 체크리스트 · 검토 과제</span>
+    </div>
+    <div class="nf-body">
+      3.7의 Q-MAP 평가표에는 3가지가 추가됐습니다.<br><br>
+      <strong>① 원칙 카드</strong> — 채점 전에 읽어야 할 투자 원칙을 카드 형태로 표시합니다.<br>
+      <strong>② 사업가설 붕괴 신호 체크리스트</strong> — \"이 종목을 팔아야 할 신호\"를 체크하는 항목들이 추가됐습니다.<br>
+      <strong>③ 검토 과제</strong> — 다음 점검까지 확인해야 할 과제 목록이 자동으로 생성됩니다.
+    </div>
+  </div>
+
+  <!-- Q-MAP 점수 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:24px 0 16px;">🎯 Q-MAP 점수란?</h3>
+  <div class="card">
+    <p style="font-size:0.9rem; color:var(--muted); margin-bottom:16px;">0~10점으로 채점합니다. 각 항목을 선택하면 자동으로 합산됩니다.</p>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--green-bg); border:1px solid var(--green); border-radius:10px;">
+        <span style="font-size:1.5rem; font-weight:900; font-family:'Nanum Myeongjo',serif; color:var(--green); min-width:36px;">9~10</span>
+        <div><strong style="color:var(--green);">매우 우수</strong> — 추가매수 후보(눌림 때만), 🔵파랑 신호</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--green-bg); border:1px solid var(--green); border-radius:10px; opacity:0.8;">
+        <span style="font-size:1.5rem; font-weight:900; font-family:'Nanum Myeongjo',serif; color:var(--green); min-width:36px;">7~8</span>
+        <div><strong style="color:var(--green);">정상 보유 구간</strong> — 계획대로 보유, 🟢초록 신호</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--orange-bg); border:1px solid var(--orange); border-radius:10px;">
+        <span style="font-size:1.5rem; font-weight:900; font-family:'Nanum Myeongjo',serif; color:var(--orange); min-width:36px;">4~6</span>
+        <div><strong style="color:var(--orange);">관찰 구간</strong> — 추가매수 금지, 🟡노랑 신호</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--red-bg); border:1px solid var(--red); border-radius:10px;">
+        <span style="font-size:1.5rem; font-weight:900; font-family:'Nanum Myeongjo',serif; color:var(--red); min-width:36px;">0~3</span>
+        <div><strong style="color:var(--red);">이탈 구간</strong> — 관리자 점검 필요, 🔴빨강 신호</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 사업가설 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:28px 0 16px;">💡 "사업가설"이란?</h3>
+  <div class="card">
+    <p style="font-size:0.93rem; color:var(--ink-2); line-height:1.8;">
+      사업가설(Thesis)은 <strong>"이 종목에 투자한 이유"</strong>입니다. 이유가 살아있으면 보유, 이유가 없어지면 매도를 검토합니다.
+    </p>
+    <div class="example-box fun" style="margin-top:16px;">
+      <span class="example-label">✍️ 예시</span>
+      <p><strong>NVIDIA를 산 이유 (사업가설):</strong><br>"AI 개발에는 GPU가 필수다. NVIDIA는 AI용 GPU 시장의 80%를 점유하고 있다. AI 붐이 지속되는 한 NVIDIA의 매출은 계속 성장할 것이다."</p>
+      <br>
+      <p style="color:var(--muted);">👉 이 가설이 <strong>아직 유효하다면 → 보유</strong><br>
+      AI 붐이 꺼지거나 경쟁사가 시장을 뺏는다면 → <strong>가설 붕괴 → 매도 검토</strong></p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+      <div style="padding:10px 16px; background:var(--green-bg); border:1px solid var(--green); border-radius:8px; font-size:0.88rem;">✅ <strong>살아있음</strong> — 투자한 이유가 아직 유효합니다</div>
+      <div style="padding:10px 16px; background:var(--orange-bg); border:1px solid var(--orange); border-radius:8px; font-size:0.88rem;">⚠️ <strong>약화 중</strong> — 이유가 흔들리고 있습니다. 추가매수 금지</div>
+      <div style="padding:10px 16px; background:var(--red-bg); border:1px solid var(--red); border-radius:8px; font-size:0.88rem;">❌ <strong>붕괴</strong> — 투자한 이유가 사라졌습니다. 매도 검토 필요</div>
+    </div>
+  </div>
+
+  <!-- 추가매수 5조건 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:28px 0 16px;">➕ 추가매수 5가지 조건 체크리스트</h3>
+  <div class="card">
+    <p style="font-size:0.9rem; color:var(--muted); margin-bottom:16px;"><strong>5가지 중 4가지 이상 충족할 때만</strong> 추가매수를 검토합니다.</p>
+    <div class="checklist" id="checklist1">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck(this)"><span>① 현재 Q-MAP 점수가 9점 이상이다</span></label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck(this)"><span>② 실적·가이던스가 최근에 개선됐다</span></label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck(this)"><span>③ 산업의 성장 흐름이 아직 유지되고 있다</span></label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck(this)"><span>④ 급등 후 추격이 아닌 눌림 구간이다 (오른 날이 아님)</span></label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck(this)"><span>⑤ 이 종목·테마의 비중이 상한선을 넘지 않는다</span></label>
+    </div>
+    <div id="checklist-result" style="margin-top:14px; padding:12px 16px; border-radius:8px; font-size:0.9rem; font-weight:700; background:var(--cream-2); color:var(--muted);">
+      체크박스를 눌러 조건을 확인해보세요
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     6. 포트폴리오 관리
+=================================================== -->
+<section class="section" id="tab-portfolio">
+  <div class="section-num">CHAPTER 6</div>
+  <h2 class="section-title">💼 포트폴리오 관리 사용법 <span class="badge-updated">개선</span></h2>
+  <p class="section-lead">처음 한 번 세팅하면 가족 대시보드가 자동으로 작동합니다. 3.7에서 입력 방식이 더 편리해졌습니다.</p>
+  <div class="divider"></div>
+
+  <!-- 신규: 금액 기반 입력 -->
+  <div class="new-feature-box">
+    <div class="nf-header">
+      <span class="nf-label">v10.6 추가</span>
+      <span class="nf-title">금액으로 입력하면 비중 자동 계산</span>
+    </div>
+    <div class="nf-body">
+      이전에는 비중(%)을 직접 계산해서 입력해야 했습니다. 이제는 <strong>실제 보유 금액을 입력하면 비중이 자동으로 계산</strong>됩니다.<br><br>
+      예: AAPL 300만원, NVDA 250만원, 현금 150만원 → 비중 자동 계산(각각 43%, 36%, 21%)<br><br>
+      <strong>HTML 보고서 가져오기</strong>: 이전에 저장한 Q-MAP HTML 파일을 업로드하면 포트폴리오 전체를 한 번에 불러올 수 있습니다.
+    </div>
+  </div>
+
+  <!-- 3층 계좌 구조 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:24px 0 16px;">🏛️ 3층 계좌 구조란?</h3>
+  <div class="card">
+    <p style="font-size:0.9rem; color:var(--muted); margin-bottom:18px;">계란을 한 바구니에 담지 않듯, 종목을 3가지 등급으로 나눠 관리합니다.</p>
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-num" style="font-size:1.5rem;">🏛️</span>
+        <div class="rule-body"><strong>1층 코어 자산층 — 목표 45~55%</strong><p>가장 안전하고 우량한 종목들. QQQ, MSFT, GOOGL, NVDA 같은 대형 빅테크·ETF. 포트폴리오의 뼈대입니다.</p></div>
+      </div>
+      <div class="rule-item">
+        <span class="rule-num" style="font-size:1.5rem;">🚀</span>
+        <div class="rule-body"><strong>2층 성장 위성층 — 목표 25~35%</strong><p>성장 가능성이 높지만 변동성도 있는 종목들. AI 인프라, 반도체, 전력망, 원전, 방산 관련 종목들.</p></div>
+      </div>
+      <div class="rule-item">
+        <span class="rule-num" style="font-size:1.5rem;">⚡</span>
+        <div class="rule-body"><strong>3층 전술 실험층 — 목표 0~5%</strong><p>소량으로 시험해보는 종목들. 잃어도 크게 아프지 않을 금액만 씁니다.</p></div>
+      </div>
+      <div class="rule-item">
+        <span class="rule-num" style="font-size:1.5rem;">💵</span>
+        <div class="rule-body"><strong>현금 — 평시 5~10%</strong><p>폭락 시 저가 매수를 위해 남겨두는 자금. 폭락장에서는 10~20%까지 늘릴 수 있습니다.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 종목 등록 방법 -->
+  <h3 style="font-size:1.05rem; font-weight:800; margin:28px 0 16px;">➕ 종목 등록하는 법</h3>
+  <div class="card">
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><strong>가족 계좌 선택</strong><p>아빠 / 엄마 / 첫째 / 둘째 / 가족공통 중 선택합니다.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><strong>티커 입력</strong><p>종목 코드를 입력합니다. 예: AAPL(애플), MSFT(마이크로소프트), NVDA(엔비디아)</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><strong>금액 또는 비중 입력 <span class="badge-new" style="font-size:0.65rem; padding:1px 6px;">NEW</span></strong><p>실제 보유 금액을 입력하면 비중이 자동 계산됩니다. 직접 %를 입력해도 됩니다.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><strong>등급·층 선택</strong><p>A등급(코어), B등급(성장), C(모멘텀), D(전술). 층은 1층/2층/3층 중 선택.</p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Q-MAP 점수·가설 상태 입력 (선택)</strong><p>처음엔 몰라도 됩니다. 나중에 Q-MAP 평가표에서 채점 후 업데이트 가능.</p></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-body"><strong>"종목 추가" 버튼 클릭</strong><p>가족 대시보드에 자동으로 신호등이 추가됩니다! 🎉</p></div></div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>⚠️ 비중의 합이 100%가 되어야 해요!</strong>
+    예: AAPL 20% + MSFT 20% + NVDA 15% + 현금 10% … 이런 식으로 모든 종목 비중의 합이 100%가 되게 설정하세요.<br>
+    <strong>금액으로 입력하면 자동으로 맞춰집니다.</strong>
+  </div>
+</section>
+
+<!-- ===================================================
+     7. 운용 매뉴얼 탭
+=================================================== -->
+<section class="section" id="tab-guide">
+  <div class="section-num">CHAPTER 7</div>
+  <h2 class="section-title">📖 운용 매뉴얼 탭이란?</h2>
+  <p class="section-lead">Q-MAP의 모든 규칙이 담긴 참고서입니다. 헷갈릴 때마다 펼쳐보세요.</p>
+  <div class="divider"></div>
+
+  <div class="card">
+    <div class="card-title"><span class="emoji">📌</span> 이 탭에서 확인할 수 있는 것들</div>
+    <ul style="font-size:0.92rem; color:var(--muted); padding-left:18px; line-height:2.2;">
+      <li>종목 등급별 최대 비중 기준</li>
+      <li>테마별 노출 한도 (AI, 반도체, 방산 등)</li>
+      <li>추가매수·손절·매도 기준 정리</li>
+      <li>Q-MAP 점수 구간별 행동 원칙</li>
+      <li>사분면 위치별 투자 전략</li>
+      <li>월간 점검 루틴 (매월 1시간 운용 사이클)</li>
+    </ul>
+  </div>
+
+  <div class="tip-box blue">
+    <strong>💡 어떻게 활용하나요?</strong>
+    "NVDA를 추가 매수해도 될까?" 라는 의문이 생겼을 때, 운용 매뉴얼 탭에서 현재 테마 비중 한도를 확인하고, Q-MAP 평가표에서 5가지 추가매수 조건을 체크하세요.
+  </div>
+</section>
+
+<!-- ===================================================
+     8. 용어 사전
+=================================================== -->
+<section class="section" id="glossary">
+  <div class="section-num">APPENDIX A</div>
+  <h2 class="section-title">📚 초보를 위한 주식·경제 용어 사전</h2>
+  <p class="section-lead">Q-MAP에서 자주 나오는 용어들을 쉽게 설명합니다.</p>
+  <div class="divider"></div>
+
+  <div class="card">
+    <div class="glossary">
+      <div class="glossary-item">
+        <div class="glossary-term">티커 (Ticker)</div>
+        <div><div class="glossary-def">주식 거래소에서 쓰는 종목의 약자 코드입니다.</div><div class="glossary-ex">예: Apple → AAPL / 엔비디아 → NVDA / 테슬라 → TSLA</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">포트폴리오</div>
+        <div><div class="glossary-def">내가 보유한 모든 투자 종목의 묶음입니다. "우리 집 주식 바구니".</div><div class="glossary-ex">예: AAPL 20% + NVDA 15% + 현금 10% = 나의 포트폴리오</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">비중 (Weight)</div>
+        <div><div class="glossary-def">전체 투자금에서 특정 종목에 얼마나 투자했는지의 비율입니다.</div><div class="glossary-ex">예: 1000만원 중 AAPL에 200만원 = AAPL 비중 20%</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">ETF</div>
+        <div><div class="glossary-def">여러 종목을 한 번에 담은 "묶음 상품"입니다. 분산 투자 효과가 있어 초보에게 좋습니다.</div><div class="glossary-ex">예: QQQ = 나스닥 100대 기업을 한 번에 투자하는 ETF</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Forward P/E</div>
+        <div><div class="glossary-def">앞으로 1년 후 이익 대비 현재 주가가 몇 배인지. 낮을수록 상대적으로 저렴합니다.</div><div class="glossary-ex">예: P/E 20 = "앞으로 벌 돈의 20배 가격에 주식이 팔리고 있음"</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">PEG 비율</div>
+        <div><div class="glossary-def">성장률을 감안한 가격 적정성 지표. 1 이하면 저평가, 2 이상이면 고평가 경향.</div><div class="glossary-ex">예: 빠르게 성장하는 회사는 P/E가 높아도 PEG가 낮을 수 있음</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">가이던스</div>
+        <div><div class="glossary-def">회사가 다음 분기/연간 실적을 어떻게 예상하는지 발표하는 것. 상향이면 좋고, 하향이면 주의 신호.</div><div class="glossary-ex">예: "다음 분기 매출을 1000억~1100억으로 예상합니다" = 가이던스 제시</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">추격매수</div>
+        <div><div class="glossary-def">주가가 많이 오른 날, 더 오를 것 같아서 사는 것. Q-MAP에서 가장 금지하는 행동.</div><div class="glossary-ex">예: 오늘 주가가 5% 올랐는데 "더 오를 것 같아!"라고 추가 매수하는 것</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">눌림목</div>
+        <div><div class="glossary-def">상승 추세 중에 잠깐 가격이 내려온 구간. 추가매수의 좋은 타이밍입니다.</div><div class="glossary-ex">예: 평소 100달러짜리 주식이 일시적으로 92달러로 떨어진 상태</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">분할 매수</div>
+        <div><div class="glossary-def">한 번에 모두 사지 않고 나눠서 여러 번 구매하는 방식. 리스크를 줄일 수 있습니다.</div><div class="glossary-ex">예: 100만원 어치를 지금 30 + 한달 뒤 40 + 두달 뒤 30만원으로 나눠 매수</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">분석 신뢰도 <span class="badge-new" style="font-size:0.6rem; padding:1px 5px;">NEW</span></div>
+        <div><div class="glossary-def">3.7 신규. 종목 분석기에서 얼마나 많은 지표가 입력됐는지에 따른 신뢰도. HIGH → MEDIUM → LOW 순서.</div><div class="glossary-ex">예: 신뢰도 LOW면 결과를 참고만 하고, 지표를 더 입력하면 높아짐</div></div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">테마 (Theme)</div>
+        <div><div class="glossary-def">비슷한 산업 트렌드를 공유하는 종목 그룹. 한 테마에 너무 집중하면 위험합니다.</div><div class="glossary-ex">예: AI·빅테크 / 반도체 / 전력·데이터센터 / 원전·방산</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     9. FAQ
+=================================================== -->
+<section class="section" id="faq">
+  <div class="section-num">APPENDIX B</div>
+  <h2 class="section-title">❓ 자주 묻는 질문 (FAQ)</h2>
+  <p class="section-lead">초보 분들이 가장 많이 헷갈리는 것들을 모았습니다. 3.7 신기능 관련 질문도 추가됐습니다.</p>
+  <div class="divider"></div>
+
+  <div class="faq">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">매일 가격을 봐야 하나요? <span class="arrow">▼</span></button>
+      <div class="faq-a">봐도 되지만, <strong>매일 판단하면 안 됩니다</strong>. 가족 대시보드의 신호등은 매일 확인해도 됩니다. 하지만 매매 결정은 월 1회, 실적 발표 후, 빨간 신호가 있을 때만 합니다.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">카톡 공유 탭은 어떻게 쓰나요? <span class="arrow">▼</span></button>
+      <div class="faq-a">① 포트폴리오가 먼저 등록되어 있어야 합니다. ② 카톡 공유 탭을 클릭합니다. ③ 포함할 공유 옵션을 체크합니다 (날씨, 신호등, 위험종목, 원칙). ④ "공유 내용 새로고침" 버튼을 누릅니다. ⑤ "카톡 문구 복사" 또는 "한 장 이미지 저장" 버튼으로 내보냅니다. 가족에게 이미지나 문구를 그대로 전송하면 됩니다.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">주식이 갑자기 많이 내렸는데 팔아야 하나요? <span class="arrow">▼</span></button>
+      <div class="faq-a">먼저 <strong>빨간 신호가 있는지 확인하세요</strong>. 가격이 내려간 것과 "사업가설이 붕괴됐다"는 다른 이야기입니다. 빨간 신호 없이 가격만 내려갔다면 — 기다리세요.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">빨간 신호가 나오면 즉시 팔아야 하나요? <span class="arrow">▼</span></button>
+      <div class="faq-a">아닙니다. 빨간 신호는 <strong>"즉흥 매매하지 말고, Q-MAP 평가표에서 사업가설을 재검토하라"</strong>는 뜻입니다. 차분하게 "내가 이 주식을 산 이유가 여전히 유효한가?"를 다시 따져봐야 합니다.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">분석 신뢰도가 LOW로 나오면 어떻게 하나요? <span class="arrow">▼</span></button>
+      <div class="faq-a">분석 신뢰도 LOW는 <strong>핵심 지표 데이터가 충분히 입력되지 않았다는 뜻</strong>입니다. 결과를 완전히 무시할 필요는 없지만, 참고 수준으로만 활용하고 Finviz에서 누락된 항목을 추가로 찾아 입력하면 신뢰도가 높아집니다. 가능하면 텍스트 붙여넣기 방식이 이미지 방식보다 더 많은 지표를 정확하게 읽어냅니다.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">금액으로 포트폴리오를 입력할 수 있나요? <span class="arrow">▼</span></button>
+      <div class="faq-a">네, 3.7(v10.6)부터 <strong>실제 보유 금액을 입력하면 비중이 자동 계산</strong>됩니다. 예를 들어 AAPL 300만원, NVDA 200만원, 현금 100만원으로 입력하면 각각의 비중이 자동으로 계산됩니다. 기존 방식(% 직접 입력)도 그대로 사용 가능합니다.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">데이터는 저장이 되나요? <span class="arrow">▼</span></button>
+      <div class="faq-a">네, 브라우저의 로컬 저장소(LocalStorage)에 자동 저장됩니다. 같은 브라우저에서 다시 열면 데이터가 그대로 있습니다. 단, <strong>다른 기기나 다른 브라우저에서는 공유되지 않습니다</strong>. 중요한 데이터는 HTML 보고서로 저장해두세요 (v10.6에서 가져오기도 가능).</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">미국 주식만 되나요? <span class="arrow">▼</span></button>
+      <div class="faq-a">Q-MAP 3.7은 <strong>미국 성장주 중심으로 설계</strong>되어 있습니다. Finviz는 미국 주식 사이트입니다. 한국 주식도 포트폴리오에 등록은 할 수 있지만, 분석 지표는 미국 주식 기준이므로 한국 주식 분석에는 적합하지 않을 수 있습니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================
+     10. 황금 규칙 + 시작 체크리스트
+=================================================== -->
+<section class="section" id="rules">
+  <div class="section-num">FINAL</div>
+  <h2 class="section-title">✅ 지금 당장 시작하기 — 첫날 체크리스트</h2>
+  <p class="section-lead">처음 사용하는 날, 이 순서대로만 따라하면 됩니다.</p>
+  <div class="divider"></div>
+
+  <div class="card">
+    <div class="card-title"><span class="emoji">🚀</span> 첫날 세팅 체크리스트</div>
+    <div class="checklist" id="setup-checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateSetup(this)"><span>1. 💼 포트폴리오 관리 탭을 엽니다</span></label>
+      <label class="check-item"><input type="checkbox" onchange="updateSetup(this)"><span>2. 현재 보유 중인 모든 종목을 등록합니다 (금액 또는 비중)</span></label>
+      <label class="check-item"><input type="checkbox" onchange="updateSetup(this)"><span>3. 현금도 등록합니다</span></label>
+      <label class="check-item"><input type="checkbox" onchange="updateSetup(this)"><span>4. 🏠 가족 대시보드 탭으로 이동해서 신호등이 표시되는지 확인합니다</span></label>
+      <label class="check-item"><input type="checkbox" onchange="updateSetup(this)"><span>5. "오늘 매매해도 되나?" 버튼을 한 번 눌러봅니다</span></label>
+      <label class="check-item"><input type="checkbox" onchange="updateSetup(this)"><span>6. 💬 카톡 공유 탭에서 "공유 내용 새로고침"을 눌러봅니다</span></label>
+      <label class="check-item"><input type="checkbox" onchange="updateSetup(this)"><span>7. 📋 Q-MAP 평가표 탭에서 종목 1개만 시험 채점해봅니다</span></label>
+    </div>
+    <div id="setup-result" style="margin-top:16px; padding:14px 18px; border-radius:10px; font-size:0.92rem; font-weight:700; background:var(--cream-2); color:var(--muted);">
+      위 체크리스트를 완료하면 Q-MAP 사용 준비 완료입니다!
+    </div>
+  </div>
+
+  <!-- 황금 규칙 -->
+  <h3 style="font-size:1.1rem; font-weight:800; margin:36px 0 16px; display:flex; align-items:center; gap:8px;">
+    <span>🏆</span> Q-MAP 황금 규칙 10가지
+  </h3>
+  <div style="background:var(--ink); color:#FBF7EF; border-radius:16px; padding:28px 32px;">
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; gap:14px; align-items:flex-start; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <span style="font-family:'Nanum Myeongjo',serif; font-size:1.6rem; font-weight:800; color:var(--gold-2); min-width:32px;">1</span>
+        <p style="font-size:0.92rem; line-height:1.75; color:rgba(251,247,239,0.88);">매일 봐도 된다. 하지만 매일 판단하지 않는다. 결정은 월 1회·실적 발표 후·빨간 신호가 있을 때만.</p>
+      </div>
+      <div style="display:flex; gap:14px; align-items:flex-start; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <span style="font-family:'Nanum Myeongjo',serif; font-size:1.6rem; font-weight:800; color:var(--gold-2); min-width:32px;">2</span>
+        <p style="font-size:0.92rem; line-height:1.75; color:rgba(251,247,239,0.88);">오른 날은 추격매수하는 날이 아니다. 기뻐하고 끝낸다.</p>
+      </div>
+      <div style="display:flex; gap:14px; align-items:flex-start; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <span style="font-family:'Nanum Myeongjo',serif; font-size:1.6rem; font-weight:800; color:var(--gold-2); min-width:32px;">3</span>
+        <p style="font-size:0.92rem; line-height:1.75; color:rgba(251,247,239,0.88);">내린 날은 감정 손절하는 날이 아니다. 빨간 신호 없이는 기다린다.</p>
+      </div>
+      <div style="display:flex; gap:14px; align-items:flex-start; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <span style="font-family:'Nanum Myeongjo',serif; font-size:1.6rem; font-weight:800; color:var(--gold-2); min-width:32px;">4</span>
+        <p style="font-size:0.92rem; line-height:1.75; color:rgba(251,247,239,0.88);">사업가설(투자 이유)이 살아있으면 보유한다. 이유가 없어졌을 때 판다.</p>
+      </div>
+      <div style="display:flex; gap:14px; align-items:flex-start; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <span style="font-family:'Nanum Myeongjo',serif; font-size:1.6rem; font-weight:800; color:var(--gold-2); min-width:32px;">5</span>
+        <p style="font-size:0.92rem; line-height:1.75; color:rgba(251,247,239,0.88);">추가매수는 5가지 조건 중 4가지 이상일 때만. 그리고 오른 날이 아닌 눌림 때만.</p>
+      </div>
+      <div style="display:flex; gap:14px; align-items:flex-start; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <span style="font-family:'Nanum Myeongjo',serif; font-size:1.6rem; font-weight:800; color:var(--gold-2); min-width:32px;">6</span>
+        <p style="font-size:0.92rem; line-height:1.75; color:rgba(251,247,239,0.88);">빨간 신호가 뜨면 즉흥 매매하지 말고, Q-MAP 평가표에서 재검토한다.</p>
+      </div>
+      <div style="display:flex; gap:14px; align-items:flex-start; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <span style="font-family:'Nanum Myeongjo',serif; font-size:1.6rem; font-weight:800; color:var(--gold-2); min-width:32px;">7</span>
+        <p style="font-size:0.92rem; line-height:1.75; color:rgba(251,247,239,0.88);">1층 코어(45~55%) → 2층 성장(25~35%) → 3층 전술(0~5%) → 현금(5~10%)의 비중을 지킨다.</p>
+      </div>
+      <div style="display:flex; gap:14px; align-items:flex-start; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <span style="font-family:'Nanum Myeongjo',serif; font-size:1.6rem; font-weight:800; color:var(--gold-2); min-width:32px;">8</span>
+        <p style="font-size:0.92rem; line-height:1.75; color:rgba(251,247,239,0.88);">매매할 때는 반드시 이유를 한 문장으로 기록한다. 기록 없는 매매는 실력이 되지 않는다.</p>
+      </div>
+      <div style="display:flex; gap:14px; align-items:flex-start; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <span style="font-family:'Nanum Myeongjo',serif; font-size:1.6rem; font-weight:800; color:var(--gold-2); min-width:32px;">9</span>
+        <p style="font-size:0.92rem; line-height:1.75; color:rgba(251,247,239,0.88);">한 테마에 집중하지 않는다. AI·반도체·방산 등 각 테마별 비중 한도를 지킨다.</p>
+      </div>
+      <div style="display:flex; gap:14px; align-items:flex-start;">
+        <span style="font-family:'Nanum Myeongjo',serif; font-size:1.6rem; font-weight:800; color:var(--gold-2); min-width:32px;">10</span>
+        <p style="font-size:0.92rem; line-height:1.75; color:rgba(251,247,239,0.88);">이 프로그램은 보조 도구다. 최종 투자 결정은 언제나 본인의 책임이다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:32px; text-align:center; padding:32px; background:var(--cream-2); border-radius:16px; border:1px solid var(--border);">
+    <div style="font-size:2.5rem; margin-bottom:12px;">🎉</div>
+    <div style="font-family:'Nanum Myeongjo',serif; font-size:1.3rem; font-weight:800; color:var(--ink); margin-bottom:8px;">매뉴얼을 모두 읽으셨군요!</div>
+    <div style="font-size:0.92rem; color:var(--muted); line-height:1.7;">이제 Q-MAP 3.7을 실제로 열어서<br><strong>포트폴리오 관리 탭부터</strong> 시작해보세요.<br><br>막히는 게 있으면 이 매뉴얼을 다시 펼쳐보세요 📖</div>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<!-- 맨 위로 -->
+<a class="back-top" href="#" title="맨 위로">↑</a>
+
+<!-- 푸터 -->
+<footer class="footer">
+  <p>Q-MAP 3.7 v10.7 카톡공유 모드 · 완전 초보 사용 매뉴얼</p>
+  <p style="margin-top:6px;">⚠️ 이 프로그램은 투자 의사결정 보조 도구입니다. 최종 투자 결정은 본인의 책임입니다.</p>
+</footer>
+
+<script>
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  item.classList.toggle('open');
+}
+
+function updateCheck(cb) {
+  const list = document.getElementById('checklist1');
+  const items = list.querySelectorAll('.check-item');
+  let count = 0;
+  items.forEach(item => {
+    const chk = item.querySelector('input[type="checkbox"]');
+    if (chk.checked) { item.classList.add('checked'); count++; }
+    else { item.classList.remove('checked'); }
+  });
+  const result = document.getElementById('checklist-result');
+  if (count >= 4) {
+    result.style.background = 'rgba(26,107,53,0.12)';
+    result.style.color = '#1A6B35';
+    result.style.border = '1px solid rgba(26,107,53,0.3)';
+    result.textContent = `✅ ${count}/5 충족 — 추가매수 조건을 만족합니다. 단, 오른 날이 아닌지 꼭 확인하세요!`;
+  } else if (count >= 2) {
+    result.style.background = 'rgba(192,90,0,0.09)';
+    result.style.color = '#C05A00';
+    result.style.border = '1px solid rgba(192,90,0,0.3)';
+    result.textContent = `⚠️ ${count}/5 충족 — 조건이 부족합니다. 4개 이상일 때만 추가매수를 검토하세요.`;
+  } else {
+    result.style.background = 'var(--cream-2)';
+    result.style.color = 'var(--muted)';
+    result.style.border = 'none';
+    result.textContent = `${count}/5 충족 — 체크박스를 눌러 조건을 확인해보세요`;
+  }
+}
+
+function updateSetup(cb) {
+  const list = document.getElementById('setup-checklist');
+  const items = list.querySelectorAll('.check-item');
+  let count = 0;
+  items.forEach(item => {
+    const chk = item.querySelector('input[type="checkbox"]');
+    if (chk.checked) { item.classList.add('checked'); count++; }
+    else { item.classList.remove('checked'); }
+  });
+  const result = document.getElementById('setup-result');
+  const msgs = [
+    '아직 시작 전입니다. 포트폴리오 관리 탭부터 열어보세요!',
+    '잘 하고 있어요! 계속 진행하세요 👍',
+    '절반 완료! 이제 신호등이 보이기 시작할 거예요 🚦',
+    '거의 다 됐어요! 조금만 더!',
+    '카톡 공유도 해보세요! 💬',
+    '마지막 단계! Q-MAP 평가표도 한 번 써보세요!',
+    '완벽한 채점까지 끝났어요!',
+    '🎉 첫날 세팅 완료! 이제 매일 가족 대시보드만 확인하면 됩니다!'
+  ];
+  result.textContent = msgs[Math.min(count, msgs.length - 1)];
+  if (count >= 7) {
+    result.style.background = 'rgba(26,107,53,0.12)';
+    result.style.color = '#1A6B35';
+    result.style.border = '1px solid rgba(26,107,53,0.3)';
+  } else {
+    result.style.background = 'var(--cream-2)';
+    result.style.color = 'var(--muted)';
+    result.style.border = 'none';
+  }
+}
+
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-item');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navItems.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current
+      ? 'var(--gold-2)'
+      : 'rgba(251,247,239,0.65)';
+  });
+});
+</script>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>미국 주식 종목 분석기 v9</title>
+  <title>Q-MAP 3.0 v11.0 — 보고서 가져오기 보완판</title>
 
   <!-- Tesseract.js CDN (OCR) -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -1008,6 +1008,1009 @@
     .na-body { font-size: 0.85rem; color: var(--ink-2); line-height: 1.7; }
     .na-body ul { padding-left: 16px; margin: 8px 0 0 0; }
     .na-body li { margin-bottom: 4px; }
+
+    /* ============================================================
+       Q-MAP 3.0 — v10.2 보완 CSS
+       메인 탭 · Q-MAP 평가표 · 포트폴리오 · 매뉴얼
+    ============================================================ */
+    .main-tabs {
+      display: flex;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+      flex-wrap: wrap;
+    }
+    .main-tab {
+      padding: 10px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      color: var(--ink-2);
+      font-weight: 700;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: var(--shadow-sm);
+    }
+    .main-tab:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+      transform: translateY(-1px);
+    }
+    .main-tab.active {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+    }
+    .main-tab--manual {
+      text-decoration: none;
+      margin-left: auto;
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-bg);
+    }
+    .main-tab--manual:hover {
+      background: var(--blue);
+      color: #fff !important;
+      border-color: var(--blue);
+      transform: translateY(-1px);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+
+    /* ============================================================
+       v10.3 가족 모드 — 초보 가족용 대시보드
+    ============================================================ */
+    .family-hero {
+      background: linear-gradient(135deg, var(--ink), var(--ink-2));
+      color: #fff;
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+      box-shadow: var(--shadow-md);
+    }
+    .family-hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+    .family-title {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .family-subtitle { color: rgba(255,255,255,0.72); font-size: 0.9rem; }
+    .family-weather {
+      text-align: right;
+      min-width: 180px;
+    }
+    .family-weather-icon { font-size: 2.4rem; line-height: 1; }
+    .family-weather-label { font-weight: 800; margin-top: 4px; }
+    .family-weather-sub { font-size: 0.78rem; color: rgba(255,255,255,0.68); }
+    .family-conclusion {
+      margin-top: var(--space-lg);
+      padding: var(--space-md);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    .family-conclusion strong { color: #fff; }
+    .family-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    .family-stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      box-shadow: var(--shadow-sm);
+    }
+    .family-stat-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
+    .family-stat-value { font-size: 1.5rem; font-weight: 900; color: var(--ink); line-height: 1.1; }
+    .family-stat-sub { font-size: 0.78rem; color: var(--muted); margin-top: 5px; }
+    .family-signal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-md);
+    }
+    .family-stock-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 6px solid var(--muted-2);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      box-shadow: var(--shadow-sm);
+    }
+    .family-stock-card.green { border-left-color: var(--green); }
+    .family-stock-card.blue { border-left-color: var(--blue); }
+    .family-stock-card.yellow { border-left-color: var(--orange); }
+    .family-stock-card.red { border-left-color: var(--red); }
+    .family-stock-card.gray { border-left-color: var(--muted-2); opacity: 0.92; }
+    .family-stock-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); margin-bottom: 6px; }
+    .family-stock-ticker { font-size: 1.05rem; font-weight: 900; color: var(--ink); }
+    .family-stock-signal { font-size: 1.4rem; }
+    .family-stock-meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; }
+    .family-stock-action { font-size: 0.86rem; font-weight: 700; color: var(--ink-2); line-height: 1.55; }
+    .family-stock-reason { font-size: 0.78rem; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+    .family-empty {
+      padding: var(--space-xl);
+      border-radius: var(--radius-lg);
+      background: var(--paper-2);
+      border: 1px dashed var(--border);
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .family-rule-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-sm);
+    }
+    .family-rule {
+      background: var(--paper-2);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+    .family-rule b { display: block; margin-bottom: 4px; color: var(--ink); }
+    .trade-day-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+    }
+    .trade-day-result {
+      margin-top: var(--space-md);
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      background: var(--blue-bg);
+      border: 1px solid rgba(37,99,235,0.22);
+      color: var(--ink-2);
+      line-height: 1.7;
+    }
+    .family-mood-buttons { display: flex; gap: var(--space-sm); flex-wrap: wrap; margin-top: var(--space-sm); }
+    .family-mood-btn {
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 7px 12px;
+      background: var(--card);
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .family-mood-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .owner-chip {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 99px;
+      background: var(--purple-bg);
+      color: var(--purple);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+    @media (max-width: 768px) {
+      .family-stats { grid-template-columns: 1fr 1fr; }
+      .family-rule-grid { grid-template-columns: 1fr; }
+      .family-weather { text-align: left; }
+    }
+    @media (max-width: 480px) {
+      .family-stats { grid-template-columns: 1fr; }
+    }
+
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      resize: vertical;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+
+    .qmap-form { display: block; }
+    .qmap-items {
+      display: grid;
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+    .qmap-item-card {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      box-shadow: var(--shadow-sm);
+    }
+    .qmi-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-sm);
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--border-2);
+    }
+    .qmi-num {
+      width: 28px; height: 28px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .qmi-title { font-weight: 800; color: var(--ink); flex: 1; }
+    .qmi-score-display {
+      min-width: 54px;
+      text-align: center;
+      padding: 3px 10px;
+      border-radius: 99px;
+      background: var(--paper-3);
+      font-weight: 800;
+      color: var(--ink-2);
+      font-size: 0.82rem;
+    }
+    .qmi-option {
+      padding: 10px 12px;
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      margin-bottom: 6px;
+      cursor: pointer;
+      background: var(--card);
+      color: var(--ink-2);
+      transition: all 0.12s;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .qmi-option:hover {
+      border-color: var(--blue);
+      background: var(--blue-bg);
+    }
+    .qmi-option.selected {
+      border-color: var(--ink);
+      background: var(--paper-3);
+      font-weight: 700;
+    }
+    .qmi-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-2 { background: var(--green-bg); color: var(--green); border: 1px solid rgba(21,128,61,0.25); }
+    .badge-1 { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(217,119,6,0.25); }
+    .badge-0 { background: var(--red-bg); color: var(--red); border: 1px solid rgba(220,38,38,0.25); }
+
+    .qmap-result-bar {
+      display: grid;
+      grid-template-columns: 160px 1fr 80px;
+      gap: var(--space-md);
+      align-items: stretch;
+      margin-top: var(--space-lg);
+      padding: var(--space-md);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--ink);
+      color: #fff;
+    }
+    .qmr-score-area { display: flex; align-items: baseline; gap: 4px; justify-content: center; flex-wrap: wrap; }
+    .qmr-label { width: 100%; font-size: 0.74rem; color: rgba(255,255,255,0.65); text-align: center; }
+    .qmr-score { font-family: var(--font-serif); font-size: 2.8rem; font-weight: 900; line-height: 1; }
+    .qmr-max { color: rgba(255,255,255,0.65); font-weight: 700; }
+    .qmr-action {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+    }
+    .qmr-action-label { font-weight: 900; font-size: 1rem; margin-bottom: 4px; }
+    .qmr-action-detail { font-size: 0.82rem; color: rgba(255,255,255,0.78); line-height: 1.6; }
+    .qmr-heat {
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, var(--green), var(--orange), var(--red));
+      opacity: 0.9;
+    }
+    .qmr-heat.empty { background: var(--muted); opacity: 0.35; }
+    .qmr-heat.top { background: var(--green); }
+    .qmr-heat.good { background: var(--olive); }
+    .qmr-heat.warn { background: var(--orange); }
+    .qmr-heat.bad { background: var(--red); }
+
+    .candidate-result,
+    .checklist-result {
+      margin-top: var(--space-sm);
+    }
+    .checklist {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--card);
+      border: 1px solid var(--border-2);
+      cursor: pointer;
+      margin-bottom: 0;
+    }
+    .check-item:hover { background: var(--blue-bg); border-color: var(--blue); }
+    .check-item input { transform: scale(1.15); }
+
+    .layer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+    }
+    .layer-card {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      box-shadow: var(--shadow-sm);
+    }
+    .layer-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-sm);
+    }
+    .layer-icon { font-size: 1.4rem; }
+    .layer-name { font-weight: 900; color: var(--ink); }
+    .layer-target { font-size: 0.75rem; color: var(--muted); }
+    .layer-pct { margin-left: auto; font-weight: 900; font-size: 1.2rem; }
+    .layer-bar-bg {
+      height: 10px;
+      background: var(--border-2);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: var(--space-xs);
+    }
+    .layer-bar-fill { height: 100%; border-radius: 99px; transition: width 0.35s; }
+    .layer-hint { color: var(--muted); font-size: 0.76rem; line-height: 1.5; }
+    .layer-card.out-of-range { border-color: var(--orange); background: var(--orange-bg); }
+
+    .add-position-form {
+      background: var(--paper-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+    }
+    .portfolio-table,
+    .guide-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+    .portfolio-table th,
+    .guide-table th {
+      background: var(--paper-2);
+      color: var(--ink-2);
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    .portfolio-table td,
+    .guide-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-2);
+      vertical-align: top;
+    }
+    .portfolio-table tr:hover td { background: var(--paper-2); }
+    .portfolio-table .action-cell { min-width: 190px; font-size: 0.78rem; line-height: 1.45; }
+    .portfolio-table .btn-delete-position { padding: 4px 8px; min-height: auto; }
+
+    .grade-chip,
+    .layer-chip,
+    .theme-chip,
+    .thesis-chip,
+    .score-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-weight: 800;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+    .grade-A { background: var(--green); color: #fff; }
+    .grade-B { background: var(--blue); color: #fff; }
+    .grade-C { background: var(--orange); color: #fff; }
+    .grade-D { background: var(--red); color: #fff; }
+    .layer-chip { background: var(--paper-3); color: var(--ink-2); border: 1px solid var(--border); }
+    .theme-chip { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(124,58,237,0.25); }
+    .thesis-alive { background: var(--green-bg); color: var(--green); }
+    .thesis-weakening { background: var(--orange-bg); color: var(--orange); }
+    .thesis-broken { background: var(--red-bg); color: var(--red); }
+    .score-top { background: var(--green-bg); color: var(--green); }
+    .score-good { background: var(--blue-bg); color: var(--blue); }
+    .score-warn { background: var(--orange-bg); color: var(--orange); }
+    .score-bad { background: var(--red-bg); color: var(--red); }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: var(--space-md);
+    }
+    .theme-card {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+    }
+    .theme-card.warning { border-color: var(--orange); background: var(--orange-bg); }
+    .theme-card.danger { border-color: var(--red); background: var(--red-bg); }
+    .theme-title { font-weight: 900; margin-bottom: 5px; }
+    .theme-pct { font-size: 1.5rem; font-weight: 900; line-height: 1.1; }
+    .theme-limit { font-size: 0.76rem; color: var(--muted); margin-bottom: 6px; }
+    .theme-bar-bg { height: 8px; background: var(--border-2); border-radius: 99px; overflow: hidden; }
+    .theme-bar-fill { height: 100%; border-radius: 99px; background: var(--blue); }
+
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+    }
+    .decision-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      background: var(--card-2);
+    }
+    .dc-title { font-weight: 900; margin-bottom: var(--space-sm); }
+    .dc-items { display: grid; gap: 6px; font-size: 0.78rem; color: var(--ink-2); }
+    .dc-hold { border-left: 4px solid var(--green); }
+    .dc-watch { border-left: 4px solid var(--orange); }
+    .dc-cut { border-left: 4px solid var(--red); }
+    .dc-add { border-left: 4px solid var(--blue); }
+
+    .guide-toc {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+    .guide-toc-item {
+      text-decoration: none;
+      color: var(--ink-2);
+      background: var(--paper-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+    .guide-toc-item:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-bg); }
+    .guide-block {
+      margin-bottom: var(--space-xl);
+      padding: var(--space-md);
+      background: var(--card-2);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-lg);
+    }
+    .guide-block h3 { font-size: 1.05rem; margin-bottom: var(--space-md); color: var(--ink); }
+    .formula-box,
+    .guide-callout {
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      background: var(--ink);
+      color: #fff;
+      line-height: 1.8;
+      margin: var(--space-sm) 0;
+    }
+    .guide-callout {
+      background: var(--blue-bg);
+      color: var(--ink-2);
+      border: 1px solid rgba(37,99,235,0.25);
+      font-weight: 700;
+    }
+    .score-row-top td { background: var(--green-bg-2); }
+    .score-row-good td { background: var(--blue-bg); }
+    .score-row-warn td { background: var(--orange-bg); }
+    .score-row-reduce td { background: rgba(217,119,6,0.16); }
+    .score-row-exit td { background: var(--red-bg); }
+    .ten-commandments { padding-left: 1.4em; color: var(--ink-2); line-height: 1.9; }
+
+    @media (max-width: 960px) {
+      .layer-grid,
+      .decision-grid { grid-template-columns: 1fr 1fr; }
+      .qmap-result-bar { grid-template-columns: 1fr; }
+      .qmr-heat { height: 12px; }
+    }
+    @media (max-width: 640px) {
+      .main-tabs { display: grid; grid-template-columns: 1fr 1fr; }
+      .main-tab { padding: 10px 8px; font-size: 0.82rem; }
+      .layer-grid,
+      .decision-grid { grid-template-columns: 1fr; }
+      .qmi-option { align-items: flex-start; }
+    }
+
+
+    /* ============================================================
+       v10.2 추가 보완: 원칙 카드 · 붕괴 신호 · 매매 기록 · 검토 과제
+    ============================================================ */
+    .principle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-sm);
+      margin: var(--space-md) 0;
+    }
+    .principle-card {
+      background: var(--card);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      box-shadow: var(--shadow-sm);
+    }
+    .principle-card h4 {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+    .principle-card p {
+      font-size: 0.82rem;
+      color: var(--ink-2);
+      line-height: 1.65;
+    }
+    .manual-note {
+      background: var(--paper-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      color: var(--ink-2);
+      font-size: 0.86rem;
+      line-height: 1.75;
+    }
+    .qmap-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+    }
+    .qmap-mini-card {
+      background: var(--card);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+    }
+    .qmap-mini-title { font-weight: 800; font-size: 0.84rem; margin-bottom: 4px; }
+    .qmap-mini-desc { color: var(--muted); font-size: 0.78rem; line-height: 1.5; }
+    .break-signal-panel,
+    .trade-log-panel,
+    .review-question-panel {
+      margin-top: var(--space-lg);
+      padding: var(--space-md);
+      background: var(--paper-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .break-signal-title,
+    .trade-log-title,
+    .review-question-title {
+      font-size: 0.95rem;
+      font-weight: 900;
+      margin-bottom: var(--space-sm);
+      color: var(--ink);
+    }
+    .signal-result-box {
+      margin-top: var(--space-sm);
+      font-size: 0.84rem;
+    }
+    .trade-log-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+    }
+    .trade-log-grid textarea {
+      width: 100%;
+      min-height: 72px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      resize: vertical;
+    }
+    .copy-box {
+      white-space: pre-wrap;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--ink-2);
+      line-height: 1.6;
+      margin-top: var(--space-sm);
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .review-question-list {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .review-question-item {
+      background: var(--card);
+      border: 1px solid var(--border-2);
+      border-left: 4px solid var(--purple);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      font-size: 0.84rem;
+      color: var(--ink-2);
+      line-height: 1.65;
+    }
+    @media (max-width: 768px) {
+      .trade-log-grid { grid-template-columns: 1fr; }
+    }
+
+
+    /* ============================================================
+       v10.5 간편 포트폴리오 입력 UI
+    ============================================================ */
+
+
+    /* ============================================================
+       v10.7 카톡 공유 모드
+    ============================================================ */
+    .share-hero {
+      background: linear-gradient(135deg, rgba(21,128,61,0.12), rgba(37,99,235,0.08));
+      border: 1px solid rgba(21,128,61,0.25);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    .share-hero h2 {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      margin-bottom: var(--space-xs);
+    }
+    .share-hero p { color: var(--muted); font-size: 0.92rem; }
+    .share-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .share-preview-card {
+      background: #0f172a;
+      color: #e5f3ff;
+      border-radius: 22px;
+      padding: 22px;
+      border: 1px solid rgba(96,165,250,0.35);
+      box-shadow: 0 10px 28px rgba(15,23,42,0.28);
+      overflow: hidden;
+    }
+    .share-preview-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .share-preview-title { font-size: 1.15rem; font-weight: 900; }
+    .share-preview-date { font-size: 0.75rem; color: #93c5fd; font-family: var(--font-mono); margin-top: 2px; }
+    .share-weather-badge {
+      text-align: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 8px 12px;
+      min-width: 88px;
+    }
+    .share-weather-badge .icon { font-size: 2rem; line-height: 1; }
+    .share-weather-badge .label { font-size: 0.78rem; font-weight: 800; color: #bfdbfe; }
+    .share-metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .share-metric {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .share-metric .label { font-size: 0.7rem; color: #94a3b8; }
+    .share-metric .value { font-size: 1.05rem; font-weight: 900; color: #67e8f9; margin-top: 2px; }
+    .share-conclusion-card {
+      background: rgba(250,204,21,0.10);
+      border: 1px solid rgba(250,204,21,0.24);
+      border-radius: 16px;
+      padding: 12px 14px;
+      color: #fde68a;
+      font-weight: 700;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+    .share-section-title {
+      font-size: 0.78rem;
+      color: #93c5fd;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 14px 0 8px;
+    }
+    .share-signal-list { display: flex; flex-direction: column; gap: 6px; }
+    .share-signal-item {
+      display: grid;
+      grid-template-columns: 24px minmax(0,1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 9px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.82rem;
+    }
+    .share-signal-item .ticker { font-weight: 900; color: #f8fafc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .share-signal-item .sub { color: #94a3b8; font-size: 0.72rem; }
+    .share-signal-item .pct { font-family: var(--font-mono); color: #cbd5e1; font-size: 0.76rem; }
+    .share-principle {
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(16,185,129,0.10);
+      border: 1px solid rgba(16,185,129,0.22);
+      color: #bbf7d0;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+    .share-message-box {
+      width: 100%; min-height: 260px; resize: vertical;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      line-height: 1.65;
+      background: var(--card);
+      color: var(--ink);
+    }
+    .share-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .share-options label {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 9px 10px;
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      background: var(--card-2);
+      margin: 0;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .share-copy-status { margin-top: var(--space-sm); font-size: 0.84rem; color: var(--muted); }
+    @media (max-width: 900px) {
+      .share-grid { grid-template-columns: 1fr; }
+      .share-metric-row { grid-template-columns: 1fr; }
+      .share-options { grid-template-columns: 1fr; }
+    }
+    @media print {
+      .share-controls, .main-tabs, .app-header, .pdf-btn { display: none !important; }
+      #tab-share { display: block !important; }
+      .share-preview-card { background: #0f172a !important; color: #e5f3ff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+
+
+    /* ============================================================
+       v11.0 상세 PDF 리포트
+       - 카톡용 한 장 요약과 별도로 PDF에는 전 종목·가족별·테마별 현황을 모두 출력
+    ============================================================ */
+    .share-full-report {
+      margin-top: var(--space-lg);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    .share-full-report .report-note {
+      padding: var(--space-sm) var(--space-md);
+      background: var(--blue-bg);
+      border: 1px solid rgba(37,99,235,0.22);
+      border-radius: var(--radius-sm);
+      color: var(--ink-2);
+      font-size: 0.84rem;
+      line-height: 1.6;
+      margin-bottom: var(--space-md);
+    }
+    .share-report-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    .share-report-box {
+      background: var(--paper-2);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+    }
+    .share-report-box h3 {
+      font-size: 0.9rem;
+      font-weight: 800;
+      margin-bottom: var(--space-sm);
+      color: var(--ink);
+    }
+    .share-report-row {
+      display: grid;
+      grid-template-columns: minmax(88px, 1fr) 88px 64px;
+      gap: var(--space-sm);
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border-2);
+      font-size: 0.82rem;
+    }
+    .share-report-row:last-child { border-bottom: none; }
+    .share-report-row .name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .share-report-row .amount { font-family: var(--font-mono); text-align: right; color: var(--blue); font-weight: 800; }
+    .share-report-row .pct { font-family: var(--font-mono); text-align: right; color: var(--muted); }
+    .share-full-table-wrap { overflow-x: auto; }
+    .share-full-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .share-full-table th {
+      background: var(--paper-2);
+      color: var(--ink-2);
+      font-weight: 800;
+      padding: 7px 8px;
+      border-bottom: 2px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .share-full-table td {
+      padding: 7px 8px;
+      border-bottom: 1px solid var(--border-2);
+      vertical-align: top;
+    }
+    .share-full-table tr:last-child td { border-bottom: none; }
+    .share-full-table .num { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+    .share-full-table .ticker-name { font-weight: 900; color: var(--ink); }
+    .share-full-table .subtxt { display:block; font-size:0.72rem; color:var(--muted); margin-top:2px; }
+    .share-pdf-footer {
+      margin-top: var(--space-lg);
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      background: var(--paper-2);
+      border: 1px solid var(--border-2);
+      font-size: 0.84rem;
+      color: var(--ink-2);
+      line-height: 1.7;
+    }
+    @media (max-width: 768px) {
+      .share-report-grid { grid-template-columns: 1fr; }
+      .share-full-table { font-size: 0.78rem; }
+    }
+    @media print {
+      .share-grid { display: block !important; }
+      .share-controls { display: none !important; }
+      .share-preview-card { margin-bottom: 14px; }
+      .share-full-report { display: block !important; box-shadow:none !important; break-before: page; page-break-before: always; }
+      .share-report-grid { grid-template-columns: 1fr 1fr !important; }
+      .share-full-table-wrap { overflow: visible !important; }
+      .share-full-table th, .share-full-table td { padding: 5px 6px; font-size: 9.5pt; }
+      .share-full-table tr { break-inside: avoid; page-break-inside: avoid; }
+      .share-report-box, .share-pdf-footer, .share-report-row { break-inside: avoid; page-break-inside: avoid; }
+    }
+
+    .quick-portfolio-box {
+      margin-top: var(--space-lg);
+      padding: var(--space-md);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--paper-2);
+    }
+    .quick-portfolio-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+      margin-bottom: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .quick-portfolio-title { font-weight: 800; font-size: 0.95rem; color: var(--ink); }
+    .quick-portfolio-help { font-size: 0.8rem; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+    #portfolio-bulk-input {
+      width: 100%;
+      min-height: 150px;
+      padding: var(--space-sm);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      background: var(--card);
+      color: var(--ink);
+      resize: vertical;
+    }
+    #portfolio-bulk-preview { margin-top: var(--space-sm); font-size: 0.82rem; }
+    .bulk-preview-table { width: 100%; border-collapse: collapse; margin-top: var(--space-sm); font-size: 0.78rem; }
+    .bulk-preview-table th, .bulk-preview-table td { border-bottom: 1px solid var(--border-2); padding: 5px 6px; text-align: left; }
+    .bulk-preview-table th { background: var(--paper-3); color: var(--ink-2); }
+    .bulk-guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); margin-top: var(--space-sm); }
+    .bulk-guide-card { background: var(--card); border: 1px solid var(--border-2); border-radius: var(--radius-sm); padding: var(--space-sm); font-size: 0.78rem; color: var(--ink-2); }
+    .bulk-guide-card code { font-family: var(--font-mono); color: var(--blue); }
+    @media (max-width: 768px) { .bulk-guide-grid { grid-template-columns: 1fr; } }
+
+
+    /* ============================================================
+       v10.6 금액 기반 포트폴리오/HTML 보고서 가져오기
+    ============================================================ */
+    .report-import-box {
+      margin-top: var(--space-md);
+      padding: var(--space-md);
+      border: 1px solid rgba(37,99,235,0.28);
+      border-radius: var(--radius-md);
+      background: var(--blue-bg);
+    }
+    .report-import-title {
+      font-weight: 900;
+      font-size: 0.92rem;
+      color: var(--blue);
+      margin-bottom: 4px;
+    }
+    .report-import-help {
+      font-size: 0.78rem;
+      color: var(--ink-2);
+      line-height: 1.55;
+      margin-bottom: var(--space-sm);
+    }
+    .report-import-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+    #portfolio-html-file {
+      max-width: 280px;
+      font-size: 0.8rem;
+    }
+    #report-import-preview {
+      margin-top: var(--space-sm);
+      font-size: 0.82rem;
+    }
+    .amount-sub {
+      display:block;
+      margin-top:2px;
+      font-size:0.72rem;
+      color:var(--muted);
+      font-weight:500;
+    }
+
   </style>
 </head>
 <body>
@@ -1016,10 +2019,203 @@
 
   <!-- ===== 앱 헤더 ===== -->
   <header class="app-header no-print">
-    <h1>📊 미국 주식 종목 분석기 <span class="version-badge">v9</span></h1>
-    <p>재무지표 이미지를 업로드하거나 텍스트를 붙여넣으면 OCR로 자동 인식 후 투자 판단을 도와줍니다</p>
+    <h1>📊 Q-MAP 3.0 <span class="version-badge">v11.0 상세 PDF</span></h1>
+    <p>우리집 주식 건강상태 · 카톡 공유 리포트 · 1년+ 미국 성장주 중기 운용 통합 플랫폼</p>
     <span class="disclaimer">⚠ 이 프로그램은 투자 의사결정 보조 도구입니다. 최종 투자 결정은 본인의 책임입니다.</span>
   </header>
+
+  <!-- ===== 메인 탭 네비게이션 ===== -->
+  <nav class="main-tabs no-print" id="main-tabs">
+    <button class="main-tab active" data-tab="family">🏠 가족 대시보드</button>
+    <button class="main-tab" data-tab="share">💬 카톡 공유</button>
+    <button class="main-tab" data-tab="analyzer">📊 종목 분석기</button>
+    <button class="main-tab" data-tab="qmap">📋 Q-MAP 평가표</button>
+    <button class="main-tab" data-tab="portfolio">💼 포트폴리오 관리</button>
+    <button class="main-tab" data-tab="guide">📖 운용 매뉴얼</button>
+    <a class="main-tab main-tab--manual" href="manual.html" target="_blank" rel="noopener">📘 초보 매뉴얼 &nbsp;↗</a>
+  </nav>
+
+  <!-- ===== TAB: 가족 대시보드 ===== -->
+  <div id="tab-family" class="tab-content active">
+    <section class="family-hero">
+      <div class="family-hero-top">
+        <div>
+          <div class="family-title">🏠 우리집 주식 건강상태</div>
+          <div class="family-subtitle">매일 봐도 됩니다. 다만 매일 판단하지는 않습니다. 결정은 월 1회, 실적 발표 후, 빨간 경고가 있을 때만 합니다.</div>
+        </div>
+        <div class="family-weather" id="family-weather">
+          <div class="family-weather-icon" id="family-weather-icon">☀️</div>
+          <div class="family-weather-label" id="family-weather-label">맑음</div>
+          <div class="family-weather-sub" id="family-weather-sub">계획대로 보유</div>
+        </div>
+      </div>
+      <div class="family-conclusion" id="family-conclusion">
+        <strong>오늘의 결론:</strong> 포트폴리오를 먼저 등록하면 우리집 맞춤 신호등이 표시됩니다.
+      </div>
+      <div class="family-mood-buttons" id="family-mood-buttons">
+        <button class="family-mood-btn active" data-mood="happy">😊 오른 날</button>
+        <button class="family-mood-btn" data-mood="flat">😐 보통 날</button>
+        <button class="family-mood-btn" data-mood="down">😟 내린 날</button>
+      </div>
+    </section>
+
+    <div class="family-stats">
+      <div class="family-stat-card">
+        <div class="family-stat-label">등록 종목</div>
+        <div class="family-stat-value" id="fam-count">0개</div>
+        <div class="family-stat-sub">포트폴리오 탭 기준</div>
+      </div>
+      <div class="family-stat-card">
+        <div class="family-stat-label">평균 Q-MAP</div>
+        <div class="family-stat-value" id="fam-avg-score">—</div>
+        <div class="family-stat-sub">7점 이상이면 보유 중심</div>
+      </div>
+      <div class="family-stat-card">
+        <div class="family-stat-label">현금 비중</div>
+        <div class="family-stat-value" id="fam-cash">0%</div>
+        <div class="family-stat-sub">평시 5~10%</div>
+      </div>
+      <div class="family-stat-card">
+        <div class="family-stat-label">위험 신호</div>
+        <div class="family-stat-value" id="fam-risk-count">0개</div>
+        <div class="family-stat-sub">빨강·가설 붕괴 기준</div>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2 class="section-title"><span class="icon">🚦</span> 종목별 가족 신호등</h2>
+      <p class="section-subtitle">가족은 결론만 보면 됩니다. 자세한 근거는 Q-MAP 평가표와 포트폴리오 관리에서 확인합니다.</p>
+      <div id="family-signal-grid" class="family-signal-grid"></div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title"><span class="icon">🧭</span> 오늘 매매해도 되는 날인가?</h2>
+      <div class="trade-day-box">
+        <p class="section-subtitle">상승일에는 추격매수를 막고, 하락일에는 감정 손절을 막기 위한 버튼입니다.</p>
+        <button class="btn btn-primary btn-lg" id="btn-family-trade-check">확인하기</button>
+        <div id="family-trade-result" class="trade-day-result">버튼을 누르면 오늘의 행동 원칙이 표시됩니다.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title"><span class="icon">👨‍👩‍👧‍👦</span> 우리집 초보 투자 5원칙</h2>
+      <div class="family-rule-grid">
+        <div class="family-rule"><b>1. 매일 봐도 된다</b>하지만 매일 사고팔지는 않는다.</div>
+        <div class="family-rule"><b>2. 오른 날</b>기뻐하되 추격매수하지 않는다.</div>
+        <div class="family-rule"><b>3. 내린 날</b>무서워하되 바로 팔지 않는다.</div>
+        <div class="family-rule"><b>4. 매수 이유</b>살아 있으면 보유한다.</div>
+        <div class="family-rule"><b>5. 결정일</b>월 1회 또는 실적 발표 후만 판단한다.</div>
+      </div>
+    </section>
+  </div><!-- /#tab-family -->
+
+
+  <!-- ===== TAB: 카톡 공유 모드 ===== -->
+  <div id="tab-share" class="tab-content">
+    <section class="share-hero">
+      <h2>💬 카톡 공유 모드</h2>
+      <p>자료 입력은 선생님 혼자 하고, 가족에게는 보기 쉬운 한 장 요약·카톡 문구·PDF만 보냅니다.</p>
+    </section>
+
+    <div class="share-grid">
+      <section class="section share-controls">
+        <h2 class="section-title"><span class="icon">⚙️</span> 공유 옵션</h2>
+        <p class="section-subtitle">가족 카톡방에는 복잡한 지표 대신 상태·결론·행동 원칙만 보내는 것이 좋습니다.</p>
+        <div class="share-options">
+          <label><input type="checkbox" id="share-opt-summary" checked> 총자산·날씨 포함</label>
+          <label><input type="checkbox" id="share-opt-signals" checked> 종목 신호등 포함</label>
+          <label><input type="checkbox" id="share-opt-risks" checked> 위험·주의 종목 포함</label>
+          <label><input type="checkbox" id="share-opt-principle" checked> 이번 주 원칙 포함</label>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-green" id="btn-refresh-share">🔄 공유 내용 새로고침</button>
+          <button class="btn btn-primary" id="btn-copy-kakao">💬 카톡 문구 복사</button>
+          <button class="btn btn-blue" id="btn-download-share-png">📸 한 장 이미지 저장</button>
+          <button class="btn btn-outline" id="btn-print-share">📄 상세 PDF 출력</button>
+        </div>
+        <div id="share-copy-status" class="share-copy-status">포트폴리오를 등록하면 공유 문구와 이미지가 자동 생성됩니다.</div>
+        <hr class="divider" />
+        <h3 style="font-size:0.92rem;font-weight:800;margin-bottom:var(--space-sm);">카톡 문구 미리보기</h3>
+        <textarea id="kakao-message-box" class="share-message-box" readonly></textarea>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title"><span class="icon">🖼️</span> 한 장 요약 이미지 미리보기</h2>
+        <div id="share-card" class="share-preview-card">
+          <div class="share-preview-top">
+            <div>
+              <div class="share-preview-title">🏠 우리집 투자 주간 리포트</div>
+              <div class="share-preview-date" id="share-card-date">—</div>
+            </div>
+            <div class="share-weather-badge">
+              <div class="icon" id="share-card-weather-icon">☀️</div>
+              <div class="label" id="share-card-weather-label">맑음</div>
+            </div>
+          </div>
+          <div class="share-metric-row">
+            <div class="share-metric"><div class="label">총 평가금액</div><div class="value" id="share-card-total">—</div></div>
+            <div class="share-metric"><div class="label">등록 종목</div><div class="value" id="share-card-count">—</div></div>
+            <div class="share-metric"><div class="label">위험 신호</div><div class="value" id="share-card-risk">—</div></div>
+          </div>
+          <div class="share-conclusion-card" id="share-card-conclusion">포트폴리오를 등록하면 공유용 결론이 표시됩니다.</div>
+          <div class="share-section-title">종목 신호등</div>
+          <div id="share-card-signals" class="share-signal-list"></div>
+          <div class="share-principle" id="share-card-principle">오른 날은 기뻐하되 추격매수하지 않고, 떨어진 날은 불안해하되 바로 팔지 않습니다.</div>
+        </div>
+      </section>
+
+    </div>
+
+    <section class="section share-full-report" id="share-full-report">
+      <h2 class="section-title"><span class="icon">📄</span> PDF 상세 리포트 — 전체 종목 포함</h2>
+      <div class="report-note">
+        카톡에는 한 장 요약을 보내고, PDF에는 <strong>가족별 요약 · 테마별 비중 · 전체 보유 종목</strong>을 모두 출력합니다.
+        종목이 많아도 이 영역에는 등록된 포트폴리오 전체가 표시됩니다.
+      </div>
+      <div class="share-report-grid">
+        <div class="share-report-box">
+          <h3>👨‍👩‍👧‍👦 가족별 평가금액</h3>
+          <div id="share-owner-summary"></div>
+        </div>
+        <div class="share-report-box">
+          <h3>🎯 테마별 비중</h3>
+          <div id="share-theme-summary"></div>
+        </div>
+      </div>
+      <div class="share-report-box" style="margin-bottom:var(--space-lg);">
+        <h3>⚠️ 점검 필요 종목</h3>
+        <div id="share-risk-summary"></div>
+      </div>
+      <h3 style="font-size:0.95rem;font-weight:900;margin-bottom:var(--space-sm);">📋 전체 보유 종목</h3>
+      <div class="share-full-table-wrap">
+        <table class="share-full-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>가족</th>
+              <th>종목</th>
+              <th>등급</th>
+              <th>층</th>
+              <th>테마</th>
+              <th class="num">금액</th>
+              <th class="num">비중</th>
+              <th>신호</th>
+              <th>행동 지침</th>
+            </tr>
+          </thead>
+          <tbody id="share-full-tbody">
+            <tr><td colspan="10" style="text-align:center;color:var(--muted);padding:var(--space-lg);">포트폴리오를 등록하면 전체 종목이 표시됩니다.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="share-pdf-footer">
+        <strong>가족용 원칙:</strong> 매일 보는 것은 괜찮지만 매일 결정하지 않습니다. 오른 날은 추격매수하지 않고, 떨어진 날은 감정적으로 팔지 않습니다. 결정은 월 1회, 실적 발표 후, 또는 빨간 경고 발생 시에만 합니다.
+      </div>
+    </section>
+  </div><!-- /#tab-share -->
+
+  <!-- ===== TAB: 종목 분석기 래퍼 시작 ===== -->
+  <div id="tab-analyzer" class="tab-content">
 
   <!-- ===== SECTION 1: 기본 설정 ===== -->
   <section class="section no-print" id="settings-section">
@@ -1361,6 +2557,803 @@
 
   </section><!-- /#results-section -->
 
+  </div><!-- /#tab-analyzer -->
+
+  <!-- ===== TAB: Q-MAP 월간 평가표 ===== -->
+  <div id="tab-qmap" class="tab-content">
+
+    <section class="section">
+      <h2 class="section-title"><span class="icon">📋</span> Q-MAP 월간 10점 평가표</h2>
+      <p class="section-subtitle">월 1회 작성 · 분기 실적 직후 즉시 재평가 · 사업가설이 살아있고 점수 7점 이상이면 보유</p>
+
+      <div class="qmap-form">
+        <!-- 기본 정보 -->
+        <div class="grid-3">
+          <div class="input-group">
+            <label>종목 티커</label>
+            <input type="text" id="qm-ticker" placeholder="예: NVDA" style="text-transform:uppercase;">
+          </div>
+          <div class="input-group">
+            <label>등급</label>
+            <select id="qm-grade">
+              <option value="">선택</option>
+              <option value="A">A — 코어 핵심 자산 (1~5년+)</option>
+              <option value="B">B — 중기 성장 주력 (1~3년)</option>
+              <option value="C">C — 모멘텀 위성 (6~18개월)</option>
+              <option value="D">D — 전술 실험 (1~6개월)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>현재 비중 (%)</label>
+            <input type="number" id="qm-weight" placeholder="5" min="0" max="100" step="0.1">
+          </div>
+        </div>
+
+        <!-- 사업가설 -->
+        <div class="input-group">
+          <label>📌 매수 당시 사업가설 (한 문장)</label>
+          <textarea id="qm-thesis" rows="2" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:0.88rem;resize:vertical;background:var(--card);color:var(--ink);" placeholder="예: AI 데이터센터 전력·냉각 수요 확대와 수주 증가를 보고 산다. 단, 수주 둔화+마진 훼손 동시 발생 시 가설 붕괴."></textarea>
+        </div>
+
+        <div class="input-group">
+          <label>가설 상태</label>
+          <select id="qm-thesis-status">
+            <option value="alive">✅ 살아있음</option>
+            <option value="weakening">⚠️ 약화 중</option>
+            <option value="broken">❌ 붕괴</option>
+          </select>
+        </div>
+
+        <!-- 사업가설 붕괴 신호 체크 -->
+        <div class="break-signal-panel">
+          <div class="break-signal-title">🚨 사업가설 붕괴 5대 신호 체크</div>
+          <p class="section-subtitle" style="margin-bottom:var(--space-sm);">3개 이상이면 강한 경고, 4개 이상이면 손절·대폭 축소를 검토합니다. 장중 흔들림은 노이즈로 보고, 종가와 분기 실적을 함께 확인합니다.</p>
+          <div class="checklist" id="break-signal-checklist">
+            <label class="check-item"><input type="checkbox" class="break-check" data-signal="매수 시나리오 붕괴"> <span>① 매수 시나리오 붕괴 — 처음 산 이유가 사라짐</span></label>
+            <label class="check-item"><input type="checkbox" class="break-check" data-signal="실적 가이던스 하향"> <span>② 실적 가이던스 하향 — 회사가 미래 기대치를 낮춤</span></label>
+            <label class="check-item"><input type="checkbox" class="break-check" data-signal="산업 사이클 둔화"> <span>③ 산업 사이클 둔화 — 수요 둔화·재고 증가·정책 후퇴</span></label>
+            <label class="check-item"><input type="checkbox" class="break-check" data-signal="경쟁력 훼손"> <span>④ 경쟁력 훼손 — 마진 하락·점유율 하락·경쟁 심화</span></label>
+            <label class="check-item"><input type="checkbox" class="break-check" data-signal="차트 구조 붕괴"> <span>⑤ 차트 구조 붕괴 — 장기 지지선 이탈 후 회복 실패</span></label>
+          </div>
+          <div class="signal-result-box" id="break-signal-result"></div>
+        </div>
+
+        <!-- 5개 항목 평가 -->
+        <div class="qmap-items">
+          <div class="qmap-item-card" id="qmi-1">
+            <div class="qmi-header">
+              <span class="qmi-num">①</span>
+              <span class="qmi-title">사업가설 · 실적 방향</span>
+              <div class="qmi-score-display" id="qmi-1-display">—점</div>
+            </div>
+            <div class="qmi-criteria">
+              <div class="qmi-option" data-item="1" data-val="2">
+                <span class="qmi-badge badge-2">2점</span>
+                <span>매출·EPS·수주·가이던스 개선, 마진 유지 또는 확대</span>
+              </div>
+              <div class="qmi-option" data-item="1" data-val="1">
+                <span class="qmi-badge badge-1">1점</span>
+                <span>가설 유효하나 성장 속도 예상 대비 둔화, 컨센서스 소폭 하회</span>
+              </div>
+              <div class="qmi-option" data-item="1" data-val="0">
+                <span class="qmi-badge badge-0">0점</span>
+                <span>가이던스 하향, 마진 급감, 경쟁사 진입으로 해자 훼손, 경영진 교체/회계 이슈</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="qmap-item-card" id="qmi-2">
+            <div class="qmi-header">
+              <span class="qmi-num">②</span>
+              <span class="qmi-title">산업 구조 · 메가트렌드</span>
+              <div class="qmi-score-display" id="qmi-2-display">—점</div>
+            </div>
+            <div class="qmi-criteria">
+              <div class="qmi-option" data-item="2" data-val="2">
+                <span class="qmi-badge badge-2">2점</span>
+                <span>향후 3~5년 구조적 성장 지속 가능, 정책·수요 2~3년 이상 뒷받침, 공급 과잉 없음</span>
+              </div>
+              <div class="qmi-option" data-item="2" data-val="1">
+                <span class="qmi-badge badge-1">1점</span>
+                <span>산업 성장하지만 주가에 상당 부분 반영, 경기 사이클 민감도 높음</span>
+              </div>
+              <div class="qmi-option" data-item="2" data-val="0">
+                <span class="qmi-badge badge-0">0점</span>
+                <span>재고 증가, 공급 과잉, 정책 후퇴 신호, 기술 변화로 전방 산업 축소 중</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="qmap-item-card" id="qmi-3">
+            <div class="qmi-header">
+              <span class="qmi-num">③</span>
+              <span class="qmi-title">경쟁력 · 해자</span>
+              <div class="qmi-score-display" id="qmi-3-display">—점</div>
+            </div>
+            <div class="qmi-criteria">
+              <div class="qmi-option" data-item="3" data-val="2">
+                <span class="qmi-badge badge-2">2점</span>
+                <span>영업이익률 20%+ 유지, 특허·고객 락인·네트워크 효과, 점유율 확대 중</span>
+              </div>
+              <div class="qmi-option" data-item="3" data-val="1">
+                <span class="qmi-badge badge-1">1점</span>
+                <span>해자 존재하나 경쟁 압박 시작, 가격 경쟁 일부 발생, 이익률 소폭 하락</span>
+              </div>
+              <div class="qmi-option" data-item="3" data-val="0">
+                <span class="qmi-badge badge-0">0점</span>
+                <span>중국산 저가 공세, 빅테크 직접 진출 등 구조적 위협, 이익률 추세적 하락</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="qmap-item-card" id="qmi-4">
+            <div class="qmi-header">
+              <span class="qmi-num">④</span>
+              <span class="qmi-title">밸류에이션 · 가격 위치</span>
+              <div class="qmi-score-display" id="qmi-4-display">—점</div>
+            </div>
+            <div class="qmi-criteria">
+              <div class="qmi-option" data-item="4" data-val="2">
+                <span class="qmi-badge badge-2">2점</span>
+                <span>내년 PER 15배 이하 또는 동종 대비 할인, PEG 1 이하, 매크로 악재로 눌린 구간</span>
+              </div>
+              <div class="qmi-option" data-item="4" data-val="1">
+                <span class="qmi-badge badge-1">1점</span>
+                <span>PER 적정, PEG 1~2, 보유 의미 있으나 추가매수 부담</span>
+              </div>
+              <div class="qmi-option" data-item="4" data-val="0">
+                <span class="qmi-badge badge-0">0점</span>
+                <span>PEG 2 초과, 2~3년 후 성장 과도 선반영, 조금만 실망해도 급락 가능</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="qmap-item-card" id="qmi-5">
+            <div class="qmi-header">
+              <span class="qmi-num">⑤</span>
+              <span class="qmi-title">기관 수급 · 보유 진행률</span>
+              <div class="qmi-score-display" id="qmi-5-display">—점</div>
+            </div>
+            <div class="qmi-criteria">
+              <div class="qmi-option" data-item="5" data-val="2">
+                <span class="qmi-badge badge-2">2점</span>
+                <span>BlackRock·Vanguard급 기관 지분 분기 단위 상승, 내부자 매도 없음, 이벤트 50% 이상 남음</span>
+              </div>
+              <div class="qmi-option" data-item="5" data-val="1">
+                <span class="qmi-badge badge-1">1점</span>
+                <span>수급 혼조, 기관 들어오나 일관성 없음, 주요 이벤트 대부분 지나감</span>
+              </div>
+              <div class="qmi-option" data-item="5" data-val="0">
+                <span class="qmi-badge badge-0">0점</span>
+                <span>대주주·내부자 매도 공시, 메이저 자금 연속 이탈, 매수 시나리오 이미 다 반영</span>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.qmap-items -->
+
+        <!-- 총점 결과 -->
+        <div class="qmap-result-bar" id="qmap-result-bar">
+          <div class="qmr-score-area">
+            <div class="qmr-label">Q-MAP 총점</div>
+            <div class="qmr-score" id="qmr-total">—</div>
+            <div class="qmr-max">/ 10</div>
+          </div>
+          <div class="qmr-action" id="qmr-action">
+            <div class="qmr-action-label" id="qmr-action-label">점수를 선택하세요</div>
+            <div class="qmr-action-detail" id="qmr-action-detail"></div>
+          </div>
+          <div class="qmr-heat" id="qmr-heat"></div>
+        </div>
+
+        <!-- 후보 비교 -->
+        <div class="section" style="margin-top:var(--space-lg);background:var(--paper-2);">
+          <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:var(--space-md);">🔄 후보 종목 비교 (교체 판단)</h3>
+          <div class="grid-3">
+            <div class="input-group">
+              <label>후보 종목 티커</label>
+              <input type="text" id="qm-candidate" placeholder="예: AMD" style="text-transform:uppercase;">
+            </div>
+            <div class="input-group">
+              <label>후보 Q-MAP 점수</label>
+              <input type="number" id="qm-candidate-score" placeholder="0~10" min="0" max="10" step="1">
+            </div>
+            <div class="input-group">
+              <label>후보 과열 조건 수 (0~5)</label>
+              <input type="number" id="qm-overheat" placeholder="0~5" min="0" max="5" step="1">
+            </div>
+          </div>
+          <div class="checklist" id="overheat-checklist" style="margin-top:var(--space-sm);">
+            <label class="check-item"><input type="checkbox" class="overheat-check"> <span>① 최근 5거래일 15~20% 이상 급등</span></label>
+            <label class="check-item"><input type="checkbox" class="overheat-check"> <span>② 20일선 대비 15% 이상 이격</span></label>
+            <label class="check-item"><input type="checkbox" class="overheat-check"> <span>③ 거래량 폭증 후 윗꼬리 발생</span></label>
+            <label class="check-item"><input type="checkbox" class="overheat-check"> <span>④ 호재 뉴스가 이미 대중적으로 확산</span></label>
+            <label class="check-item"><input type="checkbox" class="overheat-check"> <span>⑤ 실적 발표 직후 갭상승 후 밀림</span></label>
+          </div>
+          <div class="candidate-result" id="candidate-result"></div>
+        </div>
+
+        <!-- 추가매수 체크리스트 -->
+        <div class="section" style="margin-top:var(--space-lg);background:var(--paper-2);">
+          <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:var(--space-md);">➕ 추가매수 조건 체크 (5개 중 4개 이상 충족)</h3>
+          <div class="checklist" id="add-checklist">
+            <label class="check-item"><input type="checkbox" class="add-check"> <span>① 현재 Q-MAP 점수 9점 이상</span></label>
+            <label class="check-item"><input type="checkbox" class="add-check"> <span>② 실적·가이던스 개선 확인</span></label>
+            <label class="check-item"><input type="checkbox" class="add-check"> <span>③ 산업 사이클 성장 흐름 유지</span></label>
+            <label class="check-item"><input type="checkbox" class="add-check"> <span>④ 급등 후 추격이 아닌 눌림 구간</span></label>
+            <label class="check-item"><input type="checkbox" class="add-check"> <span>⑤ 종목·테마 비중 상한선 미초과</span></label>
+          </div>
+          <div class="checklist-result" id="add-checklist-result"></div>
+        </div>
+
+        <!-- 매매 기록 양식 -->
+        <div class="trade-log-panel">
+          <div class="trade-log-title">🧾 매매 기록 양식</div>
+          <p class="section-subtitle" style="margin-bottom:var(--space-sm);">매수·매도·추가매수·교체 시 의사결정을 한 문장으로 남깁니다. 기록하지 않은 매매는 실력이 되지 않습니다.</p>
+          <div class="trade-log-grid">
+            <div class="input-group">
+              <label>결정</label>
+              <select id="qm-decision">
+                <option value="보유">보유</option>
+                <option value="추가매수">추가매수</option>
+                <option value="부분 축소">부분 축소</option>
+                <option value="전량 손절">전량 손절</option>
+                <option value="교체">교체</option>
+                <option value="관찰">관찰</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>다음 점검일</label>
+              <input type="date" id="qm-next-review">
+            </div>
+            <div class="input-group" style="grid-column:1/-1;">
+              <label>결정 이유 한 문장</label>
+              <textarea id="qm-decision-reason" placeholder="예: 사업가설은 유지되나 PEG 2 초과와 비중 상한 근접으로 추가매수는 보류한다."></textarea>
+            </div>
+          </div>
+          <div class="btn-group" style="margin-top:var(--space-sm);">
+            <button class="btn btn-outline btn-sm" id="btn-generate-trade-log" type="button">📄 기록 문안 생성</button>
+          </div>
+          <div class="copy-box" id="trade-log-output" style="display:none;"></div>
+        </div>
+
+        <!-- 저장 버튼 -->
+        <div class="btn-group">
+          <button class="btn btn-green btn-lg" id="btn-save-qmap">💾 평가 저장</button>
+          <button class="btn btn-outline" id="btn-clear-qmap">↩ 초기화</button>
+          <button class="btn btn-blue" id="btn-load-to-portfolio">📤 포트폴리오에 추가</button>
+        </div>
+
+        <!-- 저장된 Q-MAP 기록 -->
+        <div style="margin-top:var(--space-xl);">
+          <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:var(--space-md);color:var(--ink-2);">📁 저장된 Q-MAP 기록</h3>
+          <div id="qmap-history-list"></div>
+        </div>
+      </div><!-- /.qmap-form -->
+    </section>
+  </div><!-- /#tab-qmap -->
+
+  <!-- ===== TAB: 포트폴리오 관리 ===== -->
+  <div id="tab-portfolio" class="tab-content">
+
+    <!-- 3층 계좌 구조 요약 -->
+    <section class="section">
+      <h2 class="section-title"><span class="icon">💼</span> 3층 계좌 구조 현황</h2>
+      <p class="section-subtitle">코어·성장 위성·전술 실험층 비중을 실시간으로 확인합니다</p>
+
+      <div class="layer-grid">
+        <div class="layer-card layer-core">
+          <div class="layer-header">
+            <span class="layer-icon">🏛️</span>
+            <div>
+              <div class="layer-name">1층 코어 자산층</div>
+              <div class="layer-target">목표: 45~55%</div>
+            </div>
+            <div class="layer-pct" id="layer-core-pct">0%</div>
+          </div>
+          <div class="layer-bar-bg"><div class="layer-bar-fill" id="layer-core-bar" style="width:0%;background:var(--green);"></div></div>
+          <div class="layer-hint">QQQ, MSFT, GOOGL, NVDA급 빅테크·ETF</div>
+        </div>
+        <div class="layer-card layer-growth">
+          <div class="layer-header">
+            <span class="layer-icon">🚀</span>
+            <div>
+              <div class="layer-name">2층 성장 위성층</div>
+              <div class="layer-target">목표: 25~35%</div>
+            </div>
+            <div class="layer-pct" id="layer-growth-pct">0%</div>
+          </div>
+          <div class="layer-bar-bg"><div class="layer-bar-fill" id="layer-growth-bar" style="width:0%;background:var(--blue);"></div></div>
+          <div class="layer-hint">AI 인프라, 반도체, 전력망, 원전, 방산</div>
+        </div>
+        <div class="layer-card layer-tactical">
+          <div class="layer-header">
+            <span class="layer-icon">⚡</span>
+            <div>
+              <div class="layer-name">3층 전술 실험층</div>
+              <div class="layer-target">목표: 0~5%</div>
+            </div>
+            <div class="layer-pct" id="layer-tactical-pct">0%</div>
+          </div>
+          <div class="layer-bar-bg"><div class="layer-bar-fill" id="layer-tactical-bar" style="width:0%;background:var(--orange);"></div></div>
+          <div class="layer-hint">IPO, 고변동 성장주, 단기 이벤트주</div>
+        </div>
+        <div class="layer-card layer-cash">
+          <div class="layer-header">
+            <span class="layer-icon">💵</span>
+            <div>
+              <div class="layer-name">현금</div>
+              <div class="layer-target">평시: 5~10%</div>
+            </div>
+            <div class="layer-pct" id="layer-cash-pct">0%</div>
+          </div>
+          <div class="layer-bar-bg"><div class="layer-bar-fill" id="layer-cash-bar" style="width:0%;background:var(--muted);"></div></div>
+          <div class="layer-hint">폭락 대기 시 10~20%까지 확대</div>
+        </div>
+      </div>
+
+      <!-- 비중 경고 -->
+      <div id="portfolio-warnings" style="margin-top:var(--space-md);"></div>
+    </section>
+
+    <!-- 종목 목록 -->
+    <section class="section">
+      <h2 class="section-title"><span class="icon">📈</span> 보유 종목 Q-MAP 현황</h2>
+
+      <!-- 종목 추가 -->
+      <div class="add-position-form" id="add-position-form">
+        <div class="grid-4" style="margin-bottom:var(--space-sm);">
+          <div class="input-group" style="margin-bottom:0;">
+            <label>가족 계좌</label>
+            <select id="pos-owner">
+              <option value="family">가족공통</option>
+              <option value="dad">아빠</option>
+              <option value="mom">엄마</option>
+              <option value="first">첫째</option>
+              <option value="second">둘째</option>
+            </select>
+          </div>
+          <div class="input-group" style="margin-bottom:0;">
+            <label>티커</label>
+            <input type="text" id="pos-ticker" placeholder="NVDA" style="text-transform:uppercase;">
+          </div>
+          <div class="input-group" style="margin-bottom:0;">
+            <label>등급</label>
+            <select id="pos-grade">
+              <option value="A">A — 코어</option>
+              <option value="B" selected>B — 성장 위성</option>
+              <option value="C">C — 모멘텀</option>
+              <option value="D">D — 전술</option>
+            </select>
+          </div>
+          <div class="input-group" style="margin-bottom:0;">
+            <label>층</label>
+            <select id="pos-layer">
+              <option value="core">1층 코어</option>
+              <option value="growth" selected>2층 성장 위성</option>
+              <option value="tactical">3층 전술</option>
+              <option value="cash">현금</option>
+            </select>
+          </div>
+          <div class="input-group" style="margin-bottom:0;">
+            <label>비중 (%)</label>
+            <input type="number" id="pos-weight" placeholder="5" min="0" max="100" step="0.1">
+          </div>
+        </div>
+        <div class="grid-3" style="margin-bottom:var(--space-sm);">
+          <div class="input-group" style="margin-bottom:0;">
+            <label>Q-MAP 점수 (0~10)</label>
+            <input type="number" id="pos-score" placeholder="7" min="0" max="10" step="1">
+          </div>
+          <div class="input-group" style="margin-bottom:0;">
+            <label>테마</label>
+            <select id="pos-theme">
+              <option value="ai">AI·빅테크</option>
+              <option value="semi">반도체</option>
+              <option value="infra">전력·데이터센터 인프라</option>
+              <option value="nuclear">원전·방산·해양</option>
+              <option value="deficit">적자 성장주</option>
+              <option value="other">기타</option>
+            </select>
+          </div>
+          <div class="input-group" style="margin-bottom:0;">
+            <label>가설 상태</label>
+            <select id="pos-thesis-status">
+              <option value="alive">✅ 살아있음</option>
+              <option value="weakening">⚠️ 약화 중</option>
+              <option value="broken">❌ 붕괴</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-green" id="btn-add-position">+ 종목 추가</button>
+        </div>
+      </div>
+
+      <!-- 간편 대량 입력 -->
+      <div class="quick-portfolio-box" id="quick-portfolio-box">
+        <div class="quick-portfolio-head">
+          <div>
+            <div class="quick-portfolio-title">⚡ 간편 대량 입력</div>
+            <div class="quick-portfolio-help">
+              종목이 많을 때는 한 줄에 하나씩 붙여넣으세요. <strong>티커와 비중만 입력해도</strong> 등급·층·테마는 자동 추정됩니다.
+            </div>
+          </div>
+          <div class="btn-group" style="margin-top:0;">
+            <button class="btn btn-outline btn-sm" id="btn-bulk-sample">예시 넣기</button>
+            <button class="btn btn-outline btn-sm" id="btn-bulk-preview">미리보기</button>
+            <button class="btn btn-blue btn-sm" id="btn-bulk-import">대량 추가</button>
+          </div>
+        </div>
+        <textarea id="portfolio-bulk-input" placeholder="예시 1 — 가장 쉬운 방식: 티커 비중만 입력&#10;QQQ 25&#10;MSFT 10&#10;GOOGL 8&#10;NVDA 12&#10;VRT 6&#10;&#10;예시 2 — 가족 계좌까지 입력&#10;아빠 NVDA 12&#10;엄마 QQQ 20&#10;첫째 GOOGL 8&#10;둘째 TSMC 7&#10;&#10;예시 3 — 상세 입력도 가능&#10;아빠,NVDA,A,core,12,8,semi,alive"></textarea>
+        <div class="bulk-guide-grid">
+          <div class="bulk-guide-card"><strong>간단 형식</strong><br><code>티커 비중</code> 또는 <code>가족 티커 비중</code><br>예: <code>NVDA 12</code>, <code>엄마 QQQ 20</code></div>
+          <div class="bulk-guide-card"><strong>상세 형식</strong><br><code>가족,티커,등급,층,비중,점수,테마,가설</code><br>예: <code>아빠,NVDA,A,core,12,8,semi,alive</code></div>
+          <div class="bulk-guide-card"><strong>금액 형식</strong><br><code>가족 티커 금액만</code> 입력 가능<br>예: <code>아빠 NVDA 809만</code>, <code>엄마 QQQ 109만원</code></div>
+          <div class="bulk-guide-card"><strong>추천 방식</strong><br>이미 만든 <code>뀨 가족 포트폴리오 HTML</code>을 아래에서 불러오면 금액을 자동으로 비중으로 환산합니다.</div>
+        </div>
+
+        <div class="report-import-box">
+          <div class="report-import-title">📥 기존 가족 포트폴리오 HTML 보고서 가져오기</div>
+          <div class="report-import-help">
+            선생님이 만든 <strong>family_portfolio_*.html</strong> 파일을 선택하면 보유자·종목·평가금액·분류를 읽어
+            전체 금액 기준 비중을 자동 계산합니다. 5월 16일 이후 변경분은 가져온 뒤 포트폴리오 표에서 수정하거나 금액 형식으로 추가 입력하면 됩니다.
+          </div>
+          <div class="report-import-actions">
+            <input type="file" id="portfolio-html-file" accept=".html,.htm,text/html" onchange="window.handleReportHtmlFile && window.handleReportHtmlFile(this.files && this.files[0])" />
+            <button class="btn btn-outline btn-sm" id="btn-report-preview" type="button" onclick="window.previewSelectedReportFile && window.previewSelectedReportFile()">보고서 미리보기</button>
+            <button class="btn btn-blue btn-sm" id="btn-report-replace" type="button" onclick="window.importReportCache && window.importReportCache('replace')">보고서로 교체</button>
+            <button class="btn btn-outline btn-sm" id="btn-report-merge" type="button" onclick="window.importReportCache && window.importReportCache('merge')">보고서 병합</button>
+            <button class="btn btn-outline btn-sm" id="btn-report-sample" type="button" onclick="window.loadSeedFamilyReport && window.loadSeedFamilyReport()">5/16 첨부 예시 불러오기</button>
+          </div>
+          <div id="report-import-preview"></div>
+          <div class="text-paste-wrap" style="margin-top:var(--space-md);">
+            <div class="tp-title">🧩 파일 선택이 안 될 때: 보고서 HTML 직접 붙여넣기</div>
+            <div class="tp-hint">기존 포트폴리오 보고서 파일을 메모장으로 열어 전체 복사 후 아래에 붙여넣고 <strong>붙여넣은 HTML 읽기</strong>를 누르세요. 카톡/브라우저 환경에서 파일 선택이 막힐 때 쓰는 보조 방법입니다.</div>
+            <textarea id="portfolio-html-paste" placeholder="family_portfolio_*.html 파일 내용을 여기에 붙여넣으세요" style="width:100%;min-height:120px;padding:var(--space-sm);border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:0.78rem;resize:vertical;background:var(--card);color:var(--ink);"></textarea>
+            <div class="btn-group" style="margin-top:var(--space-sm);">
+              <button class="btn btn-outline btn-sm" id="btn-report-parse-paste" type="button" onclick="window.handleReportHtmlText && window.handleReportHtmlText(document.getElementById('portfolio-html-paste')?.value, '붙여넣은 HTML')">붙여넣은 HTML 읽기</button>
+              <button class="btn btn-outline btn-sm" type="button" onclick="const box=document.getElementById('portfolio-html-paste'); if(box) box.value='';">붙여넣기 지우기</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="portfolio-bulk-preview"></div>
+      </div>
+
+
+      <!-- 포트폴리오 테이블 -->
+      <div class="portfolio-table-wrap" style="margin-top:var(--space-lg);overflow-x:auto;">
+        <table class="portfolio-table" id="portfolio-table">
+          <thead>
+            <tr>
+              <th>티커</th>
+              <th>계좌</th>
+              <th>등급</th>
+              <th>층</th>
+              <th>비중</th>
+              <th>Q-MAP</th>
+              <th>가설</th>
+              <th>테마</th>
+              <th>행동 지침</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody id="portfolio-tbody">
+            <tr><td colspan="10" style="text-align:center;color:var(--muted);padding:var(--space-xl);">종목을 추가하세요</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 테마 집중도 -->
+    <section class="section">
+      <h2 class="section-title"><span class="icon">🎯</span> 테마 집중도 분석</h2>
+      <p class="section-subtitle">AI·반도체·데이터센터·전력 인프라는 하나의 큰 AI 인프라 사이클로 묶일 수 있습니다</p>
+      <div id="theme-concentration" class="theme-grid"></div>
+    </section>
+
+    <!-- 의사결정 흐름도 -->
+    <section class="section">
+      <h2 class="section-title"><span class="icon">🔄</span> 빠른 의사결정 가이드</h2>
+      <div class="decision-grid">
+        <div class="decision-card dc-hold">
+          <div class="dc-title">✅ 보유 유지</div>
+          <div class="dc-items">
+            <div>사업가설 강화 + 9~10점</div>
+            <div>사업가설 유지 + 7~8점</div>
+            <div>주가 하락 + 가설 강화 → 추가매수 후보</div>
+          </div>
+        </div>
+        <div class="decision-card dc-watch">
+          <div class="dc-title">⚠️ 관찰·중단</div>
+          <div class="dc-items">
+            <div>가설 유지 + 5~6점 → 신규매수 중단</div>
+            <div>가설 약화 + 5~6점 → 10~30% 축소</div>
+            <div>주가 상승 + 점수 하락 → 분할 익절</div>
+          </div>
+        </div>
+        <div class="decision-card dc-cut">
+          <div class="dc-title">🔴 축소·손절·교체</div>
+          <div class="dc-items">
+            <div>가설 약화 + 3~4점 → 20~50% 축소</div>
+            <div>가설 붕괴 + 0~2점 → 손절 또는 교체</div>
+            <div>후보 +3점 이상 + 현재 약화 + 비과열 → 교체</div>
+          </div>
+        </div>
+        <div class="decision-card dc-add">
+          <div class="dc-title">➕ 추가매수</div>
+          <div class="dc-items">
+            <div>9점+ · 실적 개선 · 눌림 · 비중 여유</div>
+            <div>→ 5개 조건 중 4개 이상 충족 시</div>
+            <div>물타기 절대 금지</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /#tab-portfolio -->
+
+  <!-- ===== TAB: 운용 매뉴얼 ===== -->
+  <div id="tab-guide" class="tab-content">
+    <section class="section">
+      <h2 class="section-title"><span class="icon">📖</span> Q-MAP 3.0 운용 매뉴얼</h2>
+      <p class="section-subtitle">1년+ 중기 성장주 운용 시스템 — 핵심 원칙 · 등급 체계 · 손절 기준 · 비중 관리</p>
+
+      <div class="guide-toc">
+        <a href="#g-philosophy" class="guide-toc-item">0. 시스템 철학</a>
+        <a href="#g-top-principles" class="guide-toc-item">1. 최상위 원칙 5개</a>
+        <a href="#g-layer" class="guide-toc-item">2. 3층 계좌 구조</a>
+        <a href="#g-principle" class="guide-toc-item">3. 핵심 공식</a>
+        <a href="#g-grade" class="guide-toc-item">4. 등급 체계</a>
+        <a href="#g-score" class="guide-toc-item">5. 점수별 행동</a>
+        <a href="#g-stop" class="guide-toc-item">6. 손절 기준</a>
+        <a href="#g-add" class="guide-toc-item">7. 추가매수</a>
+        <a href="#g-replace" class="guide-toc-item">8. 교체 기준</a>
+        <a href="#g-weight" class="guide-toc-item">9. 비중 관리</a>
+        <a href="#g-cycle" class="guide-toc-item">10. 점검 주기</a>
+        <a href="#g-trade-log" class="guide-toc-item">11. 기록 양식</a>
+        <a href="#g-review-questions" class="guide-toc-item">12. 추가 검토 과제</a>
+        <a href="#g-10cmd" class="guide-toc-item">13. 10계명</a>
+      </div>
+
+      <div id="g-philosophy" class="guide-block">
+        <h3>0. 시스템 철학</h3>
+        <div class="formula-box">
+          차트의 소음을 제거하고, 계좌를 구조화하여, 철저하게 사업가설과 실적의 생존 여부로 보유와 교체를 결정한다.
+        </div>
+        <div class="manual-note">
+          Q-MAP은 <strong>Quarterly Thesis Check · Monthly Score Review · Allocation Control · Position Action</strong>의 약자입니다. 매일 가격에 흔들리는 시스템이 아니라, 분기 실적과 월간 점수표로 투자 판단을 구조화하는 중기 성장주 운용 도구입니다.
+        </div>
+      </div>
+
+      <div id="g-top-principles" class="guide-block">
+        <h3>1. 최상위 원칙 5개</h3>
+        <div class="principle-grid">
+          <div class="principle-card"><h4>① 매수 이유가 없으면 보유 이유도 없다</h4><p>모든 종목은 매수 전 한 문장 사업가설을 작성한다. 이 문장이 없으면 매수도, 보유 연장도 금지한다.</p></div>
+          <div class="principle-card"><h4>② 중기투자는 차트보다 사업가설이 우선이다</h4><p>-10%, -20%, -30% 하락 자체는 손절 사유가 아니다. 먼저 “내가 산 이유가 아직 살아 있는가?”를 확인한다.</p></div>
+          <div class="principle-card"><h4>③ 교체는 명확히 더 우월한 종목으로만 한다</h4><p>후보가 현재보다 +3점 이상일 때만 검토하고, +4점 이상일 때 본격 교체한다. +1~2점 차이는 대부분 소음이다.</p></div>
+          <div class="principle-card"><h4>④ A등급은 오래, C·D등급은 냉정하게</h4><p>QQQ·MSFT·GOOGL과 고변동 성장주를 같은 기준으로 판단하지 않는다. 등급별 손절·축소 강도를 다르게 적용한다.</p></div>
+          <div class="principle-card"><h4>⑤ 비중이 수익률보다 먼저다</h4><p>좋은 종목도 비중이 과하면 나쁜 투자가 된다. AI·반도체·인프라 중심 포트폴리오는 테마 중복을 반드시 관리한다.</p></div>
+        </div>
+      </div>
+
+      <div id="g-layer" class="guide-block">
+        <h3>2. 포트폴리오 3층 구조</h3>
+        <div class="qmap-mini-grid">
+          <div class="qmap-mini-card"><div class="qmap-mini-title">1층 코어 자산층 · 45~55%</div><div class="qmap-mini-desc">QQQ, MSFT, GOOGL, NVDA, TSMC급 핵심 ETF·빅테크. 계좌의 장기 성장축이며 사업가설 붕괴 전까지 보유한다.</div></div>
+          <div class="qmap-mini-card"><div class="qmap-mini-title">2층 성장 위성층 · 25~35%</div><div class="qmap-mini-desc">AI 인프라, 반도체 장비, 전력·냉각 데이터센터, 원전, 방산. 초과수익을 만드는 핵심 공격 영역이다.</div></div>
+          <div class="qmap-mini-card"><div class="qmap-mini-title">3층 전술 실험층 · 0~5%</div><div class="qmap-mini-desc">신규 IPO, 고변동 성장주, 단기 이벤트. 없어도 무방하며 틀리면 빨리 정리한다.</div></div>
+          <div class="qmap-mini-card"><div class="qmap-mini-title">현금 · 평시 5~10%</div><div class="qmap-mini-desc">폭락 대기 시 10~20%까지 확대 가능. 좋은 종목이 눌릴 때 사용할 기회 자금이다.</div></div>
+        </div>
+        <div class="guide-callout">반기 리밸런싱 기준: 코어 : 성장 위성 : 전술 실험 = 50 : 35 : 5를 중심축으로 복원한다.</div>
+      </div>
+
+
+      <div class="guide-block" id="g-family">
+        <h3>0. 가족 모드 사용법</h3>
+        <div class="guide-callout">가족은 매일 봐도 된다. 다만 매일 판단하지 않는다. 가족 대시보드는 감정 매매를 막기 위한 첫 화면이다.</div>
+        <table class="guide-table">
+          <thead><tr><th>가족이 보는 것</th><th>의미</th><th>행동</th></tr></thead>
+          <tbody>
+            <tr><td>🟢 초록</td><td>사업가설과 점수가 정상</td><td>계획대로 보유</td></tr>
+            <tr><td>🔵 파랑</td><td>9점 이상 좋은 종목</td><td>눌림 때만 추가매수 후보</td></tr>
+            <tr><td>🟡 노랑</td><td>점검 필요 또는 비중 과다</td><td>신규·추가매수 중단</td></tr>
+            <tr><td>🔴 빨강</td><td>가설 붕괴 또는 이탈 점수</td><td>관리자 점검 후 축소·손절 판단</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="g-principle" class="guide-block">
+        <h3>1. 핵심 공식</h3>
+        <div class="formula-box">
+          사업가설이 살아있고 점수 <strong>7점 이상</strong> → <span style="color:var(--green);">보유</span><br>
+          점수 <strong>9점 이상</strong> + 눌림 → <span style="color:var(--green);">추가매수</span><br>
+          점수 <strong>5점 이하</strong>로 약화 → <span style="color:var(--orange);">신규매수 중단</span><br>
+          점수 <strong>3점 이하</strong> 또는 가설 붕괴 → <span style="color:var(--red);">손절·교체</span><br>
+          교체는 후보 <strong>+3점 이상</strong> 우위 + 현재 약화 + 후보 비과열일 때만
+        </div>
+      </div>
+
+      <div id="g-grade" class="guide-block">
+        <h3>2. 등급 체계</h3>
+        <table class="guide-table">
+          <thead><tr><th>등급</th><th>성격</th><th>보유 기간</th><th>판단 중심</th><th>매도 기준</th></tr></thead>
+          <tbody>
+            <tr><td><span class="grade-chip grade-A">A</span></td><td>코어 핵심 자산</td><td>1~5년+</td><td>사업가설·실적·산업 지위</td><td>사업가설 붕괴</td></tr>
+            <tr><td><span class="grade-chip grade-B">B</span></td><td>중기 성장 주력</td><td>1~3년</td><td>실적·산업 사이클·수급</td><td>실적+가설 동시 약화</td></tr>
+            <tr><td><span class="grade-chip grade-C">C</span></td><td>모멘텀 위성</td><td>6~18개월</td><td>수급·테마·가격 구조</td><td>구조 붕괴 또는 가설 약화</td></tr>
+            <tr><td><span class="grade-chip grade-D">D</span></td><td>전술 실험</td><td>1~6개월</td><td>이벤트·가격·손절선</td><td>기계적 손절</td></tr>
+          </tbody>
+        </table>
+        <div class="guide-callout">A는 사업으로, B는 실적으로, C는 구조로, D는 손절선으로 판단한다.</div>
+      </div>
+
+      <div id="g-score" class="guide-block">
+        <h3>3. 점수별 행동 기준</h3>
+        <table class="guide-table">
+          <thead><tr><th>총점</th><th>상태</th><th>기본 행동</th><th>A등급</th><th>B등급</th><th>C등급</th><th>D등급</th></tr></thead>
+          <tbody>
+            <tr class="score-row-top"><td>9~10</td><td>확신 보유</td><td>보유·추가매수 검토</td><td>보유·추가매수</td><td>보유·추가매수</td><td>보유</td><td>일부 익절 검토</td></tr>
+            <tr class="score-row-good"><td>7~8</td><td>정상 보유</td><td>유지</td><td>보유</td><td>보유</td><td>보유</td><td>손절선 유지</td></tr>
+            <tr class="score-row-warn"><td>5~6</td><td>경고</td><td>신규매수 중단</td><td>관찰</td><td>신규매수 중단</td><td>비중 점검</td><td>축소 검토</td></tr>
+            <tr class="score-row-reduce"><td>3~4</td><td>축소</td><td>20~50% 비중 축소</td><td>10~20% 축소</td><td>20~40% 축소</td><td>30~60% 축소</td><td>50%+ 축소</td></tr>
+            <tr class="score-row-exit"><td>0~2</td><td>이탈</td><td>손절 또는 교체</td><td>가설 재검토 후 축소</td><td>대폭 축소·교체</td><td>손절·교체</td><td>즉시 손절</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="g-stop" class="guide-block">
+        <h3>4. 손절 기준</h3>
+        <div class="guide-callout">가격이 떨어졌다고 손절하지 않는다. 산 이유가 사라졌을 때 손절한다.</div>
+        <p style="font-size:0.88rem;color:var(--ink-2);margin:var(--space-md) 0 var(--space-sm);">사업가설 붕괴 5대 신호 — 3개 이상이면 강한 경고, 4개 이상이면 손절 실행:</p>
+        <table class="guide-table">
+          <tbody>
+            <tr><td>① 가이던스 하향</td><td>회사가 미래 실적 기대치를 낮춤</td></tr>
+            <tr><td>② 마진 악화</td><td>매출은 늘어도 수익성이 무너짐</td></tr>
+            <tr><td>③ 산업 사이클 둔화</td><td>재고 증가, 공급 과잉, 정책 후퇴</td></tr>
+            <tr><td>④ 경쟁력 훼손</td><td>점유율 하락, 가격 경쟁, 기술 우위 약화</td></tr>
+            <tr><td>⑤ 자금 이탈</td><td>기관·외국인 이탈, 내부자·대주주 매도</td></tr>
+          </tbody>
+        </table>
+        <table class="guide-table" style="margin-top:var(--space-sm);">
+          <thead><tr><th>등급</th><th>가격 하락 대응</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>가격 손절 없음. 사업가설 붕괴 시에만 축소</td></tr>
+            <tr><td>B</td><td>-15~-25% 하락 + 가설 약화 시 축소</td></tr>
+            <tr><td>C</td><td>-10~-18% 하락 + 구조 붕괴 시 축소</td></tr>
+            <tr><td>D</td><td>-7~-12% 하락 시 기계적 손절 가능</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="g-add" class="guide-block">
+        <h3>5. 추가매수 규칙</h3>
+        <div class="guide-callout">추가매수는 물타기가 아니라 강한 종목의 비중을 채우는 행위다.</div>
+        <p style="font-size:0.88rem;color:var(--ink-2);margin:var(--space-md) 0 var(--space-sm);">5개 조건 중 4개 이상 충족 시에만:</p>
+        <table class="guide-table">
+          <tbody>
+            <tr><td>① 점수 9점 이상</td><td>현재도 최상급 종목인가?</td></tr>
+            <tr><td>② 실적·가이던스 개선</td><td>숫자로 좋아지고 있는가?</td></tr>
+            <tr><td>③ 산업 사이클 유지</td><td>산업 성장 흐름이 계속되는가?</td></tr>
+            <tr><td>④ 눌림 구간</td><td>급등 후 추격이 아닌 조정 구간인가?</td></tr>
+            <tr><td>⑤ 비중 여유</td><td>종목·테마 상한선을 넘지 않았는가?</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="g-replace" class="guide-block">
+        <h3>6. 교체 기준</h3>
+        <div class="guide-callout">현재 종목이 8점인데 후보가 10점이라고 해서 무조건 교체하지 않는다. 멀쩡한 종목을 자주 갈아타면 복리 효과가 깨진다.</div>
+        <table class="guide-table" style="margin-top:var(--space-md);">
+          <thead><tr><th>후보 우위</th><th>행동</th></tr></thead>
+          <tbody>
+            <tr><td>후보 ≤ 현재</td><td>교체 금지</td></tr>
+            <tr><td>후보 +1점</td><td>관심종목 등록</td></tr>
+            <tr><td>후보 +2점</td><td>소액 부분교체 검토</td></tr>
+            <tr><td>후보 +3점</td><td>30~50% 교체 가능</td></tr>
+            <tr><td>후보 +4점 이상</td><td>50~100% 교체 가능</td></tr>
+            <tr><td>현재 3점 이하 + 후보 8점+</td><td>전량 교체 가능</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.85rem;color:var(--ink-2);margin-top:var(--space-sm);">단, 현재 종목 점수가 6점 이하이거나 사업가설이 약화 중이어야 교체 조건 성립.</p>
+        <h4 style="font-size:0.88rem;font-weight:700;margin:var(--space-md) 0 var(--space-sm);">후보 과열 필터 (3개 이상이면 추격 금지)</h4>
+        <table class="guide-table">
+          <tbody>
+            <tr><td>① 최근 5거래일 15~20% 이상 급등</td></tr>
+            <tr><td>② 20일선 대비 15% 이상 이격</td></tr>
+            <tr><td>③ 거래량 폭증 후 윗꼬리 발생</td></tr>
+            <tr><td>④ 호재 뉴스가 이미 대중적으로 확산</td></tr>
+            <tr><td>⑤ 실적 발표 직후 갭상승 후 밀림</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="g-weight" class="guide-block">
+        <h3>7. 비중 관리 규칙</h3>
+        <table class="guide-table">
+          <thead><tr><th>종목 유형</th><th>최대 비중</th></tr></thead>
+          <tbody>
+            <tr><td>QQQ·대형 ETF</td><td>20~30%</td></tr>
+            <tr><td>MSFT·GOOGL급 코어 빅테크</td><td>10~20%</td></tr>
+            <tr><td>NVDA급 고성장 핵심주</td><td>10~18%</td></tr>
+            <tr><td>버티브·BWX급 성장 위성</td><td>5~12%</td></tr>
+            <tr><td>아스테라·템퍼스급 고변동주</td><td>3~8%</td></tr>
+            <tr><td>전술 실험 종목</td><td>1~3%</td></tr>
+          </tbody>
+        </table>
+        <table class="guide-table" style="margin-top:var(--space-sm);">
+          <thead><tr><th>테마</th><th>최대 비중</th></tr></thead>
+          <tbody>
+            <tr><td>AI·빅테크 전체</td><td>50~60%</td></tr>
+            <tr><td>반도체 단일 테마</td><td>30~40%</td></tr>
+            <tr><td>전력·데이터센터 인프라</td><td>20~30%</td></tr>
+            <tr><td>원전·방산·해양</td><td>15~25%</td></tr>
+            <tr><td>적자 성장주 묶음</td><td>10% 이하</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="g-cycle" class="guide-block">
+        <h3>8. 점검 주기</h3>
+        <table class="guide-table">
+          <thead><tr><th>주기</th><th>할 일</th><th>목적</th></tr></thead>
+          <tbody>
+            <tr><td>매일 3분</td><td>급락·실적 발표·치명적 뉴스·대주주 매도만 확인</td><td>치명적 리스크 감지</td></tr>
+            <tr><td>매주 15분</td><td>주봉 추세, 기관·외국인 급격한 이탈 확인</td><td>이상 신호 탐지</td></tr>
+            <tr><td>매월 1시간</td><td>10점표 작성, 비중 점검, 후보 비교</td><td>보유·축소·추가매수 판단</td></tr>
+            <tr><td>분기 실적 시즌</td><td>EPS, 매출, 마진, 가이던스, 수주 확인</td><td>사업가설 재검증 ★</td></tr>
+            <tr><td>반기</td><td>포트폴리오 전체 리밸런싱</td><td>테마 쏠림 조정</td></tr>
+          </tbody>
+        </table>
+        <div class="guide-callout">중기투자자에게 가장 중요한 날은 급등하는 날이 아니라 실적 발표일이다.</div>
+      </div>
+
+      <div id="g-trade-log" class="guide-block">
+        <h3>11. 매매 기록 양식</h3>
+        <div class="manual-note">매수·매도·추가매수·교체 시 아래 항목을 남깁니다. 핵심은 “결정 이유 한 문장”입니다.</div>
+        <table class="guide-table" style="margin-top:var(--space-sm);">
+          <tbody>
+            <tr><td>날짜 / 종목 / 등급 / 현재 비중</td><td>기록의 기본 단위</td></tr>
+            <tr><td>매수·보유 시나리오</td><td>나는 이 종목을 왜 보유하는가?</td></tr>
+            <tr><td>5개 항목별 점수</td><td>사업가설, 산업, 해자, 밸류에이션, 기관 수급</td></tr>
+            <tr><td>비교 후보 종목 점수</td><td>교체 여부 판단</td></tr>
+            <tr><td>결정</td><td>보유 / 추가매수 / 부분 축소 / 전량 손절 / 교체</td></tr>
+            <tr><td>결정 이유 한 문장</td><td>다음에 복기할 수 있는 핵심 근거</td></tr>
+            <tr><td>다음 점검일</td><td>월간 또는 분기 실적 발표 후</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="g-review-questions" class="guide-block">
+        <h3>12. 추가 검토 과제</h3>
+        <div class="review-question-panel" style="margin-top:0;">
+          <div class="review-question-title">다음 버전에서 고도화할 질문</div>
+          <div class="review-question-list">
+            <div class="review-question-item"><strong>Q1.</strong> 기관 수급 항목에서 13F 공시 기반 BlackRock·Vanguard 지분율 추적 외에 개인 투자자가 실용적으로 활용할 수 있는 보조 지표는 무엇인가?</div>
+            <div class="review-question-item"><strong>Q2.</strong> PEG 2 초과를 과열 기준으로 사용할 때 AI·반도체 같은 고성장 산업에서 예외적으로 기준을 상향해야 하는 조건은 무엇인가?</div>
+            <div class="review-question-item"><strong>Q3.</strong> 교체 조건의 +3점 검토, +4점 실행 기준이 너무 보수적이거나 공격적이지 않은가?</div>
+            <div class="review-question-item"><strong>Q4.</strong> 이 시스템에서 놓친 중요한 리스크 관리 요소, 예컨대 금리·달러·실적 시즌·섹터 동조화 리스크는 없는가?</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="g-10cmd" class="guide-block">
+        <h3>13. 최종 10계명</h3>
+        <ol class="ten-commandments">
+          <li>매수 전 한 문장 사업가설을 쓴다.</li>
+          <li>모든 종목은 A/B/C/D로 등급화한다.</li>
+          <li>A등급은 차트가 아니라 사업가설로 판단한다.</li>
+          <li>B등급은 실적·산업·수급을 함께 본다.</li>
+          <li>C등급은 구조 약화 시 줄이고, D등급은 손절선으로 관리한다.</li>
+          <li>월 1회 10점표를 작성한다.</li>
+          <li>분기 실적 발표 후 사업가설을 반드시 재검증한다.</li>
+          <li>추가매수는 9점 이상, 눌림, 비중 여유가 있을 때만 한다.</li>
+          <li>교체는 후보 +3점 이상, 현재 약화, 후보 비과열일 때만 한다.</li>
+          <li>한 종목·한 테마가 계좌를 지배하지 않게 한다.</li>
+        </ol>
+      </div>
+    </section>
+  </div><!-- /#tab-guide -->
+
 </div><!-- /.app-wrapper -->
 
 
@@ -1579,6 +3572,24 @@ function parseNum(str) {
   const s = String(str).replace(/,/g, '').replace(/%/g, '').replace(/\$/g, '').trim();
   const n = parseFloat(s);
   return isNaN(n) ? null : n;
+}
+
+function formatWeight(v) {
+  const n = Number(v || 0);
+  return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.?0+$/, '');
+}
+function formatManwon(v) {
+  const n = Number(v || 0);
+  return `${Math.round(n).toLocaleString('ko-KR')}만`;
+}
+function parseManwonValue(text) {
+  const raw = String(text || '').replace(/,/g, '').trim();
+  if (!raw) return null;
+  const m = raw.match(/(-?\d+(?:\.\d+)?)\s*(만원|만|만\s*원)/);
+  if (m) return Number(m[1]);
+  const won = raw.match(/(-?\d+(?:\.\d+)?)\s*원/);
+  if (won) return Number(won[1]) / 10000;
+  return null;
 }
 
 /** 현재 투자 성향의 가중치 반환 */
@@ -4082,6 +6093,1763 @@ function renderNextAction(r) {
    ※ STEP 1~5 모두 완료 ✅
    ================================================================ */
 
+
+
+/* ================================================================
+   Q-MAP 3.0 — v10.2 통합 보완 로직
+   탭 전환 · Q-MAP 점수 · 후보 비교 · 추가매수 · 포트폴리오 저장
+   ================================================================ */
+const QMAP_STORAGE_KEY = 'qmap_v10_7_history';
+const QMAP_PORTFOLIO_KEY = 'qmap_v10_7_portfolio';
+const QMAP_LEGACY_STORAGE_KEYS = ['qmap_v10_4_history', 'qmap_v10_3_history', 'qmap_v10_2_history'];
+const QMAP_LEGACY_PORTFOLIO_KEYS = ['qmap_v10_4_portfolio', 'qmap_v10_3_portfolio', 'qmap_v10_2_portfolio'];
+
+let qmapState = {
+  scores: { '1': null, '2': null, '3': null, '4': null, '5': null },
+  history: [],
+  portfolio: []
+};
+
+let portfolioTransientWarning = null;
+
+const QMAP_LAYER_LABELS = {
+  core: '1층 코어',
+  growth: '2층 성장 위성',
+  tactical: '3층 전술',
+  cash: '현금'
+};
+
+const QMAP_THEME_LABELS = {
+  ai: 'AI·빅테크',
+  semi: '반도체',
+  infra: '전력·데이터센터',
+  nuclear: '원전·방산·해양',
+  deficit: '적자 성장주',
+  other: '기타'
+};
+
+
+const QMAP_OWNER_LABELS = {
+  family: '가족공통',
+  dad: '아빠',
+  mom: '엄마',
+  first: '첫째',
+  second: '둘째'
+};
+
+const QMAP_THEME_LIMITS = {
+  ai: 60,
+  semi: 40,
+  infra: 30,
+  nuclear: 25,
+  deficit: 10,
+  other: 100
+};
+
+const QMAP_LAYER_TARGETS = {
+  core: { min: 45, max: 55 },
+  growth: { min: 25, max: 35 },
+  tactical: { min: 0, max: 5 },
+  cash: { min: 5, max: 10 }
+};
+
+function initMainTabs() {
+  document.querySelectorAll('.main-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      const targetEl = document.getElementById(`tab-${target}`);
+      if (targetEl) targetEl.classList.add('active');
+      if (target === 'share' && typeof updateShareCard === 'function') {
+        try { updateShareCard(); } catch (err) { console.warn('[Q-MAP] 공유 화면 갱신 실패', err); }
+      }
+      if (target === 'family' && typeof renderFamilyDashboard === 'function') {
+        try { renderFamilyDashboard(); } catch (err) { console.warn('[Q-MAP] 가족 대시보드 갱신 실패', err); }
+      }
+    });
+  });
+}
+
+function normalizeQmapScores(scores = {}) {
+  return ['1', '2', '3', '4', '5'].reduce((acc, key) => {
+    const raw = scores[key] ?? scores[Number(key)];
+    acc[key] = raw === null || raw === undefined || raw === '' ? null : Number(raw);
+    if (Number.isNaN(acc[key])) acc[key] = null;
+    return acc;
+  }, {});
+}
+
+function getQmapTotal() {
+  qmapState.scores = normalizeQmapScores(qmapState.scores);
+  const vals = ['1', '2', '3', '4', '5'].map(k => qmapState.scores[k]);
+  if (vals.some(v => v === null || v === undefined || Number.isNaN(v))) return null;
+  return vals.reduce((sum, v) => sum + Number(v), 0);
+}
+
+function getQmapScoreClass(score) {
+  if (score >= 9) return 'score-top';
+  if (score >= 7) return 'score-good';
+  if (score >= 5) return 'score-warn';
+  return 'score-bad';
+}
+
+function getQmapHeatClass(score) {
+  if (score === null) return 'empty';
+  if (score >= 9) return 'top';
+  if (score >= 7) return 'good';
+  if (score >= 5) return 'warn';
+  return 'bad';
+}
+
+function decideQmapAction(total, grade, thesisStatus) {
+  if (total === null) {
+    return { label: '5개 항목을 모두 선택하세요', detail: '사업가설·산업·해자·밸류에이션·자금 흐름을 각각 0~2점으로 채점합니다.' };
+  }
+
+  if (thesisStatus === 'broken') {
+    if (grade === 'A') {
+      return { label: '사업가설 붕괴 — A등급 재검토 후 축소', detail: 'A등급은 가격 손절이 아니라 사업가설 붕괴 여부로 판단합니다. 10~30% 축소 또는 리밸런싱을 우선 검토하세요.' };
+    }
+    if (grade === 'B') {
+      return { label: '사업가설 붕괴 — 대폭 축소 또는 교체', detail: 'B등급 성장 주력은 가설 붕괴 시 50~70% 축소와 후보 교체를 검토합니다.' };
+    }
+    return { label: '사업가설 붕괴 — 손절 또는 교체', detail: 'C·D등급은 가설 붕괴 시 미련 없이 정리하고 더 강한 후보로 이동합니다.' };
+  }
+
+  if (thesisStatus === 'weakening' && total >= 7) {
+    return { label: '점수는 양호하나 가설 약화 — 관찰 강화', detail: '당장 매도보다 추가매수 중단과 다음 실적 발표 확인이 우선입니다.' };
+  }
+
+  if (total >= 9) return { label: '확신 보유', detail: '사업가설이 강화된 상태입니다. 눌림 구간이고 비중 여유가 있을 때만 추가매수를 검토합니다.' };
+  if (total >= 7) return { label: '정상 보유', detail: '사업가설이 살아 있으므로 단기 등락은 소음으로 보고 보유합니다.' };
+  if (total >= 5) return { label: '경고 구간', detail: '신규매수와 추가매수를 중단하고, 다음 분기 실적에서 사업가설을 재검증합니다.' };
+
+  if (total >= 3) {
+    if (grade === 'A') return { label: '축소 검토', detail: 'A등급은 전량 매도보다 10~20% 축소와 사업가설 재검토가 우선입니다.' };
+    if (grade === 'B') return { label: '비중 축소', detail: '20~40% 축소하고 실적·가이던스·산업 사이클을 재확인합니다.' };
+    if (grade === 'C') return { label: '강한 축소', detail: 'C등급은 30~60% 축소하고 구조 붕괴 여부를 확인합니다.' };
+    return { label: '대폭 축소', detail: 'D등급은 50% 이상 축소 또는 손절을 검토합니다.' };
+  }
+
+  if (grade === 'A') return { label: '이탈 구간 — A등급 예외 재검토', detail: '사업가설이 정말 붕괴됐는지 확인한 뒤 축소·교체를 결정합니다.' };
+  return { label: '이탈 구간 — 손절 또는 교체', detail: '점수와 가설이 모두 약합니다. 현금화 또는 더 강한 후보로 교체합니다.' };
+}
+
+function updateQmapResult() {
+  const total = getQmapTotal();
+  const scoreEl = document.getElementById('qmr-total');
+  const labelEl = document.getElementById('qmr-action-label');
+  const detailEl = document.getElementById('qmr-action-detail');
+  const heatEl = document.getElementById('qmr-heat');
+  const grade = document.getElementById('qm-grade')?.value || '';
+  const thesisStatus = document.getElementById('qm-thesis-status')?.value || 'alive';
+  const action = decideQmapAction(total, grade, thesisStatus);
+
+  if (scoreEl) scoreEl.textContent = total === null ? '—' : total;
+  if (labelEl) labelEl.textContent = action.label;
+  if (detailEl) detailEl.textContent = action.detail;
+  if (heatEl) {
+    heatEl.className = 'qmr-heat ' + getQmapHeatClass(total);
+    if (total !== null) heatEl.title = `${total}/10`;
+  }
+
+  updateCandidateResult();
+  updateAddChecklist(false);
+}
+
+function initQmapEvents() {
+  document.querySelectorAll('.qmi-option').forEach(option => {
+    option.addEventListener('click', () => {
+      const item = option.dataset.item;
+      const val = Number(option.dataset.val);
+      qmapState.scores[item] = val;
+
+      document.querySelectorAll(`.qmi-option[data-item="${item}"]`).forEach(o => o.classList.remove('selected'));
+      option.classList.add('selected');
+
+      const display = document.getElementById(`qmi-${item}-display`);
+      if (display) display.textContent = `${val}점`;
+      updateQmapResult();
+    });
+  });
+
+  ['qm-grade', 'qm-thesis-status', 'qm-candidate', 'qm-candidate-score', 'qm-overheat'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', updateQmapResult);
+    document.getElementById(id)?.addEventListener('change', updateQmapResult);
+  });
+
+  document.querySelectorAll('.add-check').forEach(chk => chk.addEventListener('change', () => updateAddChecklist(true)));
+  document.querySelectorAll('.break-check').forEach(chk => chk.addEventListener('change', updateBreakSignalResult));
+  document.querySelectorAll('.overheat-check').forEach(chk => chk.addEventListener('change', updateOverheatFromChecks));
+
+  document.getElementById('btn-generate-trade-log')?.addEventListener('click', generateTradeLogText);
+  ['qm-decision','qm-next-review','qm-decision-reason','qm-thesis','qm-ticker','qm-weight'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', () => { updateBreakSignalResult(); });
+    document.getElementById(id)?.addEventListener('change', () => { updateBreakSignalResult(); });
+  });
+
+  document.getElementById('btn-clear-qmap')?.addEventListener('click', clearQmapForm);
+  document.getElementById('btn-save-qmap')?.addEventListener('click', saveQmapRecord);
+  document.getElementById('btn-load-to-portfolio')?.addEventListener('click', loadQmapToPortfolioForm);
+}
+
+
+function getCheckedBreakSignals() {
+  return [...document.querySelectorAll('.break-check:checked')].map(el => el.dataset.signal || el.parentElement?.textContent?.trim() || '신호');
+}
+
+function updateBreakSignalResult() {
+  const resultEl = document.getElementById('break-signal-result');
+  if (!resultEl) return;
+  const signals = getCheckedBreakSignals();
+  const statusEl = document.getElementById('qm-thesis-status');
+
+  let cls = 'alert-info';
+  let msg = `현재 ${signals.length}/5개 체크됨: 사업가설 점검을 계속하세요.`;
+  if (signals.length >= 4) {
+    cls = 'alert-error';
+    msg = `🚨 ${signals.length}/5개 체크: 손절 또는 대폭 축소 실행 구간입니다. 가설 상태를 ‘붕괴’로 전환해 재평가하세요.`;
+    if (statusEl && statusEl.value !== 'broken') statusEl.value = 'broken';
+  } else if (signals.length >= 3) {
+    cls = 'alert-warning';
+    msg = `⚠️ ${signals.length}/5개 체크: 강한 경고 구간입니다. 신규·추가매수를 중단하고 분기 실적과 종가 기준 구조를 확인하세요.`;
+    if (statusEl && statusEl.value === 'alive') statusEl.value = 'weakening';
+  } else if (signals.length === 0) {
+    cls = 'alert-success';
+    msg = '✅ 붕괴 신호 없음: 사업가설은 현재 정상 범위로 볼 수 있습니다.';
+  }
+  resultEl.innerHTML = `<div class="alert ${cls} visible">${msg}</div>`;
+  updateQmapResult();
+}
+
+function updateOverheatFromChecks() {
+  const count = document.querySelectorAll('.overheat-check:checked').length;
+  const el = document.getElementById('qm-overheat');
+  if (el) el.value = count;
+  updateCandidateResult();
+}
+
+function getQmapItemLabels() {
+  return {
+    1: '사업가설+실적 방향',
+    2: '산업 구조+메가트렌드',
+    3: '경쟁 구도+해자',
+    4: '밸류에이션+가격 위치',
+    5: '기관 수급+보유 진행률'
+  };
+}
+
+function generateTradeLogText() {
+  const total = getQmapTotal();
+  const ticker = (document.getElementById('qm-ticker')?.value || '').trim().toUpperCase() || '미입력';
+  const grade = document.getElementById('qm-grade')?.value || '미선택';
+  const weight = document.getElementById('qm-weight')?.value || '미입력';
+  const thesis = document.getElementById('qm-thesis')?.value.trim() || '미입력';
+  const thesisStatus = document.getElementById('qm-thesis-status')?.value || 'alive';
+  const decision = document.getElementById('qm-decision')?.value || '보유';
+  const reason = document.getElementById('qm-decision-reason')?.value.trim() || '미입력';
+  const nextReview = document.getElementById('qm-next-review')?.value || '미입력';
+  const candidate = (document.getElementById('qm-candidate')?.value || '').trim().toUpperCase() || '없음';
+  const candidateScore = document.getElementById('qm-candidate-score')?.value || '미입력';
+  const overheat = document.getElementById('qm-overheat')?.value || '0';
+  const labels = getQmapItemLabels();
+  const signals = getCheckedBreakSignals();
+  const action = decideQmapAction(total, grade, thesisStatus);
+  const out = document.getElementById('trade-log-output');
+  if (!out) return;
+
+  const lines = [
+    '날짜: ' + new Date().toLocaleDateString('ko-KR'),
+    '종목: ' + ticker,
+    '등급: ' + grade,
+    '현재 비중: ' + weight + '%',
+    '',
+    '매수/보유 시나리오: ' + thesis,
+    '가설 상태: ' + getThesisLabel(thesisStatus),
+    '붕괴 신호: ' + (signals.length ? signals.join(', ') : '없음'),
+    '',
+    '항목별 채점:',
+    '  ① ' + labels[1] + ': ' + (qmapState.scores[1] ?? '-') + '/2',
+    '  ② ' + labels[2] + ': ' + (qmapState.scores[2] ?? '-') + '/2',
+    '  ③ ' + labels[3] + ': ' + (qmapState.scores[3] ?? '-') + '/2',
+    '  ④ ' + labels[4] + ': ' + (qmapState.scores[4] ?? '-') + '/2',
+    '  ⑤ ' + labels[5] + ': ' + (qmapState.scores[5] ?? '-') + '/2',
+    '  ---------------------------',
+    '  총점: ' + (total === null ? '-' : total) + '/10',
+    '',
+    '비교 후보 종목: ' + candidate,
+    '비교 후보 점수: ' + candidateScore + '/10',
+    '후보 과열 조건: ' + overheat + '/5',
+    '',
+    '시스템 판단: ' + action.label + ' — ' + action.detail,
+    '최종 결정: ' + decision,
+    '결정 이유: ' + reason,
+    '다음 점검일: ' + nextReview
+  ];
+  out.textContent = lines.join('\n');
+  out.style.display = 'block';
+}
+
+function isCurrentWeakForReplacement(total, thesisStatus) {
+  return thesisStatus === 'weakening' || thesisStatus === 'broken' || (total !== null && total <= 6);
+}
+
+function updateCandidateResult() {
+  const resultEl = document.getElementById('candidate-result');
+  if (!resultEl) return;
+
+  const current = getQmapTotal();
+  const rawCandidate = document.getElementById('qm-candidate-score')?.value;
+  const rawOverheat = document.getElementById('qm-overheat')?.value;
+  const candidateScore = rawCandidate === '' || rawCandidate === undefined ? null : Number(rawCandidate);
+  const overheat = rawOverheat === '' || rawOverheat === undefined ? 0 : Number(rawOverheat);
+  const ticker = document.getElementById('qm-candidate')?.value.trim().toUpperCase() || '후보';
+  const thesisStatus = document.getElementById('qm-thesis-status')?.value || 'alive';
+
+  if (current === null || candidateScore === null || Number.isNaN(candidateScore)) {
+    resultEl.innerHTML = '<div class="alert alert-info visible">현재 Q-MAP 점수와 후보 점수를 입력하면 교체 판단이 표시됩니다.</div>';
+    return;
+  }
+
+  const diff = candidateScore - current;
+  const currentWeak = isCurrentWeakForReplacement(current, thesisStatus);
+  let cls = 'alert-info';
+  let msg = '';
+
+  if (overheat >= 3) {
+    cls = 'alert-warning';
+    msg = `⛔ ${ticker} 과열 조건 ${overheat}개: 점수가 높아도 추격매수 금지, 눌림 대기.`;
+  } else if (diff <= 0) {
+    cls = 'alert-warning';
+    msg = `교체 금지: ${ticker}가 현재 종목보다 우위가 아닙니다. 차이 ${diff}점.`;
+  } else if (!currentWeak) {
+    cls = 'alert-info';
+    msg = `교체 보류: 후보가 +${diff}점 우위지만 현재 종목이 아직 6점 이하/가설 약화 조건을 충족하지 않습니다. 중기투자에서는 관심종목으로 관리하고 복리 보유를 우선합니다.`;
+  } else if (diff === 1) {
+    msg = `관심종목 등록: +1점 차이는 중기투자에서 소음일 가능성이 큽니다.`;
+  } else if (diff === 2) {
+    msg = `소액 부분교체 검토: 현재 종목이 약화 중일 때만 10~30% 이내로 검토합니다.`;
+  } else if (diff === 3) {
+    cls = 'alert-success';
+    msg = `부분교체 가능: ${ticker}가 +3점 우위입니다. 30~50% 교체를 검토할 수 있습니다.`;
+  } else {
+    cls = 'alert-success';
+    msg = `본격 교체 가능: ${ticker}가 +${diff}점 우위입니다. 과열이 아니라면 50~100% 교체 가능.`;
+  }
+
+  resultEl.innerHTML = `<div class="alert ${cls} visible">${msg}</div>`;
+}
+
+function updateAddChecklist(userDriven) {
+  const checks = [...document.querySelectorAll('.add-check')];
+  const total = getQmapTotal();
+  if (checks.length && !userDriven && total !== null) {
+    checks[0].checked = total >= 9;
+  }
+  const count = checks.filter(c => c.checked).length;
+  const resultEl = document.getElementById('add-checklist-result');
+  if (!resultEl) return;
+
+  if (count >= 4) {
+    resultEl.innerHTML = `<div class="alert alert-success visible">✅ ${count}/5 충족: 추가매수 검토 가능. 단, 종목·테마 비중 상한을 먼저 확인하세요.</div>`;
+  } else {
+    resultEl.innerHTML = `<div class="alert alert-warning visible">⚠️ ${count}/5 충족: 추가매수 보류. 평단 낮추기식 물타기를 피하세요.</div>`;
+  }
+}
+
+function collectQmapRecord() {
+  const total = getQmapTotal();
+  return {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    ticker: (document.getElementById('qm-ticker')?.value || '').trim().toUpperCase(),
+    grade: document.getElementById('qm-grade')?.value || '',
+    weight: parseNum(document.getElementById('qm-weight')?.value) || 0,
+    thesis: document.getElementById('qm-thesis')?.value.trim() || '',
+    thesisStatus: document.getElementById('qm-thesis-status')?.value || 'alive',
+    scores: { ...qmapState.scores },
+    total,
+    candidate: (document.getElementById('qm-candidate')?.value || '').trim().toUpperCase(),
+    candidateScore: parseNum(document.getElementById('qm-candidate-score')?.value),
+    overheat: parseNum(document.getElementById('qm-overheat')?.value) || 0,
+    breakSignals: getCheckedBreakSignals(),
+    decision: document.getElementById('qm-decision')?.value || '보유',
+    decisionReason: document.getElementById('qm-decision-reason')?.value.trim() || '',
+    nextReview: document.getElementById('qm-next-review')?.value || ''
+  };
+}
+
+function saveQmapRecord() {
+  const rec = collectQmapRecord();
+  if (!rec.ticker) {
+    showQmapInline('qmap-history-list', '⚠️ 티커를 입력해야 저장할 수 있습니다.', 'alert-warning');
+    return;
+  }
+  if (!rec.thesis) {
+    showQmapInline('qmap-history-list', '⚠️ 매수/보유 사업가설 한 문장을 입력해야 저장할 수 있습니다.', 'alert-warning');
+    return;
+  }
+  if (rec.total === null) {
+    showQmapInline('qmap-history-list', '⚠️ 5개 항목을 모두 채점해야 저장할 수 있습니다.', 'alert-warning');
+    return;
+  }
+  qmapState.history.unshift(rec);
+  qmapState.history = qmapState.history.slice(0, 50);
+  persistQmapHistory();
+  renderQmapHistory();
+}
+
+function showQmapInline(containerId, msg, cls) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = `<div class="alert ${cls} visible">${msg}</div>`;
+}
+
+function persistQmapHistory() {
+  localStorage.setItem(QMAP_STORAGE_KEY, JSON.stringify(qmapState.history));
+}
+
+function loadQmapHistory() {
+  try {
+    const raw = localStorage.getItem(QMAP_STORAGE_KEY)
+      || QMAP_LEGACY_STORAGE_KEYS.map(k => localStorage.getItem(k)).find(Boolean)
+      || '[]';
+    qmapState.history = JSON.parse(raw).map(rec => ({
+      ...rec,
+      scores: normalizeQmapScores(rec.scores || {})
+    }));
+    if (!localStorage.getItem(QMAP_STORAGE_KEY) && qmapState.history.length) persistQmapHistory();
+  } catch {
+    qmapState.history = [];
+  }
+}
+
+function renderQmapHistory() {
+  const el = document.getElementById('qmap-history-list');
+  if (!el) return;
+  if (!qmapState.history.length) {
+    el.innerHTML = '<div class="empty-saved">저장된 Q-MAP 기록이 없습니다.</div>';
+    return;
+  }
+  el.innerHTML = qmapState.history.map(rec => {
+    const d = new Date(rec.date).toLocaleDateString('ko-KR');
+    const thesisLabel = getThesisLabel(rec.thesisStatus);
+    return `
+      <div class="saved-item" data-qmap-id="${rec.id}">
+        <span class="si-ticker">${rec.ticker}</span>
+        <span class="grade-chip grade-${rec.grade || 'B'}">${rec.grade || '-'}</span>
+        <span class="score-chip ${getQmapScoreClass(rec.total)}">${rec.total}/10</span>
+        <span class="thesis-chip thesis-${rec.thesisStatus}">${thesisLabel}</span>
+        <span class="si-date">${d}</span>
+        <button class="btn btn-outline btn-sm" data-load-qmap="${rec.id}">불러오기</button>
+        <button class="btn btn-red btn-sm" data-delete-qmap="${rec.id}">삭제</button>
+      </div>`;
+  }).join('');
+
+  el.querySelectorAll('[data-load-qmap]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      loadQmapRecord(Number(btn.dataset.loadQmap));
+    });
+  });
+  el.querySelectorAll('[data-delete-qmap]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      qmapState.history = qmapState.history.filter(r => r.id !== Number(btn.dataset.deleteQmap));
+      persistQmapHistory();
+      renderQmapHistory();
+    });
+  });
+}
+
+function loadQmapRecord(id) {
+  const rec = qmapState.history.find(r => r.id === id);
+  if (!rec) return;
+  document.getElementById('qm-ticker').value = rec.ticker || '';
+  document.getElementById('qm-grade').value = rec.grade || '';
+  document.getElementById('qm-weight').value = rec.weight || '';
+  document.getElementById('qm-thesis').value = rec.thesis || '';
+  document.getElementById('qm-thesis-status').value = rec.thesisStatus || 'alive';
+  document.getElementById('qm-candidate').value = rec.candidate || '';
+  document.getElementById('qm-candidate-score').value = rec.candidateScore ?? '';
+  document.getElementById('qm-overheat').value = rec.overheat ?? '';
+  document.getElementById('qm-decision').value = rec.decision || '보유';
+  document.getElementById('qm-decision-reason').value = rec.decisionReason || '';
+  document.getElementById('qm-next-review').value = rec.nextReview || '';
+
+  const savedBreakSignals = new Set(rec.breakSignals || []);
+  document.querySelectorAll('.break-check').forEach(chk => {
+    chk.checked = savedBreakSignals.has(chk.dataset.signal);
+  });
+  document.querySelectorAll('.overheat-check').forEach((chk, idx) => {
+    chk.checked = idx < Number(rec.overheat || 0);
+  });
+
+  qmapState.scores = normalizeQmapScores(rec.scores || {});
+  syncQmapScoreUI();
+  updateBreakSignalResult();
+  updateOverheatFromChecks();
+  updateQmapResult();
+  generateTradeLogText();
+}
+
+function syncQmapScoreUI() {
+  document.querySelectorAll('.qmi-option').forEach(o => o.classList.remove('selected'));
+  Object.entries(qmapState.scores).forEach(([item, val]) => {
+    const display = document.getElementById(`qmi-${item}-display`);
+    if (display) display.textContent = val === null ? '—점' : `${val}점`;
+    if (val !== null) {
+      document.querySelector(`.qmi-option[data-item="${item}"][data-val="${val}"]`)?.classList.add('selected');
+    }
+  });
+}
+
+function clearQmapForm() {
+  ['qm-ticker','qm-weight','qm-thesis','qm-candidate','qm-candidate-score','qm-overheat','qm-decision-reason','qm-next-review'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const decisionEl = document.getElementById('qm-decision');
+  if (decisionEl) decisionEl.value = '보유';
+  const tradeOut = document.getElementById('trade-log-output');
+  if (tradeOut) { tradeOut.textContent = ''; tradeOut.style.display = 'none'; }
+  document.querySelectorAll('.break-check,.overheat-check').forEach(c => c.checked = false);
+  const gradeEl = document.getElementById('qm-grade');
+  if (gradeEl) gradeEl.value = '';
+  const statusEl = document.getElementById('qm-thesis-status');
+  if (statusEl) statusEl.value = 'alive';
+  qmapState.scores = { '1': null, '2': null, '3': null, '4': null, '5': null };
+  syncQmapScoreUI();
+  document.querySelectorAll('.add-check').forEach(c => c.checked = false);
+  updateQmapResult();
+  updateBreakSignalResult();
+  updateAddChecklist(true);
+}
+
+function getThesisLabel(status) {
+  if (status === 'broken') return '붕괴';
+  if (status === 'weakening') return '약화';
+  return '생존';
+}
+
+function getLayerLabel(layer) {
+  return QMAP_LAYER_LABELS[layer] || layer || '-';
+}
+function getThemeLabel(theme) {
+  return QMAP_THEME_LABELS[theme] || theme || '-';
+}
+function getOwnerLabel(owner) {
+  return QMAP_OWNER_LABELS[owner] || owner || '가족공통';
+}
+
+function getMaxWeightForPosition(grade, layer, theme) {
+  if (layer === 'cash') return 100;
+  let gradeLimit = 3;
+  if (grade === 'A') gradeLimit = layer === 'core' ? 30 : 20;
+  else if (grade === 'B') gradeLimit = 18;
+  else if (grade === 'C') gradeLimit = 12;
+  const themeLimit = QMAP_THEME_LIMITS[theme] ?? 100;
+  return Math.min(gradeLimit, themeLimit);
+}
+
+function getThemeExposure(theme) {
+  if (!theme) return 0;
+  return qmapState.portfolio.reduce((sum, p) => {
+    return sum + (p.theme === theme ? Number(p.weight || 0) : 0);
+  }, 0);
+}
+
+function loadQmapToPortfolioForm() {
+  const rec = collectQmapRecord();
+  document.querySelector('.main-tab[data-tab="portfolio"]')?.click();
+  document.getElementById('pos-ticker').value = rec.ticker || '';
+  document.getElementById('pos-grade').value = rec.grade || 'B';
+  document.getElementById('pos-weight').value = rec.weight || '';
+  document.getElementById('pos-score').value = rec.total ?? '';
+  document.getElementById('pos-thesis-status').value = rec.thesisStatus || 'alive';
+  if (rec.grade === 'A') document.getElementById('pos-layer').value = 'core';
+  else if (rec.grade === 'D') document.getElementById('pos-layer').value = 'tactical';
+  else document.getElementById('pos-layer').value = 'growth';
+}
+
+function initPortfolioEvents() {
+  document.getElementById('btn-add-position')?.addEventListener('click', addPortfolioPosition);
+  initBulkPortfolioEvents();
+}
+
+function collectPortfolioInput() {
+  return {
+    id: Date.now(),
+    ticker: (document.getElementById('pos-ticker')?.value || '').trim().toUpperCase(),
+    owner: document.getElementById('pos-owner')?.value || 'family',
+    grade: document.getElementById('pos-grade')?.value || 'B',
+    layer: document.getElementById('pos-layer')?.value || 'growth',
+    weight: parseNum(document.getElementById('pos-weight')?.value) || 0,
+    score: parseNum(document.getElementById('pos-score')?.value),
+    theme: document.getElementById('pos-theme')?.value || 'other',
+    thesisStatus: document.getElementById('pos-thesis-status')?.value || 'alive'
+  };
+}
+
+function addPortfolioPosition() {
+  const pos = collectPortfolioInput();
+  if (!pos.ticker) return showPortfolioWarning('⚠️ 티커를 입력하세요.', 'alert-warning');
+  if (!pos.weight || pos.weight < 0) return showPortfolioWarning('⚠️ 비중을 입력하세요.', 'alert-warning');
+  if (pos.score !== null && (Number.isNaN(pos.score) || pos.score < 0 || pos.score > 10)) return showPortfolioWarning('⚠️ Q-MAP 점수는 비워두거나 0~10으로 입력하세요.', 'alert-warning');
+
+  const existingIdx = qmapState.portfolio.findIndex(p => p.ticker === pos.ticker && (p.owner || 'family') === (pos.owner || 'family'));
+  if (existingIdx >= 0) qmapState.portfolio[existingIdx] = { ...qmapState.portfolio[existingIdx], ...pos, id: qmapState.portfolio[existingIdx].id };
+  else qmapState.portfolio.push(pos);
+
+  portfolioTransientWarning = null;
+  persistPortfolio();
+  renderPortfolio();
+  ['pos-ticker','pos-weight','pos-score'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+}
+
+function showPortfolioWarning(msg, cls) {
+  portfolioTransientWarning = { msg, cls };
+  const el = document.getElementById('portfolio-warnings');
+  if (!el) return;
+  el.innerHTML = `<div class="alert ${cls} visible">${msg}</div>`;
+}
+
+function persistPortfolio() {
+  localStorage.setItem(QMAP_PORTFOLIO_KEY, JSON.stringify(qmapState.portfolio));
+}
+
+function loadPortfolio() {
+  try {
+    const raw = localStorage.getItem(QMAP_PORTFOLIO_KEY)
+      || QMAP_LEGACY_PORTFOLIO_KEYS.map(k => localStorage.getItem(k)).find(Boolean)
+      || '[]';
+    qmapState.portfolio = JSON.parse(raw).map(pos => ({
+      owner: 'family',
+      theme: 'other',
+      thesisStatus: 'alive',
+      ...pos,
+      score: pos.score === null || pos.score === undefined || pos.score === '' ? null : Number(pos.score),
+      weight: Number(pos.weight || 0)
+    }));
+    if (!localStorage.getItem(QMAP_PORTFOLIO_KEY) && qmapState.portfolio.length) persistPortfolio();
+  } catch {
+    qmapState.portfolio = [];
+  }
+}
+
+function getPositionAction(pos) {
+  const hasScore = !(pos.score === null || pos.score === undefined || pos.score === '');
+  const score = hasScore ? Number(pos.score) : null;
+  if (!hasScore || Number.isNaN(score)) return '미평가: Q-MAP 점수 입력 후 판단';
+  if (pos.thesisStatus === 'broken') {
+    if (pos.grade === 'A') return '사업가설 붕괴: 전량 매도보다 10~30% 축소·재검토';
+    if (pos.grade === 'B') return '사업가설 붕괴: 50~70% 축소 또는 교체';
+    return '사업가설 붕괴: 손절 또는 교체';
+  }
+  if (score >= 9) return '확신 보유. 눌림+비중 여유 시 추가매수 후보';
+  if (score >= 7) return '정상 보유';
+  if (score >= 5) return '경고: 신규·추가매수 중단';
+  if (score >= 3) {
+    if (pos.grade === 'A') return '축소 검토: 10~20%';
+    if (pos.grade === 'B') return '비중 축소: 20~40%';
+    return '강한 축소: 30~60%';
+  }
+  return '이탈: 손절 또는 교체';
+}
+
+function renderPortfolio() {
+  const tbody = document.getElementById('portfolio-tbody');
+  if (!tbody) return;
+  if (!qmapState.portfolio.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:var(--space-xl);">종목을 추가하세요</td></tr>';
+  } else {
+    tbody.innerHTML = qmapState.portfolio.map(pos => {
+      const maxW = getMaxWeightForPosition(pos.grade, pos.layer, pos.theme);
+      const over = pos.weight > maxW && pos.layer !== 'cash';
+      return `
+        <tr>
+          <td><strong>${pos.ticker}</strong></td>
+          <td><span class="owner-chip">${getOwnerLabel(pos.owner)}</span></td>
+          <td><span class="grade-chip grade-${pos.grade}">${pos.grade}</span></td>
+          <td><span class="layer-chip">${getLayerLabel(pos.layer)}</span></td>
+          <td><strong class="${over ? 'text-red' : ''}">${formatWeight(pos.weight)}%</strong>${pos.amountM != null ? `<span class="amount-sub">약 ${formatManwon(pos.amountM)}</span>` : ''}${over ? `<br><span class="fs-xs text-red">상한 ${maxW}% 초과</span>` : ''}</td>
+          <td><span class="score-chip ${pos.score === null || pos.score === undefined || pos.score === '' ? 'score-warn' : getQmapScoreClass(pos.score)}">${pos.score === null || pos.score === undefined || pos.score === '' ? '미평가' : pos.score + '/10'}</span></td>
+          <td><span class="thesis-chip thesis-${pos.thesisStatus}">${getThesisLabel(pos.thesisStatus)}</span></td>
+          <td><span class="theme-chip">${getThemeLabel(pos.theme)}</span></td>
+          <td class="action-cell">${getPositionAction(pos)}</td>
+          <td><button class="btn btn-red btn-sm btn-delete-position" data-delete-position="${pos.id}">삭제</button></td>
+        </tr>`;
+    }).join('');
+
+    tbody.querySelectorAll('[data-delete-position]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        qmapState.portfolio = qmapState.portfolio.filter(p => p.id !== Number(btn.dataset.deletePosition));
+        persistPortfolio();
+        renderPortfolio();
+      });
+    });
+  }
+  renderLayerSummary();
+  renderThemeConcentration();
+  renderFamilyDashboard();
+  if (typeof updateShareCard === "function") updateShareCard();
+}
+
+function sumBy(key) {
+  return qmapState.portfolio.reduce((acc, pos) => {
+    acc[pos[key]] = (acc[pos[key]] || 0) + Number(pos.weight || 0);
+    return acc;
+  }, {});
+}
+
+function renderLayerSummary() {
+  const sums = sumBy('layer');
+  ['core','growth','tactical','cash'].forEach(layer => {
+    const val = Math.round((sums[layer] || 0) * 10) / 10;
+    const pctEl = document.getElementById(`layer-${layer}-pct`);
+    const barEl = document.getElementById(`layer-${layer}-bar`);
+    if (pctEl) pctEl.textContent = `${val}%`;
+    if (barEl) barEl.style.width = Math.min(100, val) + '%';
+  });
+
+  const warnings = [];
+  const total = qmapState.portfolio.reduce((a, p) => a + Number(p.weight || 0), 0);
+  if (total > 100.5) warnings.push(`전체 비중 합계 ${total.toFixed(1)}%: 100%를 초과했습니다.`);
+  Object.entries(QMAP_LAYER_TARGETS).forEach(([layer, range]) => {
+    const val = sums[layer] || 0;
+    if (qmapState.portfolio.length && (val < range.min || val > range.max)) {
+      warnings.push(`${getLayerLabel(layer)} ${val.toFixed(1)}%: 목표 ${range.min}~${range.max}% 범위 밖입니다.`);
+    }
+  });
+
+  const el = document.getElementById('portfolio-warnings');
+  if (el) {
+    const transientHtml = portfolioTransientWarning
+      ? `<div class="alert ${portfolioTransientWarning.cls} visible">${portfolioTransientWarning.msg}</div>`
+      : '';
+    const portfolioHtml = warnings.length
+      ? warnings.map(w => `<div class="alert alert-warning visible">⚠️ ${w}</div>`).join('')
+      : '<div class="alert alert-success visible">✅ 층별 비중이 큰 문제 없이 관리되고 있습니다.</div>';
+    el.innerHTML = transientHtml + portfolioHtml;
+  }
+}
+
+function renderThemeConcentration() {
+  const el = document.getElementById('theme-concentration');
+  if (!el) return;
+  const sums = sumBy('theme');
+  const themes = Object.keys(QMAP_THEME_LABELS);
+  el.innerHTML = themes.map(theme => {
+    const val = Math.round((sums[theme] || 0) * 10) / 10;
+    const limit = QMAP_THEME_LIMITS[theme];
+    let state = '';
+    if (val > limit) state = 'danger';
+    else if (val > limit * 0.85) state = 'warning';
+    return `
+      <div class="theme-card ${state}">
+        <div class="theme-title">${getThemeLabel(theme)}</div>
+        <div class="theme-pct">${val}%</div>
+        <div class="theme-limit">권장 상한: ${limit}%</div>
+        <div class="theme-bar-bg"><div class="theme-bar-fill" style="width:${Math.min(100, val / limit * 100)}%;background:${state === 'danger' ? 'var(--red)' : state === 'warning' ? 'var(--orange)' : 'var(--blue)'};"></div></div>
+      </div>`;
+  }).join('');
+}
+
+
+
+/* ================================================================
+   v10.5 간편 대량 포트폴리오 입력
+   - 티커/비중만 입력해도 가족·등급·층·테마 자동 추정
+   - 점수는 비워둘 수 있으며, 가족 대시보드에는 ⚪ 미평가로 표시
+   ================================================================ */
+const QMAP_AUTO_PRESETS = {
+  QQQ:  { grade:'A', layer:'core', theme:'ai', score:8 },
+  VOO:  { grade:'A', layer:'core', theme:'other', score:8 },
+  SPY:  { grade:'A', layer:'core', theme:'other', score:8 },
+  MSFT: { grade:'A', layer:'core', theme:'ai', score:8 },
+  GOOGL:{ grade:'A', layer:'core', theme:'ai', score:8 },
+  GOOG: { grade:'A', layer:'core', theme:'ai', score:8 },
+  AAPL: { grade:'A', layer:'core', theme:'ai', score:7 },
+  AMZN: { grade:'A', layer:'core', theme:'ai', score:7 },
+  META: { grade:'A', layer:'core', theme:'ai', score:7 },
+  NVDA: { grade:'A', layer:'core', theme:'semi', score:8 },
+  TSM:  { grade:'A', layer:'core', theme:'semi', score:8 },
+  AVGO: { grade:'A', layer:'core', theme:'semi', score:8 },
+  AMD:  { grade:'B', layer:'growth', theme:'semi', score:7 },
+  MRVL: { grade:'B', layer:'growth', theme:'semi', score:7 },
+  ARM:  { grade:'B', layer:'growth', theme:'semi', score:7 },
+  ALAB: { grade:'C', layer:'growth', theme:'semi', score:6 },
+  VRT:  { grade:'B', layer:'growth', theme:'infra', score:8 },
+  ETN:  { grade:'B', layer:'growth', theme:'infra', score:7 },
+  PWR:  { grade:'B', layer:'growth', theme:'infra', score:7 },
+  BWXT: { grade:'B', layer:'growth', theme:'nuclear', score:8 },
+  OII:  { grade:'C', layer:'growth', theme:'nuclear', score:6 },
+  TEM:  { grade:'D', layer:'tactical', theme:'deficit', score:5 },
+  TSLA: { grade:'C', layer:'growth', theme:'ai', score:6 },
+  UNH:  { grade:'A', layer:'core', theme:'other', score:7 }
+};
+const OWNER_ALIASES = {
+  '가족':'family', '가족공통':'family', '공통':'family', 'family':'family',
+  '아빠':'dad', '이현규':'dad', 'dad':'dad',
+  '엄마':'mom', '임인숙':'mom', 'mom':'mom',
+  '첫째':'first', '재연':'first', '이재연':'first', 'first':'first',
+  '둘째':'second', '재현':'second', '이재현':'second', 'second':'second'
+};
+const LAYER_ALIASES = { 'core':'core','코어':'core','1층':'core','growth':'growth','위성':'growth','성장':'growth','2층':'growth','tactical':'tactical','전술':'tactical','실험':'tactical','3층':'tactical','cash':'cash','현금':'cash' };
+const THEME_ALIASES = { 'ai':'ai','AI':'ai','빅테크':'ai','semi':'semi','반도체':'semi','infra':'infra','전력':'infra','데이터센터':'infra','nuclear':'nuclear','원전':'nuclear','방산':'nuclear','해양':'nuclear','deficit':'deficit','적자':'deficit','other':'other','기타':'other' };
+
+function normalizeOwnerToken(token) {
+  return OWNER_ALIASES[String(token || '').trim()] || null;
+}
+function normalizeLayerToken(token) {
+  return LAYER_ALIASES[String(token || '').trim()] || null;
+}
+function normalizeThemeToken(token) {
+  return THEME_ALIASES[String(token || '').trim()] || null;
+}
+function normalizeThesisStatusToken(token) {
+  const t = String(token || '').trim().toLowerCase();
+  if (['broken','붕괴','깨짐','red','빨강'].includes(t)) return 'broken';
+  if (['weakening','약화','주의','yellow','노랑'].includes(t)) return 'weakening';
+  if (['alive','생존','유지','green','초록'].includes(t)) return 'alive';
+  return null;
+}
+function inferPreset(ticker) {
+  return QMAP_AUTO_PRESETS[ticker] || { grade:'B', layer:'growth', theme:'other', score:null };
+}
+function parseBulkPortfolioLine(line) {
+  const raw = line.trim();
+  if (!raw || raw.startsWith('#')) return null;
+  const parts = raw.includes(',') ? raw.split(',').map(x => x.trim()).filter(Boolean) : raw.split(/\s+/).map(x => x.trim()).filter(Boolean);
+  if (!parts.length) return null;
+
+  // 상세 형식: 가족,티커,등급,층,비중,점수,테마,가설
+  if (raw.includes(',') && parts.length >= 5) {
+    const owner = normalizeOwnerToken(parts[0]) || 'family';
+    const ticker = (parts[1] || '').toUpperCase();
+    const preset = inferPreset(ticker);
+    const grade = (parts[2] || preset.grade || 'B').toUpperCase();
+    const layer = normalizeLayerToken(parts[3]) || preset.layer || 'growth';
+    const amountM = parseManwonValue(parts[4]);
+    const weight = amountM !== null ? null : parseNum(parts[4]);
+    const score = parts[5] === undefined || parts[5] === '' ? preset.score : parseNum(parts[5]);
+    const theme = normalizeThemeToken(parts[6]) || preset.theme || 'other';
+    const thesisStatus = normalizeThesisStatusToken(parts[7]) || 'alive';
+    if (!ticker || (weight === null && amountM === null)) return { error:`형식 오류: ${raw}` };
+    return { id: Date.now()+Math.random(), owner, ticker, grade, layer, weight, amountM, score, theme, thesisStatus };
+  }
+
+  // 간단 형식: [가족] 티커 비중 [점수]
+  let owner = 'family';
+  let idx = 0;
+  const maybeOwner = normalizeOwnerToken(parts[0]);
+  if (maybeOwner) { owner = maybeOwner; idx = 1; }
+  const ticker = (parts[idx] || '').toUpperCase();
+  const amountM = parseManwonValue(parts[idx+1]);
+  const weight = amountM !== null ? null : parseNum(parts[idx+1]);
+  const optionalScore = parts[idx+2] !== undefined ? parseNum(parts[idx+2]) : null;
+  if (!ticker || (weight === null && amountM === null)) return { error:`형식 오류: ${raw}` };
+  const preset = inferPreset(ticker);
+  return { id: Date.now()+Math.random(), owner, ticker, grade:preset.grade, layer:preset.layer, weight, amountM, score: optionalScore ?? preset.score ?? null, theme:preset.theme, thesisStatus:'alive' };
+}
+function parseBulkPortfolioText(text) {
+  const rows = String(text || '').split('\n').map(parseBulkPortfolioLine).filter(Boolean);
+  const positions = rows.filter(r => !r.error);
+  const errors = rows.filter(r => r.error).map(r => r.error);
+  const amountRows = positions.filter(p => p.amountM != null && Number(p.amountM) > 0);
+  if (amountRows.length) {
+    const totalAmount = amountRows.reduce((sum, p) => sum + Number(p.amountM || 0), 0);
+    if (totalAmount > 0) {
+      amountRows.forEach(p => { p.weight = Number((Number(p.amountM || 0) / totalAmount * 100).toFixed(2)); });
+    }
+  }
+  return { positions, errors };
+}
+function renderBulkPreview() {
+  const el = document.getElementById('portfolio-bulk-preview');
+  const text = document.getElementById('portfolio-bulk-input')?.value || '';
+  if (!el) return;
+  const { positions, errors } = parseBulkPortfolioText(text);
+  if (!text.trim()) { el.innerHTML = '<div class="alert alert-info visible">붙여넣을 종목 목록을 입력하세요.</div>'; return; }
+  const rows = positions.slice(0, 20).map(p => `<tr><td>${getOwnerLabel(p.owner)}</td><td><strong>${p.ticker}</strong></td><td>${p.grade}</td><td>${getLayerLabel(p.layer)}</td><td>${formatWeight(p.weight)}%${p.amountM != null ? '<br><span class="fs-xs text-muted">'+formatManwon(p.amountM)+'</span>' : ''}</td><td>${p.score === null || p.score === undefined ? '미평가' : p.score + '/10'}</td><td>${getThemeLabel(p.theme)}</td></tr>`).join('');
+  const more = positions.length > 20 ? `<div class="fs-xs text-muted mt-sm">외 ${positions.length - 20}개 더 있음</div>` : '';
+  const errHtml = errors.length ? `<div class="alert alert-warning visible">⚠️ 인식 실패 ${errors.length}줄: ${errors.slice(0,3).join(' / ')}</div>` : '';
+  el.innerHTML = `${errHtml}<div class="alert alert-info visible">인식된 종목 ${positions.length}개. 같은 계좌+티커는 기존 값을 업데이트합니다.</div><table class="bulk-preview-table"><thead><tr><th>계좌</th><th>티커</th><th>등급</th><th>층</th><th>비중/금액</th><th>점수</th><th>테마</th></tr></thead><tbody>${rows || '<tr><td colspan="7">인식된 종목이 없습니다.</td></tr>'}</tbody></table>${more}`;
+}
+function importBulkPortfolio() {
+  const text = document.getElementById('portfolio-bulk-input')?.value || '';
+  const { positions, errors } = parseBulkPortfolioText(text);
+  if (!positions.length) { renderBulkPreview(); return showPortfolioWarning('⚠️ 추가할 종목을 인식하지 못했습니다. 예시 형식대로 입력하세요.', 'alert-warning'); }
+  positions.forEach(pos => {
+    const existingIdx = qmapState.portfolio.findIndex(p => p.ticker === pos.ticker && (p.owner || 'family') === (pos.owner || 'family'));
+    if (existingIdx >= 0) qmapState.portfolio[existingIdx] = { ...qmapState.portfolio[existingIdx], ...pos, id:qmapState.portfolio[existingIdx].id };
+    else qmapState.portfolio.push(pos);
+  });
+  portfolioTransientWarning = { msg: `✅ ${positions.length}개 종목을 대량 추가/업데이트했습니다.${errors.length ? ' 일부 줄은 인식 실패했습니다.' : ''}`, cls:'alert-success' };
+  persistPortfolio();
+  renderPortfolio();
+  renderBulkPreview();
+}
+function fillBulkSample() {
+  const box = document.getElementById('portfolio-bulk-input');
+  if (!box) return;
+  box.value = `아빠 QQQ 20\n아빠 MSFT 8\n아빠 GOOGL 8\n아빠 NVDA 10\n아빠 VRT 5\n엄마 QQQ 15\n엄마 MSFT 8\n엄마 GOOGL 8\n첫째 GOOGL 10\n첫째 NVDA 8\n둘째 TSM 7\n둘째 MRVL 5`;
+  renderBulkPreview();
+}
+function initBulkPortfolioEvents() {
+  document.getElementById('btn-bulk-sample')?.addEventListener('click', fillBulkSample);
+  document.getElementById('btn-bulk-preview')?.addEventListener('click', renderBulkPreview);
+  document.getElementById('btn-bulk-import')?.addEventListener('click', importBulkPortfolio);
+  document.getElementById('portfolio-bulk-input')?.addEventListener('input', () => {
+    const el = document.getElementById('portfolio-bulk-preview');
+    if (el) el.innerHTML = '';
+  });
+  initReportImportEvents();
+}
+
+/* ================================================================
+   v10.6 가족 포트폴리오 HTML 보고서 가져오기
+   - 기존 family_portfolio_*.html 파일에서 보유자·종목·금액·분류를 읽어
+     전체 평가액 기준 비중을 자동 계산
+   ================================================================ */
+const SEED_FAMILY_REPORT_ROWS = [{"ownerText":"이현규","account":"일반","tickerText":"VRT","amountText":"277만","categoryText":"AI·반도체","pnlText":"+80.47%"},{"ownerText":"이현규","account":"일반","tickerText":"ONTO","amountText":"284만","categoryText":"AI·반도체","pnlText":"+25.67%"},{"ownerText":"이현규","account":"일반","tickerText":"OII","amountText":"119만","categoryText":"성장·테마","pnlText":"+11.87%"},{"ownerText":"이현규","account":"일반","tickerText":"BWXT","amountText":"183만","categoryText":"성장·테마","pnlText":"+2.25%"},{"ownerText":"이현규","account":"일반","tickerText":"TEM","amountText":"92만","categoryText":"성장·테마","pnlText":"-20.53%"},{"ownerText":"이현규","account":"일반","tickerText":"TechnipFMC","amountText":"53만","categoryText":"성장·테마","pnlText":"+17.08%"},{"ownerText":"이현규","account":"ISA","tickerText":"KODEX 미국나스닥100","amountText":"1,134만","categoryText":"코어 ETF","pnlText":"+25.8%"},{"ownerText":"이현규","account":"연금","tickerText":"TIGER 미국S&P500","amountText":"630만","categoryText":"코어 ETF","pnlText":"+16.61%"},{"ownerText":"이현규","account":"토스","tickerText":"소수점 포트폴리오","amountText":"145만","categoryText":"기타","pnlText":"+31.4%"},{"ownerText":"이현규","account":"ISA","tickerText":"TIGER 미국S&P500","amountText":"236만","categoryText":"코어 ETF","pnlText":"+16.5%"},{"ownerText":"이현규","account":"ISA","tickerText":"TIGER 미국테크 TOP10 INDXX","amountText":"379만","categoryText":"코어 ETF","pnlText":"+27.14%"},{"ownerText":"이현규","account":"ISA","tickerText":"KODEX 미국반도체","amountText":"912만","categoryText":"반도체 ETF","pnlText":"+52.49%"},{"ownerText":"이현규","account":"연금","tickerText":"KODEX 미국나스닥100","amountText":"451만","categoryText":"코어 ETF","pnlText":"+25.71%"},{"ownerText":"이현규","account":"현금","tickerText":"미국주식팔고달러보유","amountText":"598만","categoryText":"방어·현금","pnlText":""},{"ownerText":"이현규","account":"일반","tickerText":"META","amountText":"367만","categoryText":"빅테크·플랫폼","pnlText":"+0.34%"},{"ownerText":"임인숙","account":"토스","tickerText":"MSFT","amountText":"313만","categoryText":"빅테크·플랫폼","pnlText":"-3.2%"},{"ownerText":"임인숙","account":"토스","tickerText":"UNH","amountText":"283만","categoryText":"성장·테마","pnlText":"+28.3%"},{"ownerText":"임인숙","account":"종합","tickerText":"AVGO","amountText":"190만","categoryText":"AI·반도체","pnlText":"+6.6%"},{"ownerText":"임인숙","account":"종합","tickerText":"META","amountText":"275만","categoryText":"빅테크·플랫폼","pnlText":"-8.94%"},{"ownerText":"임인숙","account":"종합","tickerText":"GRID","amountText":"172만","categoryText":"국내·기타ETF","pnlText":"+15.36%"},{"ownerText":"임인숙","account":"ISA","tickerText":"TIGER 미국S&P500","amountText":"675만","categoryText":"코어 ETF","pnlText":"+12.81%"},{"ownerText":"임인숙","account":"연금","tickerText":"KODEX 미국나스닥100","amountText":"488만","categoryText":"코어 ETF","pnlText":"+20.58%"},{"ownerText":"임인숙","account":"토스","tickerText":"GOOGL","amountText":"295만","categoryText":"빅테크·플랫폼","pnlText":"+31.8%"},{"ownerText":"임인숙","account":"토스","tickerText":"NVDA","amountText":"101만","categoryText":"AI·반도체","pnlText":"+85.6%"},{"ownerText":"임인숙","account":"토스","tickerText":"QQQ","amountText":"109만","categoryText":"국내·기타ETF","pnlText":"+18.8%"},{"ownerText":"임인숙","account":"연금","tickerText":"TIGER 미국S&P500","amountText":"493만","categoryText":"코어 ETF","pnlText":"+12.61%"},{"ownerText":"임인숙","account":"ISA","tickerText":"KODEX 미국나스닥100","amountText":"927만","categoryText":"코어 ETF","pnlText":"+20.74%"},{"ownerText":"임인숙","account":"ISA","tickerText":"TIGER 미국테크 TOP10 INDXX","amountText":"278만","categoryText":"코어 ETF","pnlText":"+21.38%"},{"ownerText":"임인숙","account":"ISA","tickerText":"KODEX 미국반도체","amountText":"577만","categoryText":"반도체 ETF","pnlText":"+42.75%"},{"ownerText":"이재현","account":"미국개별","tickerText":"GOOGL","amountText":"1,543만","categoryText":"빅테크·플랫폼","pnlText":"+73.21%"},{"ownerText":"이재현","account":"미국개별","tickerText":"MRVL","amountText":"1,376만","categoryText":"AI·반도체","pnlText":"+87.66%"},{"ownerText":"이재현","account":"미국개별","tickerText":"NVDA","amountText":"809만","categoryText":"AI·반도체","pnlText":"+90.21%"},{"ownerText":"이재현","account":"미국개별","tickerText":"MSFT","amountText":"694만","categoryText":"빅테크·플랫폼","pnlText":"+4.53%"},{"ownerText":"이재현","account":"미국개별","tickerText":"TSM","amountText":"726만","categoryText":"AI·반도체","pnlText":"+16.93%"},{"ownerText":"이재현","account":"미국개별","tickerText":"MU","amountText":"542만","categoryText":"AI·반도체","pnlText":"+63.05%"},{"ownerText":"이재현","account":"미국개별","tickerText":"AVGO","amountText":"127만","categoryText":"AI·반도체","pnlText":"+7.37%"},{"ownerText":"이재현","account":"한국ETF","tickerText":"TIGER 미국필라델피아반도체나스닥","amountText":"153만","categoryText":"반도체 ETF","pnlText":"+47.03%"},{"ownerText":"이재현","account":"한국ETF","tickerText":"KODEX 미국AI전력핵심인프라","amountText":"44만","categoryText":"국내·기타ETF","pnlText":"+35.91%"},{"ownerText":"이재현","account":"소수점","tickerText":"AVGO","amountText":"247만","categoryText":"AI·반도체","pnlText":"+30.36%"},{"ownerText":"이재현","account":"ISA","tickerText":"PLUS 글로벌HBM반도체","amountText":"30만","categoryText":"반도체 ETF","pnlText":"-5.44%"},{"ownerText":"이재연","account":"미국개별","tickerText":"GOOGL","amountText":"1,484만","categoryText":"빅테크·플랫폼","pnlText":"+70.68%"},{"ownerText":"이재연","account":"미국개별","tickerText":"NVDA","amountText":"775만","categoryText":"AI·반도체","pnlText":"+90.18%"},{"ownerText":"이재연","account":"미국개별","tickerText":"MRVL","amountText":"370만","categoryText":"AI·반도체","pnlText":"+94.26"},{"ownerText":"이재연","account":"미국개별","tickerText":"TSM","amountText":"726만","categoryText":"AI·반도체","pnlText":"+16.6%"},{"ownerText":"이재연","account":"미국개별","tickerText":"MSFT","amountText":"505만","categoryText":"빅테크·플랫폼","pnlText":"-10.42%"},{"ownerText":"이재연","account":"미국개별","tickerText":"MU","amountText":"759만","categoryText":"AI·반도체","pnlText":"+64.47%"},{"ownerText":"이재연","account":"미국개별","tickerText":"AVGO","amountText":"127만","categoryText":"AI·반도체","pnlText":"+7.35%"},{"ownerText":"이재연","account":"소수점","tickerText":"AVGO","amountText":"12만","categoryText":"AI·반도체","pnlText":"+7.73%"},{"ownerText":"이재연","account":"소수점","tickerText":"MSFT","amountText":"11만","categoryText":"빅테크·플랫폼","pnlText":"-0.24%"},{"ownerText":"이재연","account":"ISA","tickerText":"RISE 미국AI전력인프라액티브","amountText":"126만","categoryText":"국내·기타ETF","pnlText":"+4.28%"},{"ownerText":"이재연","account":"ISA","tickerText":"KOACT AI인프라액티브","amountText":"85만","categoryText":"국내·기타ETF","pnlText":"-0.48%"},{"ownerText":"이재연","account":"종합","tickerText":"미국주식팔고달러보유","amountText":"437만","categoryText":"기타","pnlText":""}];
+let reportImportCache = [];
+
+function normalizeReportTicker(tickerText, account, category) {
+  const raw = String(tickerText || '').trim();
+  const accountText = String(account || '');
+  const categoryText = String(category || '');
+  if (/현금|달러보유|CMA/i.test(raw + ' ' + accountText + ' ' + categoryText)) return 'CASH';
+  const compact = raw.replace(/\s+/g, ' ').trim();
+  const knownMap = {
+    'TechnipFMC': 'FTI',
+    'TIGER 미국필라델피아반도체나스닥': 'TIGER SOX',
+    'KODEX 미국나스닥100': 'KODEX NASDAQ100',
+    'TIGER 미국S&P500': 'TIGER S&P500',
+    'KODEX 미국반도체': 'KODEX SEMI',
+    'TIGER 미국테크 TOP10 INDXX': 'TIGER TECH10',
+    'KODEX 미국AI전력핵심인프라': 'KODEX AI POWER',
+    'RISE 미국AI전력인프라액티브': 'RISE AI POWER',
+    'KOACT AI인프라액티브': 'KOACT AI INFRA',
+    'PLUS 글로벌HBM반도체': 'PLUS HBM',
+    '소수점 포트폴리오': 'FRACTIONAL'
+  };
+  return knownMap[compact] || compact.toUpperCase();
+}
+
+function inferPresetFromReport(ticker, category, account) {
+  if (ticker === 'CASH') return { grade:'A', layer:'cash', theme:'other', score:null };
+  const preset = inferPreset(ticker);
+  const text = `${ticker} ${category || ''} ${account || ''}`;
+  let grade = preset.grade || 'B';
+  let layer = preset.layer || 'growth';
+  let theme = preset.theme || 'other';
+
+  if (/S&P500|NASDAQ100|QQQ|VOO|SPY|나스닥100|코어 ETF|TECH10|테크 TOP10/i.test(text)) {
+    grade = 'A'; layer = 'core';
+    if (/TECH10|테크|NASDAQ|나스닥|QQQ/i.test(text)) theme = 'ai';
+    else theme = 'other';
+  }
+  if (/빅테크|플랫폼|GOOGL|MSFT|META/i.test(text)) { grade = 'A'; layer = 'core'; theme = 'ai'; }
+  if (/반도체|HBM|SOX|SEMI|NVDA|TSM|AVGO|MRVL|MU|ONTO/i.test(text)) {
+    theme = 'semi';
+    if (/NVDA|TSM|AVGO/i.test(text)) { grade = 'A'; layer = 'core'; }
+    else { grade = grade === 'A' ? 'A' : 'B'; layer = layer === 'core' ? 'core' : 'growth'; }
+  }
+  if (/전력|인프라|데이터센터|GRID|VRT|AI POWER|AI INFRA/i.test(text)) { theme = 'infra'; layer = 'growth'; grade = ticker === 'VRT' ? 'B' : grade; }
+  if (/원전|방산|해양|BWXT|OII|FTI/i.test(text)) { theme = 'nuclear'; layer = 'growth'; grade = ticker === 'BWXT' ? 'B' : 'C'; }
+  if (/TEM|적자/i.test(text)) { theme = 'deficit'; layer = 'tactical'; grade = 'D'; }
+  if (/UNH/i.test(text)) { theme = 'other'; layer = 'core'; grade = 'A'; }
+  return { grade, layer, theme, score:preset.score ?? null };
+}
+
+function parseReportRowsFromDocument(doc) {
+  const rows = [];
+  const errors = [];
+
+  // 1차: 기존 family_portfolio_*.html의 보유 현황 탭(panel-b) 우선 탐색
+  let sections = [...doc.querySelectorAll('#panel-b .sec')];
+
+  // 2차 보완: panel-b 구조가 없어도 가족 이름이 들어간 섹션을 직접 탐색
+  if (!sections.length) {
+    sections = [...doc.querySelectorAll('.sec')].filter(sec => {
+      const text = (sec.querySelector('.sec-head h3')?.textContent || sec.textContent || '').trim();
+      return /이현규|임인숙|이재현|이재연/.test(text) && sec.querySelector('table');
+    });
+  }
+
+  sections.forEach(sec => {
+    const h3 = sec.querySelector('.sec-head h3') || sec.querySelector('h3');
+    const headText = h3 ? h3.textContent.trim() : sec.textContent.slice(0, 80);
+    let ownerText = '';
+    ['이현규','임인숙','이재현','이재연'].forEach(name => {
+      if (headText.includes(name)) ownerText = name;
+    });
+    if (!ownerText) return;
+
+    sec.querySelectorAll('tbody tr').forEach(tr => {
+      const cells = [...tr.querySelectorAll('td')];
+      if (cells.length < 5) return;
+
+      // 기존 형식: 계좌 / 종목 / 수량 / 손익 / 금액 / 분류
+      const accountCell = cells[0];
+      const tickerCell = cells[1] || cells[0];
+      const pnlCell = cells[3] || null;
+      const amountCell = cells[4] || cells[cells.length - 2] || cells[cells.length - 1];
+      const categoryCell = cells[5] || cells[cells.length - 1] || null;
+
+      const tickerNode = tickerCell.querySelector('.ticker');
+      const tickerText = (tickerNode ? tickerNode.textContent : tickerCell.textContent || '').trim();
+      const amountText = (amountCell?.textContent || '').trim();
+      const amountM = parseManwonValue(amountText);
+      if (!tickerText || /소계|합계|가족 합계/.test(tickerText)) return;
+      if (amountM === null || amountM <= 0) {
+        errors.push(`${ownerText} ${tickerText || '(종목명 없음)'} 금액 인식 실패`);
+        return;
+      }
+      rows.push({
+        ownerText,
+        owner: normalizeOwnerToken(ownerText) || 'family',
+        account: (accountCell?.textContent || '').trim(),
+        tickerText,
+        ticker: normalizeReportTicker(tickerText, accountCell?.textContent, categoryCell?.textContent),
+        amountText,
+        amountM,
+        pnlText: (pnlCell?.textContent || '').trim(),
+        categoryText: (categoryCell?.textContent || '').trim()
+      });
+    });
+  });
+  if (!rows.length) {
+    errors.push('보유 현황 표를 찾지 못했습니다. 파일이 family_portfolio_*.html 형식인지 확인하거나, HTML 붙여넣기 보조 입력을 사용하세요.');
+  }
+  return { rows, errors };
+}
+
+function rowsToPortfolioPositions(rows) {
+  const grouped = new Map();
+  rows.forEach(row => {
+    const key = `${row.owner}::${row.ticker}`;
+    const current = grouped.get(key);
+    if (current) {
+      current.amountM += Number(row.amountM || 0);
+      current.accounts.push(row.account);
+      current.pnlText = current.pnlText || row.pnlText;
+      if (!current.categoryText.includes(row.categoryText)) current.categoryText += ` / ${row.categoryText}`;
+    } else {
+      grouped.set(key, {
+        owner: row.owner,
+        ticker: row.ticker,
+        amountM: Number(row.amountM || 0),
+        accounts: [row.account],
+        pnlText: row.pnlText,
+        categoryText: row.categoryText,
+        originalName: row.tickerText
+      });
+    }
+  });
+  const totalAmount = [...grouped.values()].reduce((sum, row) => sum + row.amountM, 0);
+  return [...grouped.values()].map(row => {
+    const preset = inferPresetFromReport(row.ticker, row.categoryText, row.accounts.join('/'));
+    return {
+      id: Date.now() + Math.random(),
+      owner: row.owner,
+      ticker: row.ticker,
+      originalName: row.originalName,
+      grade: preset.grade,
+      layer: preset.layer,
+      weight: totalAmount > 0 ? Number((row.amountM / totalAmount * 100).toFixed(2)) : 0,
+      amountM: Number(row.amountM.toFixed(1)),
+      score: preset.score ?? null,
+      theme: preset.theme,
+      thesisStatus: 'alive',
+      reportCategory: row.categoryText,
+      reportAccounts: [...new Set(row.accounts)].join(', '),
+      pnlText: row.pnlText
+    };
+  });
+}
+
+function previewReportImport(sourceLabel = '보고서') {
+  const el = document.getElementById('report-import-preview');
+  if (!el) return;
+  const positions = rowsToPortfolioPositions(reportImportCache);
+  if (!positions.length) {
+    el.innerHTML = '<div class="alert alert-warning visible">보고서에서 가져올 종목이 없습니다. 파일을 먼저 선택하거나 5/16 예시를 불러오세요.</div>';
+    return;
+  }
+  const totalAmount = positions.reduce((sum, p) => sum + Number(p.amountM || 0), 0);
+  const rows = positions.slice(0, 18).map(p => `<tr><td>${getOwnerLabel(p.owner)}</td><td><strong>${p.ticker}</strong><br><span class="fs-xs text-muted">${p.originalName || ''}</span></td><td>${formatManwon(p.amountM)}</td><td>${formatWeight(p.weight)}%</td><td>${p.grade}</td><td>${getLayerLabel(p.layer)}</td><td>${getThemeLabel(p.theme)}</td></tr>`).join('');
+  const more = positions.length > 18 ? `<div class="fs-xs text-muted mt-sm">외 ${positions.length - 18}개 더 있음</div>` : '';
+  el.innerHTML = `<div class="alert alert-info visible">📥 ${sourceLabel}에서 ${positions.length}개 종목을 인식했습니다. 합산 금액은 약 ${formatManwon(totalAmount)}입니다. 비중은 금액 기준으로 자동 계산됩니다.</div><table class="bulk-preview-table"><thead><tr><th>계좌</th><th>종목</th><th>금액</th><th>비중</th><th>등급</th><th>층</th><th>테마</th></tr></thead><tbody>${rows}</tbody></table>${more}`;
+}
+
+function importReportCache(mode = 'replace') {
+  const positions = rowsToPortfolioPositions(reportImportCache);
+  if (!positions.length) {
+    previewReportImport();
+    return showPortfolioWarning('⚠️ 가져올 보고서 데이터가 없습니다.', 'alert-warning');
+  }
+  if (mode === 'replace') qmapState.portfolio = [];
+  positions.forEach(pos => {
+    const existingIdx = qmapState.portfolio.findIndex(p => p.ticker === pos.ticker && (p.owner || 'family') === (pos.owner || 'family'));
+    if (existingIdx >= 0) qmapState.portfolio[existingIdx] = { ...qmapState.portfolio[existingIdx], ...pos, id:qmapState.portfolio[existingIdx].id };
+    else qmapState.portfolio.push(pos);
+  });
+  portfolioTransientWarning = { msg: `✅ 보고서 데이터 ${positions.length}개를 ${mode === 'replace' ? '교체 가져오기' : '병합 가져오기'} 했습니다. 금액 기준 비중이 자동 계산되었습니다.`, cls:'alert-success' };
+  persistPortfolio();
+  renderPortfolio();
+  previewReportImport(mode === 'replace' ? '교체 완료' : '병합 완료');
+}
+
+function handleParsedReportDocument(doc, sourceLabel = 'HTML 보고서') {
+  const parsed = parseReportRowsFromDocument(doc);
+  reportImportCache = parsed.rows;
+  previewReportImport(sourceLabel);
+  if (parsed.errors.length) {
+    showPortfolioWarning(`⚠️ 일부 행 인식 실패: ${parsed.errors.slice(0,3).join(' / ')}`, 'alert-warning');
+  }
+  return parsed;
+}
+
+function handleReportHtmlText(htmlText, sourceLabel = '붙여넣은 HTML') {
+  const text = String(htmlText || '').trim();
+  if (!text) {
+    reportImportCache = [];
+    const el = document.getElementById('report-import-preview');
+    if (el) el.innerHTML = '<div class="alert alert-warning visible">읽을 HTML 내용이 없습니다. 파일을 선택하거나 HTML을 붙여넣으세요.</div>';
+    return;
+  }
+  try {
+    const doc = new DOMParser().parseFromString(text, 'text/html');
+    return handleParsedReportDocument(doc, sourceLabel);
+  } catch (err) {
+    reportImportCache = [];
+    const el = document.getElementById('report-import-preview');
+    if (el) el.innerHTML = `<div class="alert alert-warning visible">HTML 보고서를 읽지 못했습니다: ${err.message}</div>`;
+  }
+}
+
+function handleReportHtmlFile(file) {
+  const previewEl = document.getElementById('report-import-preview');
+  if (!file) {
+    if (previewEl) previewEl.innerHTML = '<div class="alert alert-warning visible">선택된 HTML 파일이 없습니다.</div>';
+    return;
+  }
+  if (previewEl) previewEl.innerHTML = `<div class="alert alert-info visible">📄 ${file.name} 읽는 중...</div>`;
+  const reader = new FileReader();
+  reader.onload = () => handleReportHtmlText(reader.result || '', file.name || 'HTML 보고서');
+  reader.onerror = () => {
+    reportImportCache = [];
+    if (previewEl) previewEl.innerHTML = '<div class="alert alert-warning visible">파일을 읽는 중 오류가 발생했습니다. HTML 직접 붙여넣기 방식을 사용해 보세요.</div>';
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+function loadSeedFamilyReport() {
+  reportImportCache = SEED_FAMILY_REPORT_ROWS.map(row => ({
+    ...row,
+    owner: normalizeOwnerToken(row.ownerText) || 'family',
+    ticker: normalizeReportTicker(row.tickerText, row.account, row.categoryText),
+    amountM: parseManwonValue(row.amountText)
+  })).filter(row => row.amountM !== null && row.amountM > 0);
+  previewReportImport('5/16 첨부 예시');
+}
+
+function previewSelectedReportFile() {
+  const fileEl = document.getElementById('portfolio-html-file');
+  const file = fileEl?.files && fileEl.files[0];
+  if (file) handleReportHtmlFile(file);
+  else previewReportImport();
+}
+
+function initReportImportEvents() {
+  const fileEl = document.getElementById('portfolio-html-file');
+  fileEl?.addEventListener('change', () => handleReportHtmlFile(fileEl.files && fileEl.files[0]));
+  document.getElementById('btn-report-preview')?.addEventListener('click', previewSelectedReportFile);
+  document.getElementById('btn-report-replace')?.addEventListener('click', () => importReportCache('replace'));
+  document.getElementById('btn-report-merge')?.addEventListener('click', () => importReportCache('merge'));
+  document.getElementById('btn-report-sample')?.addEventListener('click', loadSeedFamilyReport);
+  document.getElementById('btn-report-parse-paste')?.addEventListener('click', () => {
+    handleReportHtmlText(document.getElementById('portfolio-html-paste')?.value, '붙여넣은 HTML');
+  });
+}
+
+// 파일 선택 이벤트가 일부 모바일/카톡 브라우저에서 초기화 전에 막히는 경우를 위한 전역 노출
+window.handleReportHtmlFile = handleReportHtmlFile;
+window.handleReportHtmlText = handleReportHtmlText;
+window.previewSelectedReportFile = previewSelectedReportFile;
+window.importReportCache = importReportCache;
+window.loadSeedFamilyReport = loadSeedFamilyReport;
+
+
+/* ================================================================
+   v10.3 가족 대시보드 로직
+   - 초보 가족은 신호등·오늘 행동·투자 날씨만 확인
+   - 상세 판단은 Q-MAP/포트폴리오 탭에서 수행
+   ================================================================ */
+let familyMood = 'happy';
+
+function getFamilySignal(pos) {
+  const rawScore = pos.score;
+  const hasScore = !(rawScore === null || rawScore === undefined || rawScore === '');
+  const score = hasScore ? Number(rawScore) : null;
+  const status = pos.thesisStatus || 'alive';
+  const maxW = getMaxWeightForPosition(pos.grade, pos.layer, pos.theme);
+  const weight = Number(pos.weight || 0);
+  const overweight = pos.layer !== 'cash' && weight > maxW;
+  const themeExposure = getThemeExposure(pos.theme);
+  const themeLimit = QMAP_THEME_LIMITS[pos.theme] ?? 100;
+  const themeOverweight = pos.layer !== 'cash' && themeExposure > themeLimit;
+
+  if (pos.layer === 'cash') {
+    return { color: 'blue', icon: '💵', label: '현금 대기', action: '폭락장 기회 자금', reason: '평시 5~10%, 폭락 대기 시 10~20%를 기준으로 봅니다.' };
+  }
+  if (!hasScore || Number.isNaN(score)) {
+    return { color: 'gray', icon: '⚪', label: '미평가', action: 'Q-MAP 점수 입력 필요', reason: '아직 점수가 없어 위험 신호로 보지 않습니다. 월간 평가표에서 먼저 채점하세요.' };
+  }
+  if (status === 'broken' || score <= 2) {
+    return { color: 'red', icon: '🔴', label: '빨강', action: '선생님 점검 필요', reason: '사업가설 붕괴 또는 Q-MAP 이탈 구간입니다. 가족 판단이 아니라 관리자 점검 대상입니다.' };
+  }
+  if (status === 'weakening' || score <= 6 || overweight || themeOverweight) {
+    let reason = '점수 또는 가설이 약해져 신규·추가매수는 멈춥니다.';
+    if (overweight) reason = `종목 비중이 권장 상한 ${maxW}%를 넘었습니다.`;
+    if (themeOverweight) reason = `${getThemeLabel(pos.theme)} 테마 비중 ${themeExposure.toFixed(1)}%가 권장 상한 ${themeLimit}%를 넘었습니다.`;
+    return { color: 'yellow', icon: '🟡', label: '노랑', action: '추가매수 금지·관찰', reason };
+  }
+  if (score >= 9) {
+    return { color: 'blue', icon: '🔵', label: '파랑', action: '좋은 종목. 눌림 때만 추가매수 후보', reason: 'Q-MAP 9점 이상입니다. 단, 오른 날 추격매수는 하지 않습니다.' };
+  }
+  return { color: 'green', icon: '🟢', label: '초록', action: '계획대로 보유', reason: '사업가설이 살아 있고 Q-MAP 점수가 정상 보유 구간입니다.' };
+}
+
+function getFamilyWeather() {
+  const positions = qmapState.portfolio || [];
+  if (!positions.length) return { icon: '🌱', label: '시작 전', sub: '포트폴리오 등록 필요', conclusion: '포트폴리오 탭에서 종목을 등록하면 가족용 신호등이 자동으로 만들어집니다.' };
+
+  const signals = positions.map(getFamilySignal);
+  const red = signals.filter(s => s.color === 'red').length;
+  const yellow = signals.filter(s => s.color === 'yellow').length;
+  const blue = signals.filter(s => s.color === 'blue').length;
+  const green = signals.filter(s => s.color === 'green').length;
+  const gray = signals.filter(s => s.color === 'gray').length;
+  const activeCount = positions.filter(p => p.layer !== 'cash').length || positions.length;
+
+  if (red > 0) return { icon: '⛈️', label: '폭풍 주의', sub: `빨강 ${red}개`, conclusion: `오늘의 결론: 빨간 신호가 ${red}개 있습니다. 가족이 즉흥적으로 매매하지 말고, Q-MAP 평가표에서 사업가설을 재검토하세요.` };
+  if (yellow >= 3) return { icon: '🌥️', label: '흐림', sub: `노랑 ${yellow}개`, conclusion: '오늘의 결론: 포트폴리오가 조금 무거워졌습니다. 신규·추가매수보다 비중 점검이 우선입니다.' };
+  if (yellow > 0 && blue > 0) return { icon: '⛅', label: '기회+주의', sub: `파랑 ${blue}개 · 노랑 ${yellow}개`, conclusion: '오늘의 결론: 좋은 기회 후보도 있지만 주의 신호도 있습니다. 추가매수는 보류하고 비중과 가설을 먼저 점검하세요.' };
+  if (yellow > 0) return { icon: '🌥️', label: '부분 흐림', sub: `노랑 ${yellow}개`, conclusion: '오늘의 결론: 큰 위험은 아니지만 관찰이 필요합니다. 오늘은 신규·추가매수보다 점검이 우선입니다.' };
+  if (blue > 0) return { icon: '🌤️', label: '맑음+기회', sub: `추가매수 후보 ${blue}개`, conclusion: '오늘의 결론: 좋은 종목이 있습니다. 다만 오른 날 추격매수는 금지, 눌림과 비중 여유가 있을 때만 검토합니다.' };
+  if (gray > 0) return { icon: '🌫️', label: '평가 필요', sub: `미평가 ${gray}개`, conclusion: '오늘의 결론: 아직 점수가 없는 종목이 있습니다. 매매보다 Q-MAP 점수 입력이 먼저입니다.' };
+  if (green >= activeCount * 0.7) return { icon: '☀️', label: '맑음', sub: '계획대로 보유', conclusion: '오늘의 결론: 팔 이유 없음. 계획대로 보유합니다. 오늘은 기분만 확인하고 판단은 월간 점검일에 합니다.' };
+  return { icon: '🌤️', label: '보통', sub: '큰 이상 없음', conclusion: '오늘의 결론: 큰 위험 신호는 없습니다. 매매보다 관찰이 우선입니다.' };
+}
+
+function formatFamilyConclusion(text) {
+  if (!text) return '<strong>오늘의 결론:</strong> 큰 위험 신호는 없습니다.';
+  const prefix = '오늘의 결론:';
+  if (text.startsWith(prefix)) {
+    return `<strong>${prefix}</strong>${text.slice(prefix.length)}`;
+  }
+  return `<strong>${prefix}</strong> ${text}`;
+}
+
+function renderFamilyDashboard() {
+  const positions = qmapState.portfolio || [];
+  const weather = getFamilyWeather();
+  const iconEl = document.getElementById('family-weather-icon');
+  const labelEl = document.getElementById('family-weather-label');
+  const subEl = document.getElementById('family-weather-sub');
+  const conclusionEl = document.getElementById('family-conclusion');
+  if (iconEl) iconEl.textContent = weather.icon;
+  if (labelEl) labelEl.textContent = weather.label;
+  if (subEl) subEl.textContent = weather.sub;
+  if (conclusionEl) conclusionEl.innerHTML = formatFamilyConclusion(weather.conclusion);
+
+  const countEl = document.getElementById('fam-count');
+  const avgEl = document.getElementById('fam-avg-score');
+  const cashEl = document.getElementById('fam-cash');
+  const riskEl = document.getElementById('fam-risk-count');
+  const nonCash = positions.filter(p => p.layer !== 'cash');
+  const scoredNonCash = nonCash.filter(p => !(p.score === null || p.score === undefined || p.score === '') && !Number.isNaN(Number(p.score)));
+  const avg = scoredNonCash.length ? scoredNonCash.reduce((a, p) => a + Number(p.score), 0) / scoredNonCash.length : null;
+  const cash = positions.filter(p => p.layer === 'cash').reduce((a, p) => a + Number(p.weight || 0), 0);
+  const risk = positions.filter(p => {
+    const sig = getFamilySignal(p);
+    return sig.color === 'red';
+  }).length;
+  if (countEl) countEl.textContent = `${nonCash.length}개`;
+  if (avgEl) avgEl.textContent = avg === null ? '—' : avg.toFixed(1);
+  if (cashEl) cashEl.textContent = `${Math.round(cash * 10) / 10}%`;
+  if (riskEl) riskEl.textContent = `${risk}개`;
+
+  const grid = document.getElementById('family-signal-grid');
+  if (!grid) return;
+  if (!positions.length) {
+    grid.innerHTML = `<div class="family-empty">아직 등록된 종목이 없습니다.<br>포트폴리오 관리 탭에서 가족 계좌별 보유 종목을 추가하세요.</div>`;
+    return;
+  }
+  grid.innerHTML = nonCash.map(pos => {
+    const sig = getFamilySignal(pos);
+    return `
+      <div class="family-stock-card ${sig.color}">
+        <div class="family-stock-head">
+          <div class="family-stock-ticker">${pos.ticker} <span class="owner-chip">${getOwnerLabel(pos.owner)}</span></div>
+          <div class="family-stock-signal" title="${sig.label}">${sig.icon}</div>
+        </div>
+        <div class="family-stock-meta">${pos.grade}등급 · ${getLayerLabel(pos.layer)} · ${getThemeLabel(pos.theme)} · 비중 ${pos.weight}% · Q-MAP ${(pos.score === null || pos.score === undefined || pos.score === '') ? '미평가' : pos.score + '/10'}</div>
+        <div class="family-stock-action">${sig.action}</div>
+        <div class="family-stock-reason">${sig.reason}</div>
+      </div>`;
+  }).join('') || `<div class="family-empty">현금만 등록되어 있습니다. 보유 종목을 추가하면 신호등이 표시됩니다.</div>`;
+}
+
+function getFamilyTradeMessage() {
+  const positions = qmapState.portfolio || [];
+  if (!positions.length) return '아직 포트폴리오가 없습니다. 오늘 할 일은 종목을 사고파는 것이 아니라, 보유 종목과 비중을 먼저 등록하는 것입니다.';
+  const signals = positions.map(getFamilySignal);
+  const red = signals.filter(s => s.color === 'red').length;
+  const yellow = signals.filter(s => s.color === 'yellow').length;
+  const blue = signals.filter(s => s.color === 'blue').length;
+
+  if (red > 0) return `오늘은 가족이 즉흥 매매할 날이 아닙니다. 빨간 신호 ${red}개가 있으므로 Q-MAP 평가표에서 사업가설·실적·가이던스를 확인한 뒤 결정하세요.`;
+  if (familyMood === 'happy') return '오늘은 기분 좋은 날입니다. 하지만 오른 날은 추격매수하는 날이 아닙니다. 계획대로 보유하고, 추가매수는 눌림과 비중 여유가 확인될 때만 합니다.';
+  if (familyMood === 'down') return '오늘은 가격이 흔들린 날입니다. 하지만 가격 하락이 곧 사업가설 붕괴는 아닙니다. 빨간 신호가 없다면 바로 팔지 않고 다음 점검일을 기다립니다.';
+  if (blue > 0 && yellow === 0) return `추가매수 후보가 ${blue}개 있습니다. 단, 5개 추가매수 조건 중 4개 이상 충족할 때만 검토합니다. 오늘 즉흥 매수는 보류하세요.`;
+  if (yellow > 0) return `노란 신호 ${yellow}개가 있습니다. 오늘은 신규·추가매수보다 비중과 가설 상태를 점검하는 날입니다.`;
+  return '오늘은 특별한 매매 판단일이 아닙니다. 팔 이유 없음. 계획대로 보유합니다.';
+}
+
+
+
+/* ================================================================
+   v11.0 상세 PDF 보완
+   - 보고서 가져오기 후 카톡 공유 탭이 빈 화면처럼 보이는 문제 방지
+   - 금액 기반 포트폴리오의 총액 계산을 명시적으로 제공
+   ================================================================ */
+function getPortfolioTotalAmount() {
+  const positions = qmapState.portfolio || [];
+  const amountRows = positions.filter(p => p.amountM !== null && p.amountM !== undefined && p.amountM !== '' && !Number.isNaN(Number(p.amountM)));
+  if (amountRows.length) {
+    return amountRows.reduce((sum, p) => sum + Number(p.amountM || 0), 0);
+  }
+  return 0;
+}
+
+function getPortfolioTotalWeight() {
+  return (qmapState.portfolio || []).reduce((sum, p) => sum + Number(p.weight || 0), 0);
+}
+
+function ensureShareDataFresh() {
+  // 탭 전환이나 파일 가져오기 직후에도 항상 최신 localStorage 값을 한 번 더 확인한다.
+  if ((!qmapState.portfolio || !qmapState.portfolio.length) && localStorage.getItem(QMAP_PORTFOLIO_KEY)) {
+    try { loadPortfolio(); } catch (err) { console.warn('[Q-MAP] 포트폴리오 재로드 실패', err); }
+  }
+}
+
+/* ================================================================
+   v10.7 카톡 공유 모드
+   ================================================================ */
+function formatShareMoneyFromWeight(weight) {
+  const total = getPortfolioTotalAmount();
+  if (!total) return '—';
+  const amount = total * Number(weight || 0) / 100;
+  if (amount >= 10000) return `${(amount / 10000).toFixed(1)}억`;
+  return `${Math.round(amount).toLocaleString()}만`;
+}
+
+function getShareSignalSummary(limit = 8) {
+  return [...qmapState.portfolio]
+    .filter(p => (p.layer || '') !== 'cash')
+    .map(p => ({ pos: p, signal: getFamilySignal(p) }))
+    .sort((a, b) => {
+      const rank = { red: 0, yellow: 1, blue: 2, green: 3, gray: 4 };
+      return (rank[a.signal.color] ?? 5) - (rank[b.signal.color] ?? 5) || Number(b.pos.weight || 0) - Number(a.pos.weight || 0);
+    })
+    .slice(0, limit);
+}
+
+function getShareConclusion(weather) {
+  const signals = qmapState.portfolio.map(getFamilySignal);
+  const red = signals.filter(s => s.color === 'red').length;
+  const yellow = signals.filter(s => s.color === 'yellow').length;
+  const blue = signals.filter(s => s.color === 'blue').length;
+  if (!qmapState.portfolio.length) return '포트폴리오를 등록하면 가족 공유용 결론이 자동 생성됩니다.';
+  if (red > 0) return `빨간 신호가 ${red}개 있습니다. 가족은 매매하지 말고, 관리자가 Q-MAP으로 가설을 점검합니다.`;
+  if (yellow >= 3) return `주의 종목이 ${yellow}개입니다. 신규매수보다 비중·가설 점검이 우선입니다.`;
+  if (blue > 0 && yellow === 0) return `눌림 후보가 ${blue}개 있지만, 즉흥 매수는 하지 않습니다. 추가매수 조건 5개 중 4개 이상일 때만 검토합니다.`;
+  return '팔 이유 없음. 오늘은 계획대로 보유합니다.';
+}
+
+function buildKakaoMessage() {
+  const opts = {
+    summary: document.getElementById('share-opt-summary')?.checked ?? true,
+    signals: document.getElementById('share-opt-signals')?.checked ?? true,
+    risks: document.getElementById('share-opt-risks')?.checked ?? true,
+    principle: document.getElementById('share-opt-principle')?.checked ?? true,
+  };
+  const weather = getFamilyWeather();
+  const totalAmount = getPortfolioTotalAmount();
+  const signals = qmapState.portfolio.map(getFamilySignal);
+  const red = signals.filter(s => s.color === 'red').length;
+  const yellow = signals.filter(s => s.color === 'yellow').length;
+  const blue = signals.filter(s => s.color === 'blue').length;
+  const green = signals.filter(s => s.color === 'green').length;
+  const lines = [];
+  lines.push('🏠 우리집 투자 상태 요약');
+  lines.push('');
+  if (!qmapState.portfolio.length) {
+    lines.push('아직 등록된 포트폴리오가 없습니다.');
+    lines.push('포트폴리오 관리 탭에서 HTML 보고서를 가져온 뒤, 카톡 공유 탭에서 새로고침을 누르세요.');
+    return lines.join('\n');
+  }
+  if (opts.summary) {
+    lines.push(`총 평가금액: ${totalAmount ? Math.round(totalAmount).toLocaleString() + '만 원' : '미등록'}`);
+    lines.push(`투자 날씨: ${weather.icon} ${weather.label}`);
+    lines.push(`오늘 결론: ${getShareConclusion(weather)}`);
+    lines.push('');
+  }
+  if (opts.signals) {
+    lines.push(`🟢 보유 ${green}개 · 🔵 후보 ${blue}개 · 🟡 관찰 ${yellow}개 · 🔴 점검 ${red}개`);
+    const top = getShareSignalSummary(8);
+    top.forEach(({ pos, signal }) => {
+      const scoreText = pos.score === null || pos.score === undefined || pos.score === '' ? '미평가' : `${pos.score}점`;
+      lines.push(`${signal.icon} ${pos.ticker} — ${signal.label} / ${scoreText} / ${formatShareMoneyFromWeight(pos.weight)}`);
+    });
+    if (qmapState.portfolio.length > top.length) lines.push(`… 외 ${qmapState.portfolio.length - top.length}개`);
+    lines.push('');
+  }
+  if (opts.risks) {
+    const riskItems = getShareSignalSummary(20).filter(x => ['red','yellow'].includes(x.signal.color)).slice(0, 5);
+    if (riskItems.length) {
+      lines.push('⚠️ 이번 주 점검 대상');
+      riskItems.forEach(({ pos, signal }) => lines.push(`- ${pos.ticker}: ${signal.reason}`));
+      lines.push('');
+    }
+  }
+  if (opts.principle) {
+    lines.push('이번 주 원칙');
+    lines.push('오른 날은 추격매수하지 않고, 떨어진 날은 감정적으로 팔지 않습니다.');
+    lines.push('결정은 월 1회, 실적 발표 후, 또는 빨간 경고 발생 시에만 합니다.');
+  }
+  return lines.join('\n');
+}
+
+function updateShareCard() {
+  ensureShareDataFresh();
+  const weather = getFamilyWeather();
+  const totalAmount = getPortfolioTotalAmount();
+  const signals = qmapState.portfolio.map(getFamilySignal);
+  const red = signals.filter(s => s.color === 'red').length;
+  const date = new Date();
+  const dateText = `${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')} 기준`;
+  const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setText('share-card-date', dateText);
+  setText('share-card-weather-icon', weather.icon);
+  setText('share-card-weather-label', weather.label);
+  setText('share-card-total', totalAmount ? `${Math.round(totalAmount).toLocaleString()}만` : '미등록');
+  setText('share-card-count', `${qmapState.portfolio.length}개`);
+  setText('share-card-risk', `${red}개`);
+  setText('share-card-conclusion', getShareConclusion(weather));
+  setText('share-card-principle', '오른 날은 기뻐하되 추격매수하지 않고, 떨어진 날은 불안해하되 바로 팔지 않습니다.');
+  const box = document.getElementById('share-card-signals');
+  if (box) {
+    const top = getShareSignalSummary(7);
+    if (!top.length) {
+      box.innerHTML = '<div class="share-signal-item"><span>⚪</span><span class="ticker">포트폴리오 미등록</span><span class="pct">—</span></div>';
+    } else {
+      box.innerHTML = top.map(({ pos, signal }) => {
+        const sub = `${getOwnerLabel(pos.owner)} · ${getThemeLabel(pos.theme)} · ${pos.score === null || pos.score === undefined || pos.score === '' ? '미평가' : pos.score + '점'}`;
+        return `<div class="share-signal-item"><span>${signal.icon}</span><div><div class="ticker">${pos.ticker}</div><div class="sub">${sub}</div></div><div class="pct">${formatShareMoneyFromWeight(pos.weight)}</div></div>`;
+      }).join('');
+    }
+  }
+  const msg = buildKakaoMessage();
+  const msgBox = document.getElementById('kakao-message-box');
+  if (msgBox) msgBox.value = msg;
+  if (typeof updateShareFullReport === 'function') updateShareFullReport();
+}
+
+
+function escapeShareHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function getPositionAmountM(pos) {
+  const amount = Number(pos.amountM);
+  if (!Number.isNaN(amount) && amount > 0) return amount;
+  const total = getPortfolioTotalAmount();
+  return total ? total * Number(pos.weight || 0) / 100 : 0;
+}
+
+function getPositionWeightPct(pos) {
+  const total = getPortfolioTotalAmount();
+  const amount = getPositionAmountM(pos);
+  if (total && amount) return amount / total * 100;
+  return Number(pos.weight || 0);
+}
+
+function formatShareAmount(amountM) {
+  const n = Number(amountM || 0);
+  if (!n) return '—';
+  if (n >= 10000) return `${(n / 10000).toFixed(1)}억`;
+  return `${Math.round(n).toLocaleString()}만`;
+}
+
+function getShareSortedPositions(includeCash = true) {
+  return [...(qmapState.portfolio || [])]
+    .filter(p => includeCash || (p.layer || '') !== 'cash')
+    .sort((a, b) => {
+      const ownerA = getOwnerLabel(a.owner);
+      const ownerB = getOwnerLabel(b.owner);
+      if (ownerA !== ownerB) return ownerA.localeCompare(ownerB, 'ko');
+      return getPositionAmountM(b) - getPositionAmountM(a);
+    });
+}
+
+function summarizeByPortfolioKey(key) {
+  const total = getPortfolioTotalAmount();
+  const map = new Map();
+  (qmapState.portfolio || []).forEach(pos => {
+    const raw = pos[key] || 'other';
+    const label = key === 'owner' ? getOwnerLabel(raw) : getThemeLabel(raw);
+    const amount = getPositionAmountM(pos);
+    map.set(label, (map.get(label) || 0) + amount);
+  });
+  return [...map.entries()]
+    .map(([label, amount]) => ({ label, amount, pct: total ? amount / total * 100 : 0 }))
+    .sort((a, b) => b.amount - a.amount);
+}
+
+function renderShareSummaryRows(elId, rows) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  if (!rows.length) {
+    el.innerHTML = '<div class="share-report-row"><span class="name">등록 데이터 없음</span><span class="amount">—</span><span class="pct">—</span></div>';
+    return;
+  }
+  el.innerHTML = rows.map(row => `
+    <div class="share-report-row">
+      <span class="name">${escapeShareHtml(row.label)}</span>
+      <span class="amount">${formatShareAmount(row.amount)}</span>
+      <span class="pct">${row.pct.toFixed(1)}%</span>
+    </div>`).join('');
+}
+
+function updateShareFullReport() {
+  ensureShareDataFresh();
+  const positions = getShareSortedPositions(true);
+  const total = getPortfolioTotalAmount();
+  renderShareSummaryRows('share-owner-summary', summarizeByPortfolioKey('owner'));
+  renderShareSummaryRows('share-theme-summary', summarizeByPortfolioKey('theme'));
+
+  const riskEl = document.getElementById('share-risk-summary');
+  if (riskEl) {
+    const riskRows = positions
+      .filter(p => (p.layer || '') !== 'cash')
+      .map(p => ({ pos: p, signal: getFamilySignal(p) }))
+      .filter(x => ['red', 'yellow', 'gray'].includes(x.signal.color))
+      .sort((a, b) => {
+        const rank = { red: 0, yellow: 1, gray: 2 };
+        return (rank[a.signal.color] ?? 3) - (rank[b.signal.color] ?? 3) || getPositionAmountM(b.pos) - getPositionAmountM(a.pos);
+      });
+    riskEl.innerHTML = riskRows.length ? riskRows.map(({ pos, signal }) => `
+      <div class="share-report-row">
+        <span class="name">${signal.icon} ${escapeShareHtml(pos.ticker)} <span style="color:var(--muted);font-weight:500;">${escapeShareHtml(getOwnerLabel(pos.owner))}</span></span>
+        <span class="amount">${formatShareAmount(getPositionAmountM(pos))}</span>
+        <span class="pct">${getPositionWeightPct(pos).toFixed(1)}%</span>
+      </div>`).join('') : '<div class="share-report-row"><span class="name">현재 빨강·노랑·미평가 신호 없음</span><span class="amount">—</span><span class="pct">—</span></div>';
+  }
+
+  const tbody = document.getElementById('share-full-tbody');
+  if (!tbody) return;
+  if (!positions.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:var(--space-lg);">포트폴리오를 등록하면 전체 종목이 표시됩니다.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = positions.map((pos, idx) => {
+    const signal = getFamilySignal(pos);
+    const amount = getPositionAmountM(pos);
+    const pct = total && amount ? amount / total * 100 : Number(pos.weight || 0);
+    const scoreText = pos.score === null || pos.score === undefined || pos.score === '' ? '미평가' : `${pos.score}/10`;
+    return `<tr>
+      <td class="num">${idx + 1}</td>
+      <td>${escapeShareHtml(getOwnerLabel(pos.owner))}</td>
+      <td><span class="ticker-name">${escapeShareHtml(pos.ticker)}</span><span class="subtxt">Q-MAP ${scoreText} · 가설 ${escapeShareHtml(getThesisLabel(pos.thesisStatus))}</span></td>
+      <td>${escapeShareHtml(pos.grade || '-')}</td>
+      <td>${escapeShareHtml(getLayerLabel(pos.layer))}</td>
+      <td>${escapeShareHtml(getThemeLabel(pos.theme))}</td>
+      <td class="num">${formatShareAmount(amount)}</td>
+      <td class="num">${pct ? pct.toFixed(1) : '—'}%</td>
+      <td>${signal.icon} ${escapeShareHtml(signal.label)}</td>
+      <td>${escapeShareHtml(signal.action || getPositionAction(pos))}</td>
+    </tr>`;
+  }).join('');
+}
+
+function initShareMode() {
+  ['share-opt-summary','share-opt-signals','share-opt-risks','share-opt-principle'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', updateShareCard);
+  });
+  document.getElementById('btn-refresh-share')?.addEventListener('click', updateShareCard);
+  document.getElementById('btn-copy-kakao')?.addEventListener('click', async () => {
+    const msg = buildKakaoMessage();
+    const status = document.getElementById('share-copy-status');
+    try {
+      await navigator.clipboard.writeText(msg);
+      if (status) status.textContent = '✅ 카톡 문구를 복사했습니다. 가족 카톡방에 붙여넣으면 됩니다.';
+    } catch (e) {
+      const box = document.getElementById('kakao-message-box');
+      if (box) { box.focus(); box.select(); }
+      if (status) status.textContent = '복사 권한이 제한되었습니다. 아래 문구를 선택해 직접 복사하세요.';
+    }
+  });
+  document.getElementById('btn-print-share')?.addEventListener('click', () => window.print());
+  document.getElementById('btn-download-share-png')?.addEventListener('click', downloadSharePng);
+  updateShareCard();
+}
+
+function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 3) {
+  const words = String(text || '').split(/\s+/);
+  let line = '';
+  let lines = [];
+  words.forEach(word => {
+    const test = line ? line + ' ' + word : word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
+  });
+  if (line) lines.push(line);
+  lines.slice(0, maxLines).forEach((ln, i) => ctx.fillText(i === maxLines-1 && lines.length > maxLines ? ln + '…' : ln, x, y + i * lineHeight));
+  return Math.min(lines.length, maxLines) * lineHeight;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function downloadSharePng() {
+  updateShareCard();
+  const weather = getFamilyWeather();
+  const totalAmount = getPortfolioTotalAmount();
+  const signals = getShareSignalSummary(7);
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1350;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0f172a';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const grad = ctx.createLinearGradient(0, 0, 1080, 1350);
+  grad.addColorStop(0, '#0f172a');
+  grad.addColorStop(0.55, '#102a43');
+  grad.addColorStop(1, '#172554');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1080, 1350);
+  ctx.fillStyle = '#e5f3ff';
+  ctx.font = '900 46px Arial, sans-serif';
+  ctx.fillText('🏠 우리집 투자 주간 리포트', 58, 88);
+  ctx.font = '24px Arial, sans-serif';
+  ctx.fillStyle = '#93c5fd';
+  const d = new Date();
+  ctx.fillText(`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} 기준`, 62, 128);
+  roundRect(ctx, 824, 48, 190, 112, 28);
+  ctx.fillStyle = 'rgba(255,255,255,0.09)'; ctx.fill();
+  ctx.font = '48px Arial'; ctx.fillStyle = '#ffffff'; ctx.fillText(weather.icon, 860, 104);
+  ctx.font = '900 24px Arial'; ctx.fillStyle = '#bfdbfe'; ctx.fillText(weather.label, 922, 103);
+  const metrics = [
+    ['총 평가금액', totalAmount ? `${Math.round(totalAmount).toLocaleString()}만` : '미등록'],
+    ['등록 종목', `${qmapState.portfolio.length}개`],
+    ['위험 신호', `${qmapState.portfolio.map(getFamilySignal).filter(s=>s.color==='red').length}개`]
+  ];
+  metrics.forEach((m, i) => {
+    const x = 58 + i * 328;
+    roundRect(ctx, x, 190, 300, 112, 24); ctx.fillStyle = 'rgba(255,255,255,0.075)'; ctx.fill();
+    ctx.font = '22px Arial'; ctx.fillStyle = '#94a3b8'; ctx.fillText(m[0], x+26, 230);
+    ctx.font = '900 36px Arial'; ctx.fillStyle = '#67e8f9'; ctx.fillText(m[1], x+26, 278);
+  });
+  roundRect(ctx, 58, 332, 964, 122, 24); ctx.fillStyle = 'rgba(250,204,21,0.11)'; ctx.fill();
+  ctx.font = '900 26px Arial'; ctx.fillStyle = '#fde68a';
+  wrapCanvasText(ctx, '오늘 결론: ' + getShareConclusion(weather), 86, 380, 900, 34, 3);
+  ctx.font = '900 24px Arial'; ctx.fillStyle = '#93c5fd'; ctx.fillText('종목 신호등', 62, 514);
+  let y = 546;
+  signals.forEach(({pos, signal}) => {
+    roundRect(ctx, 58, y, 964, 72, 18); ctx.fillStyle = 'rgba(255,255,255,0.06)'; ctx.fill();
+    ctx.font = '28px Arial'; ctx.fillStyle = '#fff'; ctx.fillText(signal.icon, 86, y+45);
+    ctx.font = '900 28px Arial'; ctx.fillStyle = '#f8fafc'; ctx.fillText(pos.ticker, 132, y+33);
+    ctx.font = '20px Arial'; ctx.fillStyle = '#94a3b8';
+    const sub = `${signal.label} · ${getOwnerLabel(pos.owner)} · ${pos.score === null || pos.score === undefined || pos.score === '' ? '미평가' : pos.score + '점'}`;
+    ctx.fillText(sub, 132, y+58);
+    ctx.font = '900 22px Arial'; ctx.fillStyle = '#cbd5e1';
+    ctx.textAlign = 'right'; ctx.fillText(formatShareMoneyFromWeight(pos.weight), 986, y+45); ctx.textAlign = 'left';
+    y += 84;
+  });
+  roundRect(ctx, 58, 1138, 964, 132, 24); ctx.fillStyle = 'rgba(16,185,129,0.10)'; ctx.fill();
+  ctx.font = '900 25px Arial'; ctx.fillStyle = '#bbf7d0'; ctx.fillText('이번 주 원칙', 86, 1185);
+  ctx.font = '24px Arial'; ctx.fillStyle = '#dcfce7';
+  wrapCanvasText(ctx, '오른 날은 추격매수하지 않고, 떨어진 날은 감정적으로 팔지 않습니다. 결정은 월 1회 또는 실적 발표 후에만 합니다.', 86, 1222, 900, 32, 2);
+  const a = document.createElement('a');
+  a.download = `우리집_투자상태_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.png`;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+  const status = document.getElementById('share-copy-status');
+  if (status) status.textContent = '📸 카톡용 한 장 이미지가 저장되었습니다. 카톡방에 전송하세요.';
+}
+
+function initFamilyDashboard() {
+  document.querySelectorAll('.family-mood-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      familyMood = btn.dataset.mood || 'happy';
+      document.querySelectorAll('.family-mood-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const result = document.getElementById('family-trade-result');
+      if (result) result.textContent = getFamilyTradeMessage();
+      renderFamilyDashboard();
+    });
+  });
+  document.getElementById('btn-family-trade-check')?.addEventListener('click', () => {
+    const result = document.getElementById('family-trade-result');
+    if (result) result.textContent = getFamilyTradeMessage();
+  });
+  renderFamilyDashboard();
+  if (typeof updateShareCard === "function") updateShareCard();
+}
+
+function initQmap3() {
+  initMainTabs();
+  initFamilyDashboard();
+  initShareMode();
+  initQmapEvents();
+  initPortfolioEvents();
+  loadQmapHistory();
+  loadPortfolio();
+  renderQmapHistory();
+  renderPortfolio();
+  updateShareCard();
+  updateQmapResult();
+  updateBreakSignalResult();
+  updateAddChecklist(true);
+}
+
 /* ================================================================
    초기화
    ================================================================ */
@@ -4091,7 +7859,8 @@ function init() {
   updateWeightPreview();
   initEvents();
   loadSavedList();
-  console.log('[STEP 5 완료] 시뮬레이터 고도화 + 저장/출력 완성 — v9 초기화 완료');
+  initQmap3();
+  console.log('[Q-MAP 3.0 v11.0] 카톡 공유 표시 보완 + 보고서 가져오기 초기화 완료');
 }
 
 document.addEventListener('DOMContentLoaded', init);
